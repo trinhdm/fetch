@@ -8,6 +8,8 @@ const aliases = [
 	'components',
 	'hooks',
 	'layout',
+	'providers',
+	'typings',
 	'utils',
 ]
 const indexPath = resolve(__dirname, './index.html')

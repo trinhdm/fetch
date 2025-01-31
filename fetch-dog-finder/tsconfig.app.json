@@ -29,6 +29,8 @@
 		"@components/*": ["src/components/*"],
 		"@hooks/*": ["src/hooks/*"],
 		"@layout/*": ["src/layout/*"],
+		"@providers/*": ["src/providers/*"],
+		"@typings/*": ["src/typings/*"],
 		"@utils/*": ["src/utils/*"]
 	}
   },

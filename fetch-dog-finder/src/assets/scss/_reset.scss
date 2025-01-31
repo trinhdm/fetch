@@ -1,0 +1,369 @@
+//	----------------------------------------------
+//
+//	doreen's reset
+//
+//	----------------------------------------------
+
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+#root {
+	width: 100%;
+}
+
+html {
+	-moz-text-size-adjust: none;
+	-webkit-text-size-adjust: none;
+	text-size-adjust: none;
+}
+
+body {
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100%;
+	line-height: 1.6;
+	margin: 0;
+	text-rendering: optimizeLegibility;
+}
+
+template {
+	display: none;
+}
+
+address,
+article,
+button,
+figure,
+hr,
+input,
+legend,
+li,
+menu,
+ol,
+optgroup,
+select,
+summary,
+textarea,
+time,
+ul {
+	margin: 0;
+	padding: 0;
+}
+
+article,
+hr,
+li,
+menu,
+ol,
+ul {
+	position: relative;
+}
+
+menu,
+ol,
+ul {
+	list-style-type: none;
+}
+
+dialog,
+hr {
+	border: 0;
+	overflow: hidden;
+}
+
+dialog,
+section {
+	height: 100%;
+	margin: auto;
+	width: 100%;
+}
+
+li,
+summary {
+	&::marker {
+		content: '';
+	}
+}
+
+aside {
+	align-items: center;
+	display: flex;
+	position: absolute;
+	z-index: 25;
+}
+
+dialog {
+	background-color: transparent;
+	max-height: unset;
+	max-width: unset;
+	padding: 0;
+	z-index: 100;
+}
+
+hr {
+	box-sizing: content-box;
+	height: 0;
+	pointer-events: none;
+}
+
+li {
+	white-space: pre-line;
+}
+
+section {
+	overflow-x: clip;
+	overscroll-behavior: none;
+}
+
+
+abbr,
+b,
+blockquote,
+code,
+del,
+em,
+ins,
+kbd,
+legend,
+mark,
+pre,
+q,
+samp,
+small,
+span,
+strong,
+sub,
+sup,
+u {
+	color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	text-wrap: balance;
+}
+
+code,
+kbd,
+pre,
+samp {
+	font-size: 1rem;
+}
+
+b,
+strong {
+	font-weight: bold;
+}
+
+em,
+i {
+	font-style: italic;
+}
+
+sub,
+sup {
+	font-size: 75%;
+	line-height: 0;
+	vertical-align: baseline;
+}
+
+sub {
+	bottom: -0.25rem;
+}
+
+sup {
+	top: -0.25rem;
+}
+
+del,
+ins,
+mark {
+	&::before,
+	&::after {
+		clip-path: inset(100%);
+		clip: rect(1px, 1px, 1px, 1px);
+		display: block;
+		height: auto;
+		overflow: hidden;
+		position: absolute;
+		white-space: nowrap;
+		width: 1px;
+		z-index: 1;
+	}
+}
+
+del {
+	&::before {
+		content: 'deletion start';
+	}
+
+	&::after {
+		content: 'deletion end';
+	}
+}
+
+ins {
+	&::before {
+		content: 'insertion start';
+	}
+
+	&::after {
+		content: 'insertion end';
+	}
+}
+
+mark {
+	&::before {
+		content: 'highlight start';
+	}
+
+	&::after {
+		content: 'highlight end';
+	}
+}
+
+small {
+	font-size: 80%;
+}
+
+
+a,
+button,
+details,
+progress,
+summary {
+	position: relative;
+}
+
+button,
+details,
+summary {
+	display: flex;
+}
+
+a,
+button {
+	background-color: transparent;
+}
+
+button,
+input {
+	overflow: visible;
+}
+
+button,
+progress {
+	appearance: none;
+}
+
+button,
+input[type="submit"],
+summary {
+	cursor: pointer;
+}
+
+a {
+	text-decoration-skip-ink: auto;
+	text-decoration: none;
+}
+
+details {
+	height: max-content;
+}
+
+progress {
+	display: block;
+}
+
+img,
+picture,
+svg {
+	display: block;
+	position: relative;
+	z-index: 1;
+}
+
+img,
+picture {
+	max-width: 100%;
+}
+
+
+button,
+input,
+optgroup,
+select,
+textarea {
+	border: 0;
+	font: inherit;
+}
+
+address,
+time {
+	display: flex;
+	text-transform: uppercase;
+}
+
+legend {
+	display: table;
+	max-width: 100%;
+	white-space: normal;
+}
+
+[type="checkbox"],
+[type="radio"] {
+	padding: 0;
+}
+
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
+	height: auto;
+}
+
+[type="search"] {
+	-webkit-appearance: textfield;
+	appearance: textfield;
+	outline-offset: -0.125rem;
+}
+
+[type="search"]::-webkit-search-decoration {
+	-webkit-appearance: none;
+}
+
+::-webkit-file-upload-button {
+	-webkit-appearance: button;
+	appearance: button;
+	font: inherit;
+}
+
+:disabled,
+[data-disabled]
+[disabled] {
+	cursor: pointer;
+	pointer-events: none;
+}
+
+:target {
+	scroll-margin-block: 5ex;
+}
+
+[aria-hidden],
+[hidden] {
+	display: none;
+}
+
+[draggable="true"] {
+	cursor: grab;
+
+	&:active {
+		cursor: grabbing;
+	}
+}

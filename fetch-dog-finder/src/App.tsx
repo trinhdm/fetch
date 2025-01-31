@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { login } from '@utils/services'
+import { UserProvider } from '@providers/UserProvider'
 import { Button } from '@components/Button'
 import { Form, type FieldGroup } from '@components/Form'
-import { login } from '@utils/services'
 import type { User } from '@typings/shared'
 import dog from '/dog-login.jpg'
 import logo from '/logo-icon-purple.svg'
@@ -10,10 +11,12 @@ import '@assets/scss/global.scss'
 
 function App() {
 	const [isLoggedIn, setLoggedIn] = useState<boolean>(false)
+	const [credentials, setCredentials] = useState<User>()
 
 	const handleLogin = async (data: User) => {
 		try {
 			await login(data)
+			setCredentials(data)
 			setLoggedIn(state => !state)
 		} catch (error) {
 			console.log(error)
@@ -32,7 +35,7 @@ function App() {
 	]
 
 	return (
-		<>
+		<UserProvider values={ credentials }>
 			{ isLoggedIn && (
 				<div>
 					<Button onClick={ handleLogin }>
@@ -59,7 +62,7 @@ function App() {
 					</div>
 				</div>
 			) }
-		</>
+		</UserProvider>
 	)
 }
 

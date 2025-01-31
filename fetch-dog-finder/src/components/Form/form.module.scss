@@ -1,0 +1,75 @@
+.form {
+	&__button {
+		font-size: .75rem;
+		margin-top: .5rem;
+		padding: .5rem 0;
+	}
+}
+
+.field {
+	position: relative;
+
+	&::before,
+	&::after {
+		content: '';
+		display: block;
+		height: 1px;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		transition: opacity .2s ease-in;
+		width: 100%;
+	}
+
+	&::before {
+		background-color: red;
+		z-index: 1;
+	}
+
+	&::after {
+		background-color: yellow;
+		opacity: 0;
+		z-index: 2;
+	}
+
+	&:focus-within {
+		&::before {
+			opacity: 0;
+		}
+
+		&::after {
+			opacity: 1;
+		}
+	}
+
+	&__honeypot,
+	&__label {
+		font-size: 0;
+		height: 0;
+		line-height: 0;
+		opacity: 0;
+		position: absolute;
+	}
+
+	&__input,
+	&__message {
+		font-size: .75rem;
+		padding: .5rem 0;
+	}
+
+	&__input {
+		background-color: transparent;
+		color: #000;
+		outline: 0;
+		width: 100%;
+		z-index: 0;
+	}
+
+	&__message {
+		display: block;
+		font-style: italic;
+		inset: auto 0 0 auto;
+		position: absolute;
+		z-index: 1;
+	}
+}

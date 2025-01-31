@@ -1,36 +1,66 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Button } from '@components/Button'
+import { Form, type FieldGroup } from '@components/Form'
+import { login } from '@utils/services'
+import type { User } from '@typings/shared'
+import dog from '/dog-login.jpg'
+import logo from '/logo-icon-purple.svg'
 import './App.css'
 import '@assets/scss/global.scss'
 
 function App() {
-  const [count, setCount] = useState(0)
+	const [isLoggedIn, setLoggedIn] = useState<boolean>(false)
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+	const handleLogin = async (data: User) => {
+		try {
+			await login(data)
+			setLoggedIn(state => !state)
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
+	const loginFields: FieldGroup = [
+		{
+			name: 'name',
+			type: 'text',
+		},
+		{
+			name: 'email',
+			type: 'email',
+		},
+	]
+
+	return (
+		<>
+			{ isLoggedIn && (
+				<div>
+					<Button onClick={ handleLogin }>
+						Logout
+					</Button>
+				</div>
+			) }
+
+			{ !isLoggedIn && (
+				<div className="intro">
+					<div className="column">
+						<div className="content">
+							<a href="https://vite.dev" className="logo" target="_blank">
+								<img src={ logo } alt="Vite logo" />
+							</a>
+							<Form fields={ loginFields } onSubmit={ handleLogin }>
+								<h1>Ready to Fetch?</h1>
+								<p>Welcome to Fetch. Let's find your new best friend, together.</p>
+							</Form>
+						</div>
+					</div>
+					<div className="column">
+						<img src={ dog } />
+					</div>
+				</div>
+			) }
+		</>
+	)
 }
 
 export default App

@@ -1,8 +1,21 @@
 
-interface User {
+interface Auth {
 	name: string
 	email: string
 }
 
+interface User extends Auth {
+	favorites?: string[]
+	isLoggedIn: boolean
+}
 
-export type { User }
+interface UserSettings extends User {
+	handleUser: ((data: User) => void) | (() => void)
+}
+
+
+export type {
+	Auth,
+	User,
+	UserSettings,
+}

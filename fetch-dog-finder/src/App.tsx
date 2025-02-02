@@ -1,67 +1,31 @@
-import { useState } from 'react'
-import { login } from '@utils/services'
+import { useCallback, useState } from 'react'
 import { UserProvider } from '@providers/UserProvider'
-import { Button } from '@components/Button'
-import { Form, type FieldGroup } from '@components/Form'
-import type { User } from '@typings/shared'
-import dog from '/dog-login.jpg'
-import logo from '/logo-icon-purple.svg'
+import { Directory } from '@layout/Directory'
+import { Login } from '@layout/Login'
+import type { User, UserSettings } from '@typings/shared'
 import './App.css'
 import '@assets/scss/global.scss'
 
 function App() {
-	const [isLoggedIn, setLoggedIn] = useState<boolean>(false)
-	const [credentials, setCredentials] = useState<User>()
+	const [user, setUser] = useState<User>({
+		name: '',
+		email: '',
+		isLoggedIn: false,
+	})
 
-	const handleLogin = async (data: User) => {
-		try {
-			await login(data)
-			setCredentials(data)
-			setLoggedIn(state => !state)
-		} catch (error) {
-			console.log(error)
-		}
+	const handleUser = useCallback((data: User) => setUser(state => ({
+		...data,
+		isLoggedIn: !state.isLoggedIn,
+	})), [setUser])
+
+	const userValues: UserSettings = {
+		...user,
+		handleUser,
 	}
 
-	const loginFields: FieldGroup = [
-		{
-			name: 'name',
-			type: 'text',
-		},
-		{
-			name: 'email',
-			type: 'email',
-		},
-	]
-
 	return (
-		<UserProvider values={ credentials }>
-			{ isLoggedIn && (
-				<div>
-					<Button onClick={ handleLogin }>
-						Logout
-					</Button>
-				</div>
-			) }
-
-			{ !isLoggedIn && (
-				<div className="intro">
-					<div className="column">
-						<div className="content">
-							<a href="https://vite.dev" className="logo" target="_blank">
-								<img src={ logo } alt="Vite logo" />
-							</a>
-							<Form fields={ loginFields } onSubmit={ handleLogin }>
-								<h1>Ready to Fetch?</h1>
-								<p>Welcome to Fetch. Let's find your new best friend, together.</p>
-							</Form>
-						</div>
-					</div>
-					<div className="column">
-						<img src={ dog } />
-					</div>
-				</div>
-			) }
+		<UserProvider values={ userValues }>
+			{ user.isLoggedIn ? <Directory /> : <Login /> }
 		</UserProvider>
 	)
 }

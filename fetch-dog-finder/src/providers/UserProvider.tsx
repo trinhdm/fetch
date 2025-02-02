@@ -1,10 +1,6 @@
 import { createProvider } from './createProvider'
-import type { User } from '@typings/shared'
+import type { UserSettings } from '@typings/shared'
 
-interface UserSettings extends User {
-	favorites?: string[]
-}
-
-export const [UserProvider, useUserContext] = createProvider<UserSettings | undefined>(
+export const [UserProvider, useUserContext] = createProvider<UserSettings>(
 	'useUserContext must be used within UserProvider'
 )

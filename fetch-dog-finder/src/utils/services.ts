@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { User } from '@typings/shared'
+import type { Auth } from '@typings/shared'
 
 
 const API_URL = 'https://frontend-take-home-service.fetch.com'
@@ -15,7 +15,7 @@ api.interceptors.request.use(config => {
 	return config
 })
 
-export const login = async (credentials: User) => await api.post('/auth/login', credentials)
+export const login = async (credentials: Auth) => await api.post('/auth/login', credentials)
 
 export const logout = async () => {
 	await api.post('/auth/logout')

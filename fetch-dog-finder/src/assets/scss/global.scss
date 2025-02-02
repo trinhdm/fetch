@@ -1,1 +1,35 @@
 @use 'reset';
+
+
+:root {
+	--highlight-color: null;
+}
+
+::selection {
+	background: $color-secondary;
+	color: $color-white;
+	text-shadow: none;
+}
+
+::-moz-selection {
+	background: $color-secondary;
+	color: $color-white;
+	text-shadow: none;
+}
+
+body {
+	color: $color-text;
+	font-family: $font-primary;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	color: $color-header;
+}
+
+h1 {
+	margin: 0;
+}
+

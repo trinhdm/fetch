@@ -31,9 +31,12 @@ export default defineConfig({
 			localsConvention: 'camelCaseOnly',
 			scopeBehaviour: 'global',
 		},
-		// preprocessorOptions: {
-		// 	scss: { additionalData: `@use '@assets/_scss/utils/global' as *;`, includePaths: ['node_modules'] },
-		// },
+		preprocessorOptions: {
+			scss: {
+				additionalData: `@use '@assets/scss/vars' as *;`,
+				includePaths: ['node_modules'],
+			},
+		},
 	},
 	plugins: [
 		react(),

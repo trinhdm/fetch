@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
+
+$-font-lexend: Lexend, serif;
+
+$font-primary: $-font-lexend;
+
+// internal
+$-color-gray: #CED4DA;
+$-color-gray-dark: #343A40;
+$-color-gray-light: #F1ECE9;
+$-color-gray-purple: #C7C1E0;
+$-color-silver: #9CA3AF;
+
+$-color-hot-pink: #F90075;
+$-color-orange: #FFA900;
+$-color-purple-dark: #300D38;
+$-color-purple-light: #890A74;
+$-color-red: #DC3545;
+$-color-yellow: #FFDF02;
+
+$color-black: #000;
+$color-white: #FFF;
+
+$color-primary: $-color-purple-dark;
+$color-secondary: $-color-purple-light;
+$color-tertiary: $-color-orange;
+$color-quaternary: $-color-yellow;
+
+$color-danger: $-color-red;
+$color-focus-danger: $-color-hot-pink;
+
+$color-text: #090325;
+$color-header: $color-primary;
+
+$color-field: $-color-gray-dark;
+$color-placeholder: $-color-silver;
+
+
+$row-gap-lg: .75rem;

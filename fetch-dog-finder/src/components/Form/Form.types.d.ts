@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { AriaRole, ReactNode } from 'react'
 
 
 type FormValues = {
@@ -6,9 +6,18 @@ type FormValues = {
 	email: string
 }
 
+type FieldTypes =
+	| 'email'
+	| 'range'
+	| 'search'
+	| 'select'
+	| 'text'
+
+type FieldValidations = Exclude<FieldTypes, 'range' | 'select'>
+
 type FieldValues = {
 	name: keyof FormValues
-	type: 'email' | 'text'
+	type: FieldTypes
 }
 
 type FieldGroup = FieldValues[]
@@ -18,11 +27,13 @@ interface FormProps {
 	children?: ReactNode
 	fields: FieldGroup
 	onSubmit: (event: FormEvent<HTMLFormElement, FormEvent>) => void
+	role?: Extract<AriaRole, 'form' | 'search'>
 }
 
 
 export type {
 	FieldGroup,
+	FieldValidations,
 	FieldValues,
 	FormProps,
 	FormValues,

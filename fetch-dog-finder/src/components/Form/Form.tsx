@@ -1,7 +1,8 @@
 import clsx from 'clsx'
 import { useForm } from 'react-hook-form'
+import { Button } from '@components/Button'
 import type {
-	FieldValues,
+	FieldValidations,
 	FormProps,
 	FormValues,
 } from './Form.types'
@@ -12,6 +13,7 @@ const Form = ({
 	children,
 	fields,
 	onSubmit,
+	role = 'form',
  }: FormProps) => {
 	const {
 		formState: { errors },
@@ -19,11 +21,15 @@ const Form = ({
 		register,
 	} = useForm<FormValues>()
 
-	const handleValidation = (field: FieldValues['type']) => {
+	const handleValidation = (field: FieldValidations) => {
 		const pattern = {
 			email: {
 				message: 'Email is invalid.',
 				value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/,
+			},
+			search: {
+				message: 'Field can only contain letters.',
+				value: /^[\w\-\s]+/,
 			},
 			text: {
 				message: 'Name cannot start with a number.',
@@ -43,7 +49,11 @@ const Form = ({
 		<>
 			{ children }
 
-			<form onSubmit={ handleSubmit(onSubmit) }>
+			<form
+				className="form"
+				onSubmit={ handleSubmit(onSubmit) }
+				{ ...(role === 'search' ? { role } : {}) }
+			>
 				{ fields.map(({ name, type }) => {
 					const error = errors[name],
 						placeholder = name.charAt(0).toUpperCase() + name.slice(1)
@@ -59,7 +69,7 @@ const Form = ({
 								{ placeholder }
 							</label>
 							<input
-								{ ...register(name, handleValidation(type)) }
+								{ ...register(name, handleValidation(type as FieldValidations)) }
 								aria-label={ placeholder }
 								autoComplete="on"
 								className="field__input"
@@ -84,11 +94,9 @@ const Form = ({
 					type="text"
 				/>
 
-				<input
-					className="form__button"
-					type="submit"
-					value={ buttonText }
-				/>
+				<Button className="form__button" type="submit">
+					{ buttonText }
+				</Button>
 			</form>
 		</>
 	)

@@ -1,12 +1,17 @@
 .form {
+	display: flex;
+	flex-direction: column;
+	row-gap: $row-gap-lg;
+	text-align: left;
+
 	&__button {
-		font-size: .75rem;
-		margin-top: .5rem;
-		padding: .5rem 0;
+		margin-top: $row-gap-lg;
 	}
 }
 
 .field {
+	font-size: .875rem;
+	line-height: .875rem;
 	position: relative;
 
 	&::before,
@@ -22,12 +27,11 @@
 	}
 
 	&::before {
-		background-color: red;
-		z-index: 1;
+		background-color: $color-secondary;
 	}
 
 	&::after {
-		background-color: yellow;
+		background-color: $color-tertiary;
 		opacity: 0;
 		z-index: 2;
 	}
@@ -42,6 +46,21 @@
 		}
 	}
 
+	&--error {
+		&::before {
+			background-color: $color-danger;
+		}
+
+		&::after {
+			background-color: $color-focus-danger;
+		}
+	}
+
+	&,
+	&__message {
+		padding: $row-gap-lg 0;
+	}
+
 	&__honeypot,
 	&__label {
 		font-size: 0;
@@ -51,25 +70,21 @@
 		position: absolute;
 	}
 
-	&__input,
-	&__message {
-		font-size: .75rem;
-		padding: .5rem 0;
-	}
-
 	&__input {
 		background-color: transparent;
-		color: #000;
+		color: $color-field;
 		outline: 0;
 		width: 100%;
-		z-index: 0;
 	}
 
 	&__message {
+		color: $color-danger;
 		display: block;
+		font-size: .75rem;
 		font-style: italic;
 		inset: auto 0 0 auto;
 		position: absolute;
-		z-index: 1;
+		z-index: 2;
 	}
 }
+

@@ -1,0 +1,36 @@
+
+.button {
+	background-color: $color-secondary;
+	overflow: hidden;
+	position: relative;
+	text-align: center;
+
+	&::after {
+		background-color: $color-tertiary;
+		content: '';
+		display: block;
+		height: 100%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		transition: translate .2s ease-in;
+		translate: -100%;
+		width: 100%;
+		z-index: 1;
+	}
+
+	&:hover::after {
+		translate: 0;
+	}
+
+	button,
+	input[type="submit"] {
+		background-color: transparent;
+		color: $color-white;
+		font-size: .875rem;
+		padding: .5rem 0;
+		position: relative;
+		width: 100%;
+		z-index: 2;
+	}
+}

@@ -13,13 +13,13 @@
 		left: 0;
 		position: absolute;
 		top: 0;
-		transition: translate .2s ease-in;
-		translate: -100%;
+		transition: translate .25s ease-in;
+		translate: 100%;
 		width: 100%;
 		z-index: 1;
 	}
 
-	&:hover::after {
+	&:is(:focus-within, :hover)::after {
 		translate: 0;
 	}
 
@@ -28,7 +28,7 @@
 		background-color: transparent;
 		color: $color-white;
 		font-size: .875rem;
-		padding: .5rem 0;
+		padding: .5rem 1rem;
 		position: relative;
 		width: 100%;
 		z-index: 2;

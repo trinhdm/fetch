@@ -1,5 +1,9 @@
 import clsx from 'clsx'
-import type { ButtonProps } from './Button.types'
+import type {
+	ButtonProps,
+	ButtonSubmit,
+	ButtonType,
+} from './Button.types'
 import './button.module.scss'
 
 const Button = ({
@@ -22,14 +26,14 @@ const Button = ({
 		case 'submit':
 			return (
 				<div className={ classNames }>
-					<input { ...props } value={ children } />
+					<input { ...props as ButtonSubmit } value={ children } />
 				</div>
 			)
 		case 'button':
 		default:
 			return (
 				<div className={ classNames }>
-					<button { ...props }>{ children }</button>
+					<button { ...props as ButtonType }>{ children }</button>
 				</div>
 			)
 	}

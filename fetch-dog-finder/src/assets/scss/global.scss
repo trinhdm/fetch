@@ -33,3 +33,30 @@ h1 {
 	margin: 0;
 }
 
+input {
+	&:is(
+		:autofill,
+		:-webkit-autofill
+	) {
+		-webkit-background-clip: text;
+		-webkit-box-shadow: 0 0 0 1.875rem $color-white inset;
+		-webkit-text-fill-color: $color-primary;
+
+		&::selection {
+			-webkit-text-fill-color: $color-white;
+		}
+	}
+
+	&::placeholder {
+		color: $color-placeholder;
+		// line-height: 0;
+	}
+
+	&::-moz-placeholder {
+		color: $color-placeholder;
+	}
+
+	&::-webkit-input-placeholder {
+		color: $color-placeholder;
+	}
+}

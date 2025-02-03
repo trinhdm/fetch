@@ -1,2 +1,6 @@
 export { Field } from './Field'
-export type { FieldGroup, FieldValidations } from './Field.types'
+export type {
+	FieldGroup,
+	FieldSelectHandler,
+	FieldValidations,
+} from './Field.types'

@@ -1,54 +1,11 @@
-
-
-
 .field {
+	$base: &;
+
 	font-size: .875rem;
 	line-height: 1;
 	position: relative;
 
-	&::before,
-	&::after {
-		content: '';
-		display: block;
-		height: 1px;
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		transition: opacity .2s ease-in;
-		width: 100%;
-	}
-
-	&::before {
-		background-color: $color-secondary;
-	}
-
-	&::after {
-		background-color: $color-tertiary;
-		opacity: 0;
-		z-index: 2;
-	}
-
-	&:focus-within {
-		&::before {
-			opacity: 0;
-		}
-
-		&::after {
-			opacity: 1;
-		}
-	}
-
-	&:hover:not(:focus-within) {
-		&::before {
-			opacity: .25;
-		}
-
-		&::after {
-			opacity: .25;
-		}
-	}
-
-	&--error {
+	&--error #{$base}__container {
 		&::before {
 			background-color: $color-danger;
 		}
@@ -58,7 +15,38 @@
 		}
 	}
 
-	&,
+	&__container {
+		position: relative;
+
+		&::before,
+		&::after {
+			content: '';
+			display: block;
+			height: .1px;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			transition: opacity .2s ease-in;
+			width: 100%;
+		}
+
+		&::before {
+			background-color: $color-secondary;
+		}
+
+		&::after {
+			background-color: $color-tertiary;
+			opacity: 0;
+			z-index: 2;
+		}
+
+		&:hover .dropdown {
+			opacity: 1;
+			pointer-events: all;
+		}
+	}
+
+	&__container,
 	&__message {
 		padding: $row-gap-lg 0;
 	}
@@ -89,22 +77,52 @@
 		position: absolute;
 		z-index: 0;
 	}
+
+	&__selected {
+		cursor: pointer;
+
+		:is(b, span) {
+			pointer-events: none;
+		}
+	}
+
+	&:focus-within {
+		&::before {
+			opacity: 0;
+		}
+
+		&::after {
+			opacity: 1;
+		}
+	}
+
+	&:hover:not(:focus-within) {
+		&::before {
+			opacity: .25;
+		}
+
+		&::after {
+			opacity: .25;
+		}
+	}
 }
 
+.dropdown {
+	background-color: $color-white;
+	border: .1px solid $color-secondary;
+	inset: calc(100% - .1px) -2px auto auto;
+	opacity: 0;
+	padding: $row-gap-lg calc($row-gap-lg * .5) $row-gap-lg $row-gap-lg;
+	pointer-events: none;
+	position: absolute;
+	width: 100%;
+	z-index: 10;
 
-datalist {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  writing-mode: vertical-lr;
-  width: 200px;
-}
-
-option {
-  padding: 0;
-}
-
-input[type="range"] {
-  width: 200px;
-  margin: 0;
+	&__list {
+		max-height: 12.5rem;
+		overflow: auto;
+		scrollbar-color: $color-scrollbar-dark;
+		scrollbar-width: thin;
+		padding-right: $row-gap-lg;
+	}
 }

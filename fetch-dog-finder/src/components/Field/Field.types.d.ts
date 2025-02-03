@@ -1,9 +1,8 @@
-import type { ReactNode } from 'react'
+import type { ChangeEvent } from 'react'
 
 
 type FieldTypes =
 	| 'email'
-	| 'multiselect'
 	| 'number'
 	| 'range'
 	| 'search'
@@ -11,35 +10,35 @@ type FieldTypes =
 	| 'text'
 
 type FieldValidations = Exclude<FieldTypes,
-	| 'multiselect'
 	| 'range'
 	| 'select'
 >
 
+type FieldChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>
+type FieldSelectHandler = (event: FieldChangeEvent | React.MouseEvent<HTMLElement, MouseEvent>) => void
 
 type FieldBase = {
 	name: string
-	onChange?: (event: ChangeEvent<HTMLSelectElement>) => void
+	onChange?: (event: FieldChangeEvent) => void
+	type: FieldTypes
 }
 
 type InputValues = FieldBase & {
+	onReset?: never
+	onSelect?: never
 	options?: never
-	type: FieldValidations
-}
-
-type RangeValues = FieldBase & {
-	options: number[] | string[]
-	type: Extract<FieldTypes, 'range'>
+	selected?: never
 }
 
 type SelectValues = FieldBase & {
-	options: string[]
-	type: Extract<FieldTypes, 'multiselect' | 'select'>
+	onReset?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+	onSelect: FieldSelectHandler
+	options: number[] | string[]
+	selected: (number[] | string[]) | undefined
 }
 
 type FieldValues =
 	| InputValues
-	| RangeValues
 	| SelectValues
 
 type FieldGroup = FieldValues[]
@@ -50,12 +49,7 @@ type ValidationPattern = {
 	value: RegExp
 }
 
-interface FieldProps extends Pick<FieldValues,
-	| 'name'
-	| 'onChange'
-	| 'type'
-> {
-	children?: ReactNode
+type FieldProps = FieldValues & {
 	hideLabel?: boolean
 	onValidation: (field: FieldValidations) => {
 		required: string;
@@ -67,5 +61,6 @@ interface FieldProps extends Pick<FieldValues,
 export type {
 	FieldGroup,
 	FieldProps,
+	FieldSelectHandler,
 	FieldValidations,
 }

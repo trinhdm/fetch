@@ -12,7 +12,7 @@ interface FormProps {
 	children?: ReactNode
 	fields: FieldGroup
 	hideLabels?: boolean
-	onSubmit: (event: FormEvent<HTMLFormElement, FormEvent>) => void
+	onSubmit?: (event: FormEvent<HTMLFormElement, FormEvent>) => void
 	role?: Extract<AriaRole, 'form' | 'search'>
 }
 

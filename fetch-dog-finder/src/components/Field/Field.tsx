@@ -1,14 +1,18 @@
 import clsx from 'clsx'
 import { useFormContext } from 'react-hook-form'
+import { Button } from '@components/Button'
 import type { FieldProps, FieldValidations } from './Field.types'
 import './field.module.scss'
 
 const Field = ({
-	children,
 	hideLabel = true,
 	name,
 	// onChange,
+	onReset,
+	onSelect,
 	onValidation,
+	options,
+	selected,
 	type,
  }: FieldProps) => {
 	const {
@@ -17,8 +21,16 @@ const Field = ({
 	} = useFormContext()
 
 	const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
+	const slugify = (str: string) => str.toLowerCase()
+										.replace(/^\s+|\s+$/g, '')
+										.replace(/[^a-z0-9 -]/g, '')
+										.replace(/\s+/g, '-')
+										.replace(/-+/g, '-')
 
 	const validateField = () => register(name, onValidation(type as FieldValidations))
+	// const validateField = () => (!!onChange && typeof onChange === 'function'
+	// 	? register(name, onValidation(type as FieldValidations))
+	// 	: {})
 
 	const error = errors[name],
 		label = `${name}-label`,
@@ -40,30 +52,79 @@ const Field = ({
 
 	return (
 		<div className={ classes }>
-			<label
-				className={ labelClasses }
-				htmlFor={ name }
-				id={ label }
-			>
-				{ placeholder }
-			</label>
+			<div className="field__container">
+				{ !options?.length && (
+					<label
+						className={ labelClasses }
+						htmlFor={ name }
+						id={ label }
+					>
+						{ placeholder }
+					</label>
+				) }
 
-			<input
-				{ ...labels }
-				{ ...validateField() }
-				autoComplete="on"
-				className="field__input"
-				placeholder={ placeholder }
-				tabIndex={ 0 }
-				type={ type }
-			/>
+				<input
+					{ ...labels }
+					{ ...validateField() }
+					autoComplete="on"
+					className="field__input"
+					placeholder={ placeholder }
+					tabIndex={ 0 }
+					type={ type }
+				/>
 
-			{ children }
+				{ (!!options && options?.length > 0) && (
+					<fieldset className="dropdown">
+						<legend className={ labelClasses } id={ label }>
+							{ placeholder }
+						</legend>
 
-			{ error && (
-				<span className="field__message">
-					{ error.message?.toString() }
-				</span>
+						<ul className="dropdown__list">
+							{ options.map(opt => {
+								const option = slugify(`${opt}`),
+									fieldset = slugify(name)
+
+								return (
+									<li className="dropdown__item" key={ option }>
+										<input
+											checked={ selected.includes(opt) }
+											id={ option }
+											name={ fieldset }
+											onChange={ onSelect }
+											type="checkbox"
+											value={ opt }
+										/>
+
+										<label htmlFor={ option }>
+											{ opt }
+										</label>
+									</li>
+								)
+							}) }
+						</ul>
+					</fieldset>
+				) }
+
+				{ error && (
+					<span className="field__message">
+						{ error.message?.toString() }
+					</span>
+				) }
+			</div>
+
+			{ ((!!options && options?.length > 0) && (!!selected && selected?.length > 0)) && (
+				<>
+					<ul className="field__selected">
+						{ selected.map(option => (
+							<li onClick={ onSelect } key={ `${option}-selected` } value={ `${option}` }>
+								<span>{ option }</span>
+
+							</li>
+						)) }
+					</ul>
+
+					{ onReset && <Button onClick={ onReset }>Clear All</Button> }
+				</>
 			) }
 		</div>
 	)

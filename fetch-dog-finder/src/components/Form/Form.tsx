@@ -1,31 +1,28 @@
-import clsx from 'clsx'
-import { useForm } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import { Button } from '@components/Button'
-import type {
-	FieldValidations,
-	FormProps,
-	FormValues,
-} from './Form.types'
+import { Field, type FieldValidations } from '@components/Field'
+import type { FormProps, FormValues } from './Form.types'
 import './form.module.scss'
 
 const Form = ({
-	buttonText = 'Log In',
+	buttonText,
 	children,
 	fields,
 	onSubmit,
 	role = 'form',
  }: FormProps) => {
-	const {
-		formState: { errors },
-		handleSubmit,
-		register,
-	} = useForm<FormValues>()
+	const methods = useForm<FormValues>()
+	const { handleSubmit } = methods
 
-	const handleValidation = (field: FieldValidations) => {
+	const handleValidation = (fieldType: FieldValidations) => {
 		const pattern = {
 			email: {
 				message: 'Email is invalid.',
 				value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/,
+			},
+			number: {
+				message: 'Field can only contain numbers.',
+				value: /^[0-9]*$/,
 			},
 			search: {
 				message: 'Field can only contain letters.',
@@ -35,7 +32,7 @@ const Form = ({
 				message: 'Name cannot start with a number.',
 				value: /^[\w\-\s]+/,
 			},
-		}[field]
+		}[fieldType]
 
 		const required = 'This field is required.',
 			validation = { required, pattern }
@@ -46,45 +43,22 @@ const Form = ({
 	if (!fields?.length) return
 
 	return (
-		<>
+		<FormProvider { ...methods }>
 			{ children }
 
 			<form
+				noValidate={ role === 'search' }
 				className="form"
 				onSubmit={ handleSubmit(onSubmit) }
 				{ ...(role === 'search' ? { role } : {}) }
 			>
-				{ fields.map(({ name, type }) => {
-					const error = errors[name],
-						placeholder = name.charAt(0).toUpperCase() + name.slice(1)
-
-					const classes = clsx({
-						'field': true,
-						'field--error': error,
-					})
-
-					return (
-						<div className={ classes } key={ placeholder }>
-							<label className="field__label" htmlFor={ name }>
-								{ placeholder }
-							</label>
-							<input
-								{ ...register(name, handleValidation(type as FieldValidations)) }
-								aria-label={ placeholder }
-								autoComplete="on"
-								className="field__input"
-								placeholder={ placeholder }
-								tabIndex={ 0 }
-								type={ type }
-							/>
-							{ error && (
-								<span className="field__message">
-									{ error.message }
-								</span>
-							) }
-						</div>
-					)
-				}) }
+				{ fields.map(field => (
+					<Field
+						{ ...field }
+						key={ field.name }
+						onValidation={ handleValidation }
+					/>
+				)) }
 
 				<input
 					hidden
@@ -94,11 +68,13 @@ const Form = ({
 					type="text"
 				/>
 
-				<Button className="form__button" type="submit">
-					{ buttonText }
-				</Button>
+				{ !!buttonText && (
+					<Button className="form__button" type="submit">
+						{ buttonText }
+					</Button>
+				) }
 			</form>
-		</>
+		</FormProvider>
 	)
 }
 

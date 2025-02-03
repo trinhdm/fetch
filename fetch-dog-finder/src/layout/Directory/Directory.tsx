@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { fetchBreeds, retrieveDogs, fetchMatch, fetchDogs } from '@utils/services'
 import { useUserContext } from '@providers/UserProvider'
+import type { FieldGroup } from '@components/Field'
 
 const Directory = ({}) => {
 	const { name } = useUserContext()

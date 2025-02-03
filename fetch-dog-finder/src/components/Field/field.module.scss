@@ -1,0 +1,110 @@
+
+
+
+.field {
+	font-size: .875rem;
+	line-height: 1;
+	position: relative;
+
+	&::before,
+	&::after {
+		content: '';
+		display: block;
+		height: 1px;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		transition: opacity .2s ease-in;
+		width: 100%;
+	}
+
+	&::before {
+		background-color: $color-secondary;
+	}
+
+	&::after {
+		background-color: $color-tertiary;
+		opacity: 0;
+		z-index: 2;
+	}
+
+	&:focus-within {
+		&::before {
+			opacity: 0;
+		}
+
+		&::after {
+			opacity: 1;
+		}
+	}
+
+	&:hover:not(:focus-within) {
+		&::before {
+			opacity: .25;
+		}
+
+		&::after {
+			opacity: .25;
+		}
+	}
+
+	&--error {
+		&::before {
+			background-color: $color-danger;
+		}
+
+		&::after {
+			background-color: $color-focus-danger;
+		}
+	}
+
+	&,
+	&__message {
+		padding: $row-gap-lg 0;
+	}
+
+	&__honeypot,
+	&__label--hidden {
+		font-size: 0;
+		height: 0;
+		line-height: 0;
+		opacity: 0;
+		position: absolute;
+	}
+
+	&__input,
+	&__select {
+		background-color: transparent;
+		color: $color-field;
+		outline: 0;
+		width: 100%;
+	}
+
+	&__message {
+		color: $color-danger;
+		display: block;
+		font-size: .75rem;
+		font-style: italic;
+		inset: auto 0 0 auto;
+		position: absolute;
+		z-index: 0;
+	}
+}
+
+
+datalist {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  writing-mode: vertical-lr;
+  width: 200px;
+}
+
+option {
+  padding: 0;
+}
+
+input[type="range"] {
+  width: 200px;
+  margin: 0;
+}

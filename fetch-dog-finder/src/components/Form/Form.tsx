@@ -8,7 +8,7 @@ const Form = ({
 	buttonText,
 	children,
 	fields,
-	onSubmit,
+	onSubmit = () => {},
 	role = 'form',
  }: FormProps) => {
 	const methods = useForm<FormValues>()

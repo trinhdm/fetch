@@ -7,6 +7,7 @@ import type {
 import './button.module.scss'
 
 const Button = ({
+	as,
 	children,
 	className,
 	onClick = () => {},
@@ -15,6 +16,7 @@ const Button = ({
 	const classNames = clsx({
 		button: true,
 		[`${className}`]: className,
+		[`button--${as}`]: !!as && as !== 'button',
 	})
 
 	const props = {

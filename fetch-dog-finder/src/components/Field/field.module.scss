@@ -5,6 +5,16 @@
 	line-height: 1;
 	position: relative;
 
+	&:has(fieldset) {
+		display: grid;
+		gap: $row-gap-lg calc($row-gap-lg * .5);
+		grid-template-areas:
+			"field field"
+			"menu results";
+		grid-template-columns: 1fr 1fr;
+		max-width: 34rem;
+	}
+
 	&--error #{$base}__container {
 		&::before {
 			background-color: $color-danger;
@@ -16,6 +26,7 @@
 	}
 
 	&__container {
+		grid-area: field;
 		position: relative;
 
 		&::before,
@@ -39,13 +50,9 @@
 			opacity: 0;
 			z-index: 2;
 		}
-
-		&:hover .dropdown {
-			opacity: 1;
-			pointer-events: all;
-		}
 	}
 
+	&__button,
 	&__container,
 	&__message {
 		padding: $row-gap-lg 0;
@@ -68,21 +75,145 @@
 		width: 100%;
 	}
 
+	&__button {
+		bottom: 0;
+		margin: auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	&__checkbox {
+		-webkit-appearance: none;
+		background-color: $color-white;
+		background: none;
+		border-radius: .125rem;
+		border: 0;
+		color: $color-tertiary;
+		flex-grow: 0;
+		height: .625rem;
+		margin: -0.0625rem 0 0 0;
+		outline: 0;
+		transition: background .25s;
+		vertical-align: middle;
+		width: .625rem;
+
+		&::before {
+			background-color: transparent;
+			background-size: contain;
+			border-radius: inherit;
+			border: 0;
+			box-shadow: inset 0 0 0 .0625rem $color-checkbox;
+			color: transparent;
+			content: "";
+			display: block;
+			height: inherit;
+			width: inherit;
+		}
+
+		&:checked {
+			background-color: currentColor;
+
+			&::before {
+				background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
+				box-shadow: none;
+			}
+		}
+
+		& + label {
+			padding-left: .375rem;
+		}
+	}
+
 	&__message {
 		color: $color-danger;
 		display: block;
 		font-size: .75rem;
 		font-style: italic;
 		inset: auto 0 0 auto;
+		line-height: .875rem;
+		pointer-events: none;
 		position: absolute;
+		user-select: none;
 		z-index: 0;
 	}
 
-	&__selected {
-		cursor: pointer;
+	&__selection {
+		background-color: $color-white;
+		border: .1px solid $color-secondary;
+		grid-area: menu;
+		margin-inline: -.2px 0;
+		padding: $row-gap-lg calc($row-gap-lg * .5) $row-gap-lg $row-gap-lg;
+	}
 
-		:is(b, span) {
+	&__list,
+	&__results {
+		height: 14.25rem;
+		overflow-y: auto;
+		row-gap: .25rem;
+		scrollbar-color: $color-scrollbar-dark;
+		scrollbar-width: thin;
+	}
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		padding-right: $row-gap-lg;
+	}
+
+	&__results {
+		grid-area: results;
+		padding: $row-gap-lg;
+	}
+
+	&__item,
+	&__tag {
+		max-height: max-content;
+		max-width: max-content;
+
+		&,
+		label {
+			cursor: pointer;
+		}
+
+		:is(span, svg) {
 			pointer-events: none;
+		}
+
+		&:has(:checked) {
+			color: $color-secondary;
+		}
+	}
+
+	&__item {
+		&:is(:focus-within, :hover) {
+			color: $color-primary;
+
+			#{$base}__checkbox::before {
+				box-shadow: inset 0 0 0 .0625rem $color-tertiary;
+			}
+		}
+	}
+
+	&__tag {
+		align-items: center;
+		background-color: $color-tag;
+		border-radius: 1rem;
+		color: $color-white;
+		column-gap: .25rem;
+		display: inline-flex;
+		font-size: .75rem;
+		margin: 0 .25rem .25rem 0;
+		padding: .375rem .5rem;
+		transition: background-color .25s ease-in-out;
+
+		&:is(:focus, :hover) {
+			background-color: $color-tag-hover;
+		}
+
+		svg {
+			height: .625rem;
+			width: .625rem;
 		}
 	}
 
@@ -97,32 +228,9 @@
 	}
 
 	&:hover:not(:focus-within) {
-		&::before {
-			opacity: .25;
-		}
-
+		&::before,
 		&::after {
 			opacity: .25;
 		}
-	}
-}
-
-.dropdown {
-	background-color: $color-white;
-	border: .1px solid $color-secondary;
-	inset: calc(100% - .1px) -2px auto auto;
-	opacity: 0;
-	padding: $row-gap-lg calc($row-gap-lg * .5) $row-gap-lg $row-gap-lg;
-	pointer-events: none;
-	position: absolute;
-	width: 100%;
-	z-index: 10;
-
-	&__list {
-		max-height: 12.5rem;
-		overflow: auto;
-		scrollbar-color: $color-scrollbar-dark;
-		scrollbar-width: thin;
-		padding-right: $row-gap-lg;
 	}
 }

@@ -1,5 +1,6 @@
 
 interface ButtonBase {
+	as?: 'button' | 'text'
 	children: string
 	className?: string
 	// onClick?: (event:

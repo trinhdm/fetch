@@ -1,4 +1,6 @@
 import clsx from 'clsx'
+import { HiX } from 'react-icons/hi'
+import { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Button } from '@components/Button'
 import type { FieldProps, FieldValidations } from './Field.types'
@@ -7,7 +9,6 @@ import './field.module.scss'
 const Field = ({
 	hideLabel = true,
 	name,
-	// onChange,
 	onReset,
 	onSelect,
 	onValidation,
@@ -20,6 +21,11 @@ const Field = ({
 		register,
 	} = useFormContext()
 
+	const [value, setValue] = useState('')
+
+	const hasOptions = !!options && options?.length > 0,
+		hasSelected = !!selected && selected?.length > 0
+
 	const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
 	const slugify = (str: string) => str.toLowerCase()
 										.replace(/^\s+|\s+$/g, '')
@@ -28,9 +34,7 @@ const Field = ({
 										.replace(/-+/g, '-')
 
 	const validateField = () => register(name, onValidation(type as FieldValidations))
-	// const validateField = () => (!!onChange && typeof onChange === 'function'
-	// 	? register(name, onValidation(type as FieldValidations))
-	// 	: {})
+	const handleOnChange = ({ target }) => setValue(target.value)
 
 	const error = errors[name],
 		label = `${name}-label`,
@@ -64,8 +68,9 @@ const Field = ({
 				) }
 
 				<input
-					{ ...labels }
 					{ ...validateField() }
+					{ ...labels }
+					{ ...(hasOptions ? { onChange: handleOnChange } : validateField()) }
 					autoComplete="on"
 					className="field__input"
 					placeholder={ placeholder }
@@ -73,24 +78,46 @@ const Field = ({
 					type={ type }
 				/>
 
-				{ (!!options && options?.length > 0) && (
-					<fieldset className="dropdown">
+				{ !!(hasOptions && hasSelected && onReset) && (
+					<Button
+						as="text"
+						className="field__button"
+						onClick={ onReset }
+					>
+						Clear All
+					</Button>
+				) }
+
+				{ error && (
+					<span className="field__message">
+						{ error.message?.toString() }
+					</span>
+				) }
+			</div>
+
+			{ hasOptions && (
+				<>
+					<fieldset className="field__selection">
 						<legend className={ labelClasses } id={ label }>
 							{ placeholder }
 						</legend>
 
-						<ul className="dropdown__list">
-							{ options.map(opt => {
+						<ul className="field__list">
+							{ options.filter(opt => opt.toString().toLowerCase().includes(
+								value.toLowerCase()
+							)).map(opt => {
 								const option = slugify(`${opt}`),
 									fieldset = slugify(name)
 
 								return (
-									<li className="dropdown__item" key={ option }>
+									<li className="field__item" key={ option }>
 										<input
-											checked={ selected.includes(opt) }
+											className="field__checkbox"
+											checked={ selected?.includes(opt) }
 											id={ option }
 											name={ fieldset }
 											onChange={ onSelect }
+											tabIndex={ 0 }
 											type="checkbox"
 											value={ opt }
 										/>
@@ -103,27 +130,22 @@ const Field = ({
 							}) }
 						</ul>
 					</fieldset>
-				) }
 
-				{ error && (
-					<span className="field__message">
-						{ error.message?.toString() }
-					</span>
-				) }
-			</div>
-
-			{ ((!!options && options?.length > 0) && (!!selected && selected?.length > 0)) && (
-				<>
-					<ul className="field__selected">
-						{ selected.map(option => (
-							<li onClick={ onSelect } key={ `${option}-selected` } value={ `${option}` }>
-								<span>{ option }</span>
-
-							</li>
-						)) }
-					</ul>
-
-					{ onReset && <Button onClick={ onReset }>Clear All</Button> }
+					{ hasSelected && (
+						<ul className="field__results">
+							{ selected.sort().map(option => (
+								<li
+									className="field__tag"
+									onClick={ onSelect }
+									key={ `${option}-selected` }
+									tabIndex={ 0 }
+								>
+									<span>{ option }</span>
+									<HiX />
+								</li>
+							)) }
+						</ul>
+					) }
 				</>
 			) }
 		</div>

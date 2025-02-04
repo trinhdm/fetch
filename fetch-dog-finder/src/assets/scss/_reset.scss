@@ -63,12 +63,6 @@ ul {
 	position: relative;
 }
 
-menu,
-ol,
-ul {
-	list-style-type: none;
-}
-
 dialog,
 hr {
 	border: 0;
@@ -80,20 +74,6 @@ section {
 	height: 100%;
 	margin: auto;
 	width: 100%;
-}
-
-li,
-summary {
-	&::marker {
-		content: '';
-	}
-}
-
-aside {
-	align-items: center;
-	display: flex;
-	position: absolute;
-	z-index: 25;
 }
 
 dialog {
@@ -108,6 +88,19 @@ hr {
 	box-sizing: content-box;
 	height: 0;
 	pointer-events: none;
+}
+
+menu,
+ol,
+ul {
+	list-style-type: none;
+}
+
+li,
+summary {
+	&::marker {
+		content: '';
+	}
 }
 
 li {
@@ -345,7 +338,7 @@ legend {
 }
 
 :disabled,
-[data-disabled]
+[data-disabled],
 [disabled] {
 	cursor: pointer;
 	pointer-events: none;
@@ -355,7 +348,6 @@ legend {
 	scroll-margin-block: 5ex;
 }
 
-[aria-hidden],
 [hidden] {
 	display: none;
 }

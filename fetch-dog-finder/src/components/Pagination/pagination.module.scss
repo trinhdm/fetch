@@ -1,0 +1,41 @@
+.pagination {
+	$base: &;
+
+	display: flex;
+	justify-content: space-between;
+
+	&__current,
+	&__indicator {
+		align-items: center;
+		column-gap: $button-gap;
+		display: flex;
+	}
+
+	&__select {
+		position: relative;
+
+		&:hover #{$base}__dropdown {
+			opacity: 1;
+			pointer-events: all;
+		}
+	}
+
+	&__current {
+		min-width: 3.75rem;
+		justify-content: flex-end;
+	}
+
+	&__dropdown {
+		font-size: $label-font-size;
+		max-height: 4rem;
+		max-width: max-content;
+		overflow-y: auto;
+		padding-right: $button-gap;
+		right: 0;
+		text-align: center;
+	}
+
+	&__next svg {
+		rotate: 180deg;
+	}
+}

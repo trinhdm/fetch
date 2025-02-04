@@ -87,9 +87,9 @@ const Field = ({
 
 				{ !!(hasOptions && hasSelected && onReset) && (
 					<Button
-						as="text"
 						className="field__button"
 						onClick={ onReset }
+						variant="text"
 					>
 						Clear All
 					</Button>

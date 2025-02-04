@@ -6,61 +6,101 @@
 	position: relative;
 	text-align: center;
 
-	&::after {
-		background-color: $color-tertiary;
-		display: block;
-		height: 100%;
-		left: 0;
-		position: absolute;
-		top: 0;
-		transition: translate .25s ease-in;
-		translate: 100%;
+	button,
+	input[type="submit"] {
+		align-items: center;
+		background-color: transparent;
+		column-gap: .375rem;
+		display: flex;
+		font-size: .875rem;
+		line-height: 1;
+		position: relative;
 		width: 100%;
-		z-index: 1;
+		z-index: 2;
 	}
 
-	&:not(#{$base}--text) {
+	&--outline,
+	&--solid {
+		button,
+		input[type="submit"] {
+			padding: .75rem 1rem;
+		}
+	}
+
+	&--inline {
+		display: inline-block;
+	}
+
+	&--solid {
 		background-color: $color-secondary;
 
+		button,
+		input[type="submit"] {
+			color: $color-white;
+		}
+
 		&::after {
+			background-color: $color-tertiary;
 			content: '';
+			display: block;
+			height: 100%;
+			left: 0;
+			position: absolute;
+			top: 0;
+			transition: translate .25s ease-in;
+			translate: 100%;
+			width: 100%;
+			z-index: 1;
 		}
 
 		&:is(:focus-within, :hover)::after {
 			translate: 0;
 		}
+	}
+
+	&--outline {
+		background-color: transparent;
+		border: .0625rem solid $color-secondary;
+		transition: border-color .25s ease-in;
 
 		button,
 		input[type="submit"] {
-			color: $color-white;
-			padding: .5rem 1rem;
+			color: $color-secondary;
+			transition: color .25s ease-in;
 		}
-	}
-
-	&:is(#{$base}--text) {
-		line-height: 1rem;
 
 		&:is(:focus-within, :hover) {
+			border-color: $color-tertiary;
+
 			button,
 			input[type="submit"] {
 				color: $color-tertiary;
 			}
 		}
+	}
 
+	&--icon {
 		button,
 		input[type="submit"] {
 			color: $color-primary;
-			display: inline-block;
-			transition: color .25s ease-in;
+			font-size: 1.5rem;
 		}
 	}
 
-	button,
-	input[type="submit"] {
-		background-color: transparent;
-		font-size: .875rem;
-		position: relative;
-		width: 100%;
-		z-index: 2;
+	&--text {
+		line-height: 1rem;
+
+		button,
+		input[type="submit"] {
+			color: $color-tertiary;
+			transition: color .25s ease-in;
+		}
+
+		&:is(:focus-within, :hover) {
+			button,
+			input[type="submit"] {
+				color: $color-primary;
+			}
+		}
 	}
 }

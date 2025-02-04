@@ -1,8 +1,15 @@
 .form {
 	display: flex;
-	flex-direction: column;
 	row-gap: $row-gap-lg;
 	text-align: left;
+
+	&#login {
+		flex-direction: column;
+	}
+
+	&#search {
+		column-gap: 2rem;
+	}
 
 	&__button {
 		margin-top: $row-gap-lg;

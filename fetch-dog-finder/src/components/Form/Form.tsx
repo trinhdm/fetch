@@ -1,13 +1,20 @@
-import { useForm, FormProvider } from 'react-hook-form'
+import {
+	Children,
+	cloneElement,
+	isValidElement,
+	type FunctionComponent,
+	type ReactElement,
+} from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { Button } from '@components/Button'
-import { Field, type FieldValidations } from '@components/Field'
+import type { FieldProps, FieldValidations } from '@components/Field'
 import type { FormProps, FormValues } from './Form.types'
 import './form.module.scss'
 
 const Form = ({
 	buttonText,
 	children,
-	fields,
+	id,
 	onSubmit = () => {},
 	role = 'form',
  }: FormProps) => {
@@ -40,25 +47,30 @@ const Form = ({
 		return validation
 	}
 
-	if (!fields?.length) return
+	if (!children)
+		return <></>
 
 	return (
 		<FormProvider { ...methods }>
-			{ children }
-
 			<form
-				noValidate={ role === 'search' }
 				className="form"
+				id={ id }
+				noValidate={ role === 'search' }
 				onSubmit={ handleSubmit(onSubmit) }
 				{ ...(role === 'search' ? { role } : {}) }
 			>
-				{ fields.map(field => (
-					<Field
-						{ ...field }
-						key={ field.name }
-						onValidation={ handleValidation }
-					/>
-				)) }
+				{ Children.map(children, child => {
+					if (!isValidElement(child))
+						return null
+
+					const childEl = child as ReactElement<FieldProps>
+					const { type: childType } = childEl,
+						  { displayName } = childType as FunctionComponent
+
+					return displayName === 'Field'
+						? cloneElement(childEl, { onValidation: handleValidation })
+						: child
+				}) }
 
 				<input
 					hidden

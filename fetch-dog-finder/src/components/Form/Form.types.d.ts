@@ -1,5 +1,4 @@
 import type { AriaRole, ReactNode } from 'react'
-import type { FieldGroup } from '@components/Field'
 
 
 type FormValues = {
@@ -7,14 +6,25 @@ type FormValues = {
 	email: string
 }
 
-interface FormProps {
-	buttonText?: string
+interface FormBase {
 	children?: ReactNode
-	fields: FieldGroup
-	hideLabels?: boolean
-	onSubmit?: (event: FormEvent<HTMLFormElement, FormEvent>) => void
-	role?: Extract<AriaRole, 'form' | 'search'>
+	// hideLabels?: boolean
+	id: string
 }
+
+interface FormSubmitProps extends FormBase {
+	buttonText?: string
+	onSubmit?: (event: FormEvent<HTMLFormElement, FormEvent>) => void
+	role?: Extract<AriaRole, 'form'>
+}
+
+interface FormSearchProps extends FormBase {
+	buttonText?: never
+	onSubmit?: never
+	role: Extract<AriaRole, 'search'>
+}
+
+type FormProps = FormSearchProps | FormSubmitProps
 
 
 export type {

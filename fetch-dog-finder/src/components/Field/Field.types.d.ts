@@ -15,33 +15,52 @@ type FieldValidations = Exclude<FieldTypes,
 >
 
 type FieldChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>
+
+type FieldChangeHandler = (event: FieldChangeEvent) => void
 type FieldSelectHandler = (event: FieldChangeEvent | React.MouseEvent<HTMLElement, MouseEvent>) => void
 
 type FieldBase = {
 	name: string
-	onChange?: (event: FieldChangeEvent) => void
-	type: FieldTypes
+	onChange?: FieldChangeHandler
+	placeholder?: string
+	// type: FieldTypes
 }
 
-type InputValues = FieldBase & {
+type InputValues = {
+	max?: never
+	min?: never
 	onReset?: never
 	onSelect?: never
 	options?: never
 	selected?: never
+	type: Extract<FieldTypes, 'email' | 'text'>
 }
 
-type SelectValues = FieldBase & {
+type NumberValues = {
+	max?: number
+	min?: number
+	onReset?: never
+	onSelect?: never
+	options?: never
+	selected?: never
+	type: Extract<FieldTypes, 'number'>
+}
+
+type SelectValues = {
+	max?: never
+	min?: never
 	onReset?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 	onSelect: FieldSelectHandler
-	options: number[] | string[]
-	selected: (number[] | string[]) | undefined
+	options: (number | string)[]
+	selected?: (number | string)[]
+	type: Extract<FieldTypes, 'search'>
 }
 
-type FieldValues =
+type FieldValues = FieldBase & (
 	| InputValues
+	| NumberValues
 	| SelectValues
-
-type FieldGroup = FieldValues[]
+)
 
 
 type ValidationPattern = {
@@ -50,16 +69,16 @@ type ValidationPattern = {
 }
 
 type FieldProps = FieldValues & {
-	hideLabel?: boolean
-	onValidation: (field: FieldValidations) => {
+	onValidation?: (field: FieldValidations) => {
 		required: string;
 		pattern: ValidationPattern
 	}
+	showLabel?: boolean
 }
 
 
 export type {
-	FieldGroup,
+	FieldChangeHandler,
 	FieldProps,
 	FieldSelectHandler,
 	FieldValidations,

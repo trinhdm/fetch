@@ -31,6 +31,8 @@ const Directory = () => {
 		breeds: [],
 	})
 
+	const resetBreeds = () => setFilter(state => ({ ...state, breeds: [] }))
+
 	const updateBreeds: FieldSelectHandler = (event) => {
 		const { target, type } = event
 
@@ -67,30 +69,10 @@ const Directory = () => {
 		})
 	}
 
-	const resetBreeds = () => setFilter(state => ({ ...state, breeds: [] }))
 
 	const changePage = (num: number) => {
 		setPage(state => (state += num))
 	}
-
-	const searchFields: FieldGroup = useMemo(() => ([
-		{
-			name: 'breed',
-			onReset: resetBreeds,
-			onSelect: updateBreeds,
-			options: breeds,
-			selected: filter.breeds,
-			type: 'select',
-		},
-		{
-			name: 'max',
-			type: 'number',
-		},
-		{
-			name: 'min',
-			type: 'number',
-		},
-	]), [breeds, filter])
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -150,7 +132,7 @@ const Directory = () => {
 	// }, [dogs])
 
 	return (
-		<main className="container">
+		<div className="container">
 			<header>
 				<div>
 					<h1>Fetch</h1>
@@ -164,19 +146,62 @@ const Directory = () => {
 					<Button>Find Your Match</Button>
 				</div>
 			</header>
-			{/* <nav>
-				<div>Grid View</div>
-				<div>Sort By</div>
-			</nav> */}
 			<div className="directory">
 				<aside>
-					<h2>Filter By</h2>
-					<Form
-						fields={ searchFields }
-						hideLabels={ false }
-						role="search"
-					/>
+					<Form id="search" role="search">
+						<div>
+							<h2>Sort by</h2>
+							<Field
+								name="sort"
+								onChange={ (event) => console.log(event.target.value) }
+								options={ ['age', 'name', 'breed'] }
+								type="radio"
+							/>
+							<Field
+								name="sortOrder"
+								onChange={ (event) => console.log(event.target.value) }
+								options={ ['asc', 'desc'] }
+								type="radio"
+							/>
+						</div>
+						<div>
+							<h2>Filter By</h2>
+							<div>
+								<h3>Age</h3>
+								<div>
+									<Field
+										name="ageMin"
+										min={ 0 }
+										onChange={ (event) => console.log(event.target.value) }
+										placeholder="Min"
+										type="number"
+									/>
+									<Field
+										name="ageMax"
+										min={ 0 }
+										onChange={ (event) => console.log(event.target.value) }
+										placeholder="Max"
+										type="number"
+									/>
+								</div>
+							</div>
+							<div>
+								<h3>Breed</h3>
+								<Field
+									multiple
+									name="breed"
+									placeholder="Search Breeds"
+									onReset={ resetBreeds }
+									onSelect={ updateBreeds }
+									options={ breeds }
+									selected={ filter.breeds }
+									type="search"
+								/>
+							</div>
+						</div>
+					</Form>
 				</aside>
+
 				<section>
 					{ dogs.map(({
 						age,

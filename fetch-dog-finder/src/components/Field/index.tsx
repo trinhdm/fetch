@@ -1,6 +1,6 @@
 export { Field } from './Field'
 export type {
-	FieldGroup,
+	FieldProps,
 	FieldSelectHandler,
 	FieldValidations,
 } from './Field.types'

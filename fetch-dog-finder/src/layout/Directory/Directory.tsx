@@ -4,6 +4,7 @@ import { fetchBreeds, retrieveDogs, fetchMatch, fetchDogs } from '@utils/service
 import { Button } from '@components/Button'
 import { Form } from '@components/Form'
 import type { FieldGroup, FieldSelectHandler } from '@components/Field'
+import { Header } from '@components/Header'
 
 
 type NonNegative<T extends number> =
@@ -30,6 +31,9 @@ const Directory = () => {
 	const [filter, setFilter] = useState<FilterValues>({
 		breeds: [],
 	})
+	const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false)
+
+	const handleSidebar = () => setSidebarOpen(state => !state)
 
 	const resetBreeds = () => setFilter(state => ({ ...state, breeds: [] }))
 
@@ -132,22 +136,9 @@ const Directory = () => {
 	// }, [dogs])
 
 	return (
-		<div className="container">
-			<header>
-				<div>
-					<h1>Fetch</h1>
-				</div>
-				<div className="settings">
-					Welcome, { name }
-					<ul>
-						<li>Favorites</li>
-						<li>Logout</li>
-					</ul>
-					<Button>Find Your Match</Button>
-				</div>
-			</header>
-			<div className="directory">
-				<aside>
+		<main className="container">
+			<Header handleSidebar={ handleSidebar } />
+
 					<Form id="search" role="search">
 						<div>
 							<h2>Sort by</h2>
@@ -200,7 +191,6 @@ const Directory = () => {
 							</div>
 						</div>
 					</Form>
-				</aside>
 
 				<section>
 					{ dogs.map(({
@@ -220,9 +210,8 @@ const Directory = () => {
 							</div>
 						)
 					}) }
-				</div>
 			</div>
-		</div>
+		</main>
 	)
 }
 

@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { HiX } from 'react-icons/hi'
 import { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { capitalize, slugify } from '@utils/helpers'
 import { Button } from '@components/Button'
 import type { FieldProps, FieldValidations } from './Field.types'
 import './field.module.scss'
@@ -26,12 +27,6 @@ const Field = ({
 	const hasOptions = !!options && options?.length > 0,
 		hasSelected = !!selected && selected?.length > 0
 
-	const capitalize = (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
-	const slugify = (str: string) => str.toLowerCase()
-										.replace(/^\s+|\s+$/g, '')
-										.replace(/[^a-z0-9 -]/g, '')
-										.replace(/\s+/g, '-')
-										.replace(/-+/g, '-')
 
 	const validateField = () => register(name, onValidation(type as FieldValidations))
 	const handleOnChange = ({ target }) => setValue(target.value)

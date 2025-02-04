@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import clsx from 'clsx'
+import { BiX } from 'react-icons/bi'
+import { useEffect, useState } from 'react'
 import { useUserContext } from '@providers/UserProvider'
 import { fetchBreeds, retrieveDogs, fetchMatch, fetchDogs } from '@utils/services'
 import { Button } from '@components/Button'
 import { Form } from '@components/Form'
-import type { FieldGroup, FieldSelectHandler } from '@components/Field'
+import { Field, type FieldSelectHandler } from '@components/Field'
 import { Header } from '@components/Header'
 
 
@@ -28,14 +30,13 @@ const Directory = () => {
 	// const [favoriteDogs, setFavoriteDogs] = useState<string[]>([])
 	const [page, setPage] = useState(1)
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
-	const [filter, setFilter] = useState<FilterValues>({
-		breeds: [],
-	})
+	const [filter, setFilter] = useState<FilterValues>({})
 	const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false)
 
 	const handleSidebar = () => setSidebarOpen(state => !state)
 
 	const resetBreeds = () => setFilter(state => ({ ...state, breeds: [] }))
+	const resetFilters = () => setFilter({})
 
 	const updateBreeds: FieldSelectHandler = (event) => {
 		const { target, type } = event
@@ -59,17 +60,26 @@ const Directory = () => {
 		let entry = { breeds: [value] }
 
 		setFilter(state => {
-			const { breeds: prevBreeds } = state
-			const breedSet = new Set(prevBreeds)
+			const prevState = state
 
-			if (checked)
-				breedSet.add(value)
-			else
-				breedSet.delete(value)
+			if (Object.hasOwn(state, 'breeds')) {
+				const { breeds: prevBreeds } = state
+				const breedSet = new Set(prevBreeds)
 
-			entry = { breeds: [...breedSet] }
+				if (checked)
+					breedSet.add(value)
+				else
+					breedSet.delete(value)
 
-			return { ...state, ...entry }
+				if (breedSet.size) {
+					entry = { breeds: [...breedSet] }
+				} else {
+					delete prevState.breeds
+					entry = {}
+				}
+			}
+
+			return { ...prevState, ...entry }
 		})
 	}
 
@@ -135,12 +145,30 @@ const Directory = () => {
 	// 	matchData()
 	// }, [dogs])
 
+	const sidebarClasses = clsx({
+		overlay: isSidebarOpen,
+	})
+
+
 	return (
 		<main className="container">
 			<Header handleSidebar={ handleSidebar } />
 
+			<aside className={ sidebarClasses }>
+				<nav className="sidebar">
+					<header className="sidebar__header">
+						<h2>Filter & Sort</h2>
+						{ Object.values(filter).length > 0 && (
+							<Button onClick={ resetFilters } variant="text">
+								Reset All
+							</Button>
+						) }
+						<Button onClick={ handleSidebar } variant="icon">
+							<BiX />
+						</Button>
+					</header>
 					<Form id="search" role="search">
-						<div>
+						{/* <div>
 							<h2>Sort by</h2>
 							<Field
 								name="sort"
@@ -154,43 +182,43 @@ const Directory = () => {
 								options={ ['asc', 'desc'] }
 								type="radio"
 							/>
-						</div>
+						</div> */}
+						<h3>Filter By</h3>
 						<div>
-							<h2>Filter By</h2>
+							<h4>Age</h4>
 							<div>
-								<h3>Age</h3>
-								<div>
-									<Field
-										name="ageMin"
-										min={ 0 }
-										onChange={ (event) => console.log(event.target.value) }
-										placeholder="Min"
-										type="number"
-									/>
-									<Field
-										name="ageMax"
-										min={ 0 }
-										onChange={ (event) => console.log(event.target.value) }
-										placeholder="Max"
-										type="number"
-									/>
-								</div>
-							</div>
-							<div>
-								<h3>Breed</h3>
 								<Field
-									multiple
-									name="breed"
-									placeholder="Search Breeds"
-									onReset={ resetBreeds }
-									onSelect={ updateBreeds }
-									options={ breeds }
-									selected={ filter.breeds }
-									type="search"
+									name="ageMin"
+									min={ 0 }
+									onChange={ (event) => console.log(event.target.value) }
+									placeholder="Min"
+									type="number"
+								/>
+								<Field
+									name="ageMax"
+									min={ 0 }
+									onChange={ (event) => console.log(event.target.value) }
+									placeholder="Max"
+									type="number"
 								/>
 							</div>
 						</div>
+						<div>
+							<h4>Breed</h4>
+							<Field
+								multiple
+								name="breed"
+								placeholder="Search Breeds"
+								onReset={ resetBreeds }
+								onSelect={ updateBreeds }
+								options={ breeds }
+								selected={ filter.breeds }
+								type="search"
+							/>
+						</div>
 					</Form>
+				</nav>
+			</aside>
 
 				<section>
 					{ dogs.map(({

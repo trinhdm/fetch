@@ -1,12 +1,15 @@
 import clsx from 'clsx'
-import { BiX } from 'react-icons/bi'
+import { BiArrowBack, BiExpandVertical, BiX } from 'react-icons/bi'
 import { useEffect, useState } from 'react'
-import { useUserContext } from '@providers/UserProvider'
 import { fetchBreeds, retrieveDogs, fetchMatch, fetchDogs } from '@utils/services'
 import { Button } from '@components/Button'
-import { Form } from '@components/Form'
-import { Field, type FieldSelectHandler } from '@components/Field'
 import { Header } from '@components/Header'
+import { Form } from '@components/Form'
+import {
+	Field,
+	type FieldChangeHandler,
+	type FieldSelectHandler,
+} from '@components/Field'
 
 
 type NonNegative<T extends number> =
@@ -23,16 +26,18 @@ interface FilterValues {
 }
 
 const Directory = () => {
-	const { name } = useUserContext()
 
 	const [breeds, setBreeds] = useState<string[]>([])
 	const [dogs, setDogs] = useState<Dog[]>([])
 	// const [favoriteDogs, setFavoriteDogs] = useState<string[]>([])
 	const [page, setPage] = useState(1)
+	const [totalPages, setTotalPages] = useState<number>(0)
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
 	const [filter, setFilter] = useState<FilterValues>({})
 	const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false)
 
+
+	const changePageTo = (target: number) => setPage(target)
 	const handleSidebar = () => setSidebarOpen(state => !state)
 
 	const resetBreeds = () => setFilter(state => ({ ...state, breeds: [] }))
@@ -83,9 +88,13 @@ const Directory = () => {
 		})
 	}
 
+	const updateAge: FieldChangeHandler = (event) => {
+		const { target: { name, value } } = event
 
-	const changePage = (num: number) => {
-		setPage(state => (state += num))
+		setFilter(state => {
+			const entry = { [`${name}`]: value }
+			return { ...state, ...entry }
+		})
 	}
 
 	useEffect(() => {
@@ -114,11 +123,14 @@ const Directory = () => {
 			try {
 				const {
 					resultIds: ids,
-					// total,
+					total,
 				} = await fetchDogs(query)
 
-				const list = await retrieveDogs(ids)
+				const list = await retrieveDogs(ids),
+					maxPages = Math.ceil(total/25)
+
 				setDogs(list)
+				setTotalPages(maxPages)
 			} catch (error) {
 				console.log(error)
 			}
@@ -238,6 +250,57 @@ const Directory = () => {
 							</div>
 						)
 					}) }
+				<section>
+					<nav className="pagination">
+						<Button
+							className="pagination__prev"
+							disabled={ page === 1 }
+							onClick={ () => changePageTo(page - 1) }
+							variant="outline"
+						>
+							<BiArrowBack />
+							Previous
+						</Button>
+
+						<span className="pagination__indicator">
+							{/* <span className="pagination__label">
+								Page:
+							</span> */}
+							<span className="pagination__select">
+								<span className="pagination__current">
+									{ page }
+									<BiExpandVertical />
+								</span>
+
+								<ul className="dropdown pagination__dropdown">
+									{ Array.from(Array(totalPages).keys()).map(pgNum => (
+										<li className="dropdown__item" key={ `page-${pgNum}` }>
+											<span onClick={ () => changePageTo(pgNum + 1) }>
+												{ pgNum + 1 }
+											</span>
+										</li>
+									)) }
+								</ul>
+							</span>
+
+							<span>/</span>
+
+							<span className="pagination__total">
+								{ totalPages }
+							</span>
+						</span>
+
+						<Button
+							className="pagination__next"
+							disabled={ page === totalPages }
+							onClick={ () => changePageTo(page + 1) }
+							variant="outline"
+						>
+							Next
+							<BiArrowBack />
+						</Button>
+					</nav>
+				</section>
 			</div>
 		</main>
 	)

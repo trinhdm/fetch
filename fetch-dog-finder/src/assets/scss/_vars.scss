@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
-
 $-font-lexend: Lexend, serif;
 
 $font-primary: $-font-lexend;
@@ -16,6 +14,8 @@ $-color-orange: #FFA900;
 $-color-purple-dark: #300D38;
 $-color-purple-light: #890A74;
 $-color-red: #DC3545;
+$-color-teal-light: #0CA3B7;
+$-color-teal-dark: #138A75;
 $-color-yellow: #FFDF02;
 
 $color-black: #000;
@@ -28,12 +28,38 @@ $color-quaternary: $-color-yellow;
 
 $color-danger: $-color-red;
 $color-focus-danger: $-color-hot-pink;
+$color-disabled: $-color-gray-purple;
 
 $color-text: #090325;
 $color-header: $color-primary;
 
-$color-field: $-color-gray-dark;
+$color-field: #{$-color-gray-dark}E6;
+$color-checkbox: $-color-gray-purple;
 $color-placeholder: $-color-silver;
 
+$color-tag: $-color-teal-light;
 
+$color-scrollbar-light: $-color-silver transparent;
+$color-scrollbar-dark: $color-primary transparent;
+
+
+$gutter-lg: 1.25rem;
+
+$section-gap-lg: 1.125rem;
+$column-gap-lg: 1.25rem;
 $row-gap-lg: .75rem;
+
+$button-gap: .375rem;
+$button-font-size: .875rem;
+
+$field-font-size: .875rem;
+$label-font-size: .75rem;
+
+
+$width-xs: 30rem;
+$width-sm: 37.5rem;
+$width-md: 48rem;
+$width-lg: 67.5rem;
+$width-xl: 80rem;
+
+$container-max-width: 80rem;

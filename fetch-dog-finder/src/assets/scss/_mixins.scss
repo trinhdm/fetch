@@ -1,0 +1,9 @@
+@mixin breakpoint($breakpoint: $width-sm) {
+	// @if (unit($breakpoint) == 'rem') {
+	// 	$breakpoint: strip-unit($breakpoint) + 'em'; // Safari can't handle rem media queries
+	// }
+
+	@media (min-width: #{$breakpoint}) {
+		@content;
+	}
+}

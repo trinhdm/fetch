@@ -33,7 +33,7 @@ export default defineConfig({
 		},
 		preprocessorOptions: {
 			scss: {
-				additionalData: `@use '@assets/scss/vars' as *;`,
+				additionalData: `@use '@assets/scss/utils' as *;`,
 				includePaths: ['node_modules'],
 			},
 		},

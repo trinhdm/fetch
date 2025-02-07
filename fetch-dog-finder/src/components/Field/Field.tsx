@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { HiX } from 'react-icons/hi'
+import { BiSearch, BiX } from 'react-icons/bi'
 import { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { capitalize, slugify } from '@utils/helpers'
@@ -12,12 +12,14 @@ import type {
 import './field.module.scss'
 
 const Field = ({
+	multiple = false,
 	name,
 	onChange,
 	onReset,
 	onSelect,
 	onValidation,
 	options,
+	placeholder,
 	selected,
 	showLabel = false,
 	type = 'text',
@@ -45,12 +47,13 @@ const Field = ({
 	)
 
 	const error = errors[name],
-		label = `${name}-label`,
-		placeholder = capitalize(name)
+		labelledby = `${name}-label`,
+		placehold = placeholder ?? capitalize(name),
+		selection = multiple ? "checkbox" : "radio"
 
 	const ariaLabels = showLabel
-		? { 'aria-labelledby': label }
-		: { 'aria-label': placeholder }
+		? { 'aria-labelledby': labelledby }
+		: { 'aria-label': placehold }
 
 	const handlers = hasOnChange || hasOptions
 		? { onChange: handleOnChange }
@@ -68,16 +71,16 @@ const Field = ({
 					<label
 						className="field__label"
 						htmlFor={ name }
-						id={ label }
+						id={ labelledby }
 					>
-						{ placeholder }
+						{ placehold }
 					</label>
 				) }
 
 				<input
-					autoComplete="on"
 					className="field__input"
-					placeholder={ placeholder }
+					name={ name }
+					placeholder={ placehold }
 					tabIndex={ 0 }
 					type={ type }
 					{ ...ariaLabels }
@@ -85,13 +88,15 @@ const Field = ({
 					{ ...props }
 				/>
 
+				{ type === 'search' && <BiSearch className="field__icon" /> }
+
 				{ !!(hasOptions && hasSelected && onReset) && (
 					<Button
 						className="field__button"
 						onClick={ onReset }
 						variant="text"
 					>
-						Clear All
+						Clear Tags
 					</Button>
 				) }
 
@@ -106,8 +111,8 @@ const Field = ({
 				<>
 					<fieldset className="field__selection">
 						{ showLabel && (
-							<legend className="field__label" id={ label }>
-								{ placeholder }
+							<legend className="field__label" id={ labelledby }>
+								{ placehold }
 							</legend>
 						) }
 
@@ -121,14 +126,14 @@ const Field = ({
 								return (
 									<li className="field__item" key={ option }>
 										<input
-											className="field__checkbox"
-											checked={ selected?.includes(opt) }
+											checked={ selected?.includes(opt) || false }
+											className={ `field__${selection}` }
 											id={ option }
 											name={ fieldset }
 											onChange={ onSelect }
 											tabIndex={ 0 }
-											type="checkbox"
-											value={ opt }
+											type={ selection }
+											value={ opt || '' }
 										/>
 
 										<label htmlFor={ option }>
@@ -150,7 +155,7 @@ const Field = ({
 									tabIndex={ 0 }
 								>
 									<span>{ option }</span>
-									<HiX />
+									<BiX />
 								</li>
 							)) }
 						</ul>

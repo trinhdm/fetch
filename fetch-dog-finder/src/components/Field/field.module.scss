@@ -1,18 +1,14 @@
 .field {
 	$base: &;
 
-	font-size: .875rem;
+	font-size: $field-font-size;
 	line-height: 1;
 	position: relative;
 
 	&:has(fieldset) {
-		display: grid;
-		gap: $row-gap-lg calc($row-gap-lg * .5);
-		grid-template-areas:
-			"field field"
-			"menu results";
-		grid-template-columns: 1fr 1fr;
-		max-width: 34rem;
+		display: flex;
+		flex-direction: column;
+		row-gap: $section-gap-lg;
 	}
 
 	&--error #{$base}__container {
@@ -26,17 +22,16 @@
 	}
 
 	&__container {
-		grid-area: field;
 		position: relative;
 
 		&::before,
 		&::after {
+			bottom: 0;
 			content: '';
 			display: block;
 			height: .1px;
-			position: absolute;
-			bottom: 0;
 			left: 0;
+			position: absolute;
 			transition: opacity .2s ease-in;
 			width: 100%;
 		}
@@ -58,6 +53,58 @@
 		padding: $row-gap-lg 0;
 	}
 
+	&__button button,
+	&__label,
+	&__message {
+		font-size: $label-font-size;
+	}
+
+	&__button,
+	&__icon {
+		bottom: 0;
+		margin: auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	&__icon,
+	&__message {
+		display: block;
+		pointer-events: none;
+		user-select: none;
+	}
+
+	&__button {
+		margin-right: calc(#{$field-font-size} + #{$button-gap});
+	}
+
+	&__icon {
+		color: $color-placeholder;
+	}
+
+	&__label {
+		color: $color-text;
+		display: block;
+		margin-bottom: $button-gap;
+	}
+
+	&__message {
+		color: $color-danger;
+		inset: auto 0 0 auto;
+		line-height: $field-font-size;
+		position: absolute;
+		z-index: 0;
+	}
+
+	&__honeypot {
+		font-size: 0;
+		height: 0;
+		line-height: 0;
+		opacity: 0;
+		position: absolute;
+	}
+
 	&__input,
 	&__select {
 		background-color: transparent;
@@ -66,16 +113,9 @@
 		width: 100%;
 	}
 
-	&__button {
-		bottom: 0;
-		margin: auto;
-		position: absolute;
-		right: 0;
-		top: 0;
-	}
-
 	&__checkbox {
 		-webkit-appearance: none;
+		appearance: none;
 		background-color: $color-white;
 		background: none;
 		border-radius: .125rem;
@@ -83,7 +123,6 @@
 		color: $color-tertiary;
 		flex-grow: 0;
 		height: .625rem;
-		margin: -0.0625rem 0 0 0;
 		outline: 0;
 		transition: background .25s;
 		vertical-align: middle;
@@ -112,37 +151,15 @@
 		}
 
 		& + label {
-			padding-left: .375rem;
+			padding-left: $button-gap;
 		}
-	}
-
-	&__honeypot {
-		font-size: 0;
-		height: 0;
-		line-height: 0;
-		opacity: 0;
-		position: absolute;
-	}
-
-	&__message {
-		color: $color-danger;
-		display: block;
-		font-size: .75rem;
-		font-style: italic;
-		inset: auto 0 0 auto;
-		line-height: .875rem;
-		pointer-events: none;
-		position: absolute;
-		user-select: none;
-		z-index: 0;
 	}
 
 	&__selection {
 		background-color: $color-white;
 		border: .1px solid $color-secondary;
-		grid-area: menu;
-		margin-inline: -.2px 0;
-		padding: $row-gap-lg calc($row-gap-lg * .5) $row-gap-lg $row-gap-lg;
+		margin-inline: -.1px 0;
+		padding: $row-gap-lg $button-gap $row-gap-lg $row-gap-lg;
 	}
 
 	&__list,
@@ -154,16 +171,10 @@
 
 	&__list {
 		display: flex;
-		height: 14.25rem;
 		flex-direction: column;
+		height: 14.25rem;
 		padding-right: $row-gap-lg;
 		row-gap: .25rem;
-	}
-
-	&__results {
-		height: 15.875rem;
-		grid-area: results;
-		padding: $row-gap-lg;
 	}
 
 	&__item,
@@ -186,6 +197,9 @@
 	}
 
 	&__item {
+		align-items: center;
+		display: flex;
+
 		&:is(:focus-within, :hover) {
 			color: $color-primary;
 
@@ -200,10 +214,10 @@
 		background-color: #{$color-tag}40;
 		border-radius: 1rem;
 		color: $color-tag;
-		column-gap: .25rem;
+		column-gap: .125rem;
 		display: inline-flex;
-		font-size: .75rem;
-		margin: 0 .25rem .375rem 0;
+		font-size: $label-font-size;
+		margin: 0 .5rem $button-gap 0;
 		padding: .375rem .5rem;
 		transition: background-color .25s ease-in-out,
 			color .25s ease-in-out;
@@ -211,11 +225,6 @@
 		&:is(:focus, :hover) {
 			background-color: #{$color-tag}E6;
 			color: $color-white;
-		}
-
-		svg {
-			height: .625rem;
-			width: .625rem;
 		}
 	}
 

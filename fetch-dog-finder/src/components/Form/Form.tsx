@@ -65,7 +65,7 @@ const Form = ({
 
 					const childEl = child as ReactElement<FieldProps>
 					const { type: childType } = childEl,
-						  { displayName } = childType as FunctionComponent
+						{ displayName } = childType as FunctionComponent
 
 					return displayName === 'Field'
 						? cloneElement(childEl, { onValidation: handleValidation })

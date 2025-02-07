@@ -14,7 +14,7 @@ type FieldValidations = Exclude<FieldTypes,
 	| 'select'
 >
 
-type FieldChangeEvent = ChangeEvent<HTMLInputElement | HTMLSelectElement>
+type FieldChangeEvent = ChangeEvent<HTMLInputElement>
 
 type FieldChangeHandler = (event: FieldChangeEvent) => void
 type FieldSelectHandler = (event: FieldChangeEvent | React.MouseEvent<HTMLElement, MouseEvent>) => void
@@ -27,6 +27,7 @@ type FieldBase = {
 }
 
 type InputValues = {
+	autoComplete?: 'on' | 'off'
 	max?: never
 	min?: never
 	onReset?: never
@@ -37,6 +38,7 @@ type InputValues = {
 }
 
 type NumberValues = {
+	autoComplete?: never
 	max?: number
 	min?: number
 	onReset?: never
@@ -47,6 +49,7 @@ type NumberValues = {
 }
 
 type SelectValues = {
+	autoComplete?: never
 	max?: never
 	min?: never
 	onReset?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void

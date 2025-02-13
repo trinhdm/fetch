@@ -1,14 +1,33 @@
+// ----------------------------------------------
+//	fonts: internal
+// ----------------------------------------------
+
 $-font-lexend: Lexend, serif;
+
+// ----------------------------------------------
+//	fonts: theme
+// ----------------------------------------------
 
 $font-primary: $-font-lexend;
 
-// internal
+$button-font-size: .875rem;
+$field-font-size: .875rem;
+$label-font-size: .75rem;
+
+$icon-size-sm: 1rem;
+$icon-size-lg: 1.125rem;
+
+// ----------------------------------------------
+//	colors: internal
+// ----------------------------------------------
+
 $-color-gray: #CED4DA;
 $-color-gray-dark: #343A40;
 $-color-gray-light: #F1ECE9;
 $-color-gray-purple: #C7C1E0;
 $-color-silver: #9CA3AF;
 
+$-color-pink: #ED6A7C;
 $-color-hot-pink: #F90075;
 $-color-orange: #FFA900;
 $-color-purple-dark: #300D38;
@@ -18,8 +37,12 @@ $-color-teal-light: #0CA3B7;
 $-color-teal-dark: #138A75;
 $-color-yellow: #FFDF02;
 
-$color-black: #000;
-$color-white: #FFF;
+// ----------------------------------------------
+//	colors: theme
+// ----------------------------------------------
+
+$color-black: #000000;
+$color-white: #FFFFFF;
 
 $color-primary: $-color-purple-dark;
 $color-secondary: $-color-purple-light;
@@ -32,29 +55,23 @@ $color-disabled: $-color-gray-purple;
 
 $color-text: #090325;
 $color-header: $color-primary;
+$color-divider: $-color-gray-light;
+
+$color-tag: $-color-teal-light;
 
 $color-field: #{$-color-gray-dark}E6;
 $color-checkbox: $-color-gray-purple;
 $color-placeholder: $-color-silver;
 
-$color-tag: $-color-teal-light;
+$color-heart-light: $-color-pink;
+$color-heart-dark: $-color-hot-pink;
 
 $color-scrollbar-light: $-color-silver transparent;
 $color-scrollbar-dark: $color-primary transparent;
 
-
-$gutter-lg: 1.25rem;
-
-$section-gap-lg: 1.125rem;
-$column-gap-lg: 1.25rem;
-$row-gap-lg: .75rem;
-
-$button-gap: .375rem;
-$button-font-size: .875rem;
-
-$field-font-size: .875rem;
-$label-font-size: .75rem;
-
+// ----------------------------------------------
+//	screen sizes
+// ----------------------------------------------
 
 $width-xs: 30rem;
 $width-sm: 37.5rem;
@@ -62,4 +79,28 @@ $width-md: 48rem;
 $width-lg: 67.5rem;
 $width-xl: 80rem;
 
+// ----------------------------------------------
+//	layout
+// ----------------------------------------------
+
 $container-max-width: 80rem;
+
+$gutter-lg: 1.25rem;
+
+$section-gap-lg: 1.125rem;
+
+$column-gap-lg: 1.25rem;
+$column-gap-sm: .625rem;
+
+$row-gap-lg: .75rem;
+
+$button-gap: .375rem;
+
+// ----------------------------------------------
+//	animations/transitions
+// ----------------------------------------------
+
+$transition-button: cubic-bezier(0, 1, 0, 1);
+$transition-cta: cubic-bezier(.46, .03, .52, .96);
+$transition-slide: cubic-bezier(.3, 0, 0, 1);
+

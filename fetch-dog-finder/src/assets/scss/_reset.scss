@@ -8,6 +8,8 @@
 *,
 *::before,
 *::after {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -25,7 +27,7 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-font-smoothing: antialiased;
 	-webkit-text-size-adjust: 100%;
-	line-height: 1.6;
+	line-height: 1.45;
 	margin: 0;
 	text-rendering: optimizeLegibility;
 }
@@ -242,6 +244,12 @@ summary {
 	display: flex;
 }
 
+button,
+input[type="submit"],
+summary {
+	cursor: pointer;
+}
+
 a,
 button {
 	background-color: transparent;
@@ -254,13 +262,8 @@ input {
 
 button,
 progress {
+	-webkit-appearance: none;
 	appearance: none;
-}
-
-button,
-input[type="submit"],
-summary {
-	cursor: pointer;
 }
 
 a {
@@ -318,17 +321,20 @@ legend {
 
 [type="number"]::-webkit-inner-spin-button,
 [type="number"]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	appearance: none;
 	height: auto;
+	margin: 0;
 }
 
 [type="search"] {
 	-webkit-appearance: textfield;
 	appearance: textfield;
-	outline-offset: -0.125rem;
 }
 
 [type="search"]::-webkit-search-decoration {
 	-webkit-appearance: none;
+	appearance: none;
 }
 
 ::-webkit-file-upload-button {

@@ -8,20 +8,24 @@ import './button.module.scss'
 
 const Button = ({
 	children,
+	color = 'secondary',
 	className,
-	inline = false,
+	disabled,
+	hideTextMobile = false,
 	onClick = () => {},
 	type = 'button',
 	variant = 'solid',
 }: ButtonProps) => {
-	const classNames = clsx({
+	const classes = clsx({
 		button: true,
-		'button--inline': inline,
-		[`${className}`]: className,
 		[`button--${variant}`]: variant,
+		[`button--${color}`]: color !== 'secondary',
+		'button--mobile': hideTextMobile,
+		[`${className}`]: className,
 	})
 
-	const props: Omit<ButtonSubmit | ButtonType, 'children'> = {
+	const props: Omit<ButtonProps, 'children'> = {
+		disabled,
 		onClick,
 		type,
 	}
@@ -29,14 +33,14 @@ const Button = ({
 	switch (type) {
 		case 'submit':
 			return (
-				<div className={ classNames }>
+				<div className={ classes }>
 					<input { ...props as ButtonSubmit } value={ children as string } />
 				</div>
 			)
 		case 'button':
 		default:
 			return (
-				<div className={ classNames }>
+				<div className={ classes }>
 					<button { ...props as ButtonType }>{ children }</button>
 				</div>
 			)

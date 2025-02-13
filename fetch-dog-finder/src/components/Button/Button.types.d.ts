@@ -2,7 +2,12 @@ import type { ReactNode } from 'react'
 
 interface ButtonBase {
 	className?: string
-	inline?: boolean
+	color?:
+		| 'primary'
+		| 'secondary'
+		| 'tertiary'
+	disabled?: boolean
+	hideTextMobile?: boolean
 	variant?:
 		| 'icon'
 		| 'outline'

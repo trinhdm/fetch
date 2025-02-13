@@ -1,7 +1,14 @@
+$-button-padding-sm: .625rem .875rem;
+$-button-padding-lg: .75rem 1rem;
+
 
 .button {
 	$base: &;
 
+	// border: .0625rem solid transparent;
+	font-size: $button-font-size;
+	line-height: 1;
+	min-height: fit-content;
 	overflow: hidden;
 	position: relative;
 	text-align: center;
@@ -10,29 +17,37 @@
 	input[type="submit"] {
 		align-items: center;
 		background-color: transparent;
-		column-gap: .375rem;
+		column-gap: $button-gap;
 		display: flex;
-		font-size: .875rem;
-		line-height: 1;
+		font-size: inherit;
+		justify-content: center;
+		line-height: inherit;
 		position: relative;
 		width: 100%;
 		z-index: 2;
+
+		&[disabled] {
+			cursor: not-allowed;
+		}
 	}
 
 	&--outline,
 	&--solid {
-		button,
-		input[type="submit"] {
-			padding: .75rem 1rem;
+		button {
+			padding: $-button-padding-sm;
 		}
-	}
 
-	&--inline {
-		display: inline-block;
+		input[type="submit"] {
+			padding: $-button-padding-lg;
+		}
 	}
 
 	&--solid {
 		background-color: $color-secondary;
+
+		&:is(#{$base}--tertiary) {
+			background-color: $color-tertiary;
+		}
 
 		button,
 		input[type="submit"] {
@@ -47,30 +62,40 @@
 			left: 0;
 			position: absolute;
 			top: 0;
-			transition: translate .25s ease-in;
+			transition: translate .3s $transition-slide;
 			translate: 100%;
 			width: 100%;
 			z-index: 1;
 		}
 
-		&:is(:focus-within, :hover)::after {
+		&:not(:has([disabled])):is(:focus-within, :hover)::after {
 			translate: 0;
 		}
 	}
 
 	&--outline {
 		background-color: transparent;
-		border: .0625rem solid $color-secondary;
-		transition: border-color .25s ease-in;
+		outline: .1px solid $color-secondary;
+		outline-offset: -1px;
+		transition: outline-color .25s $transition-cta;
 
 		button,
 		input[type="submit"] {
 			color: $color-secondary;
-			transition: color .25s ease-in;
+			transition: color .25s $transition-cta;
 		}
 
-		&:is(:focus-within, :hover) {
-			border-color: $color-tertiary;
+		&:has([disabled]) {
+			outline-color: $color-disabled;
+
+			button,
+			input[type="submit"] {
+				color: $color-disabled;
+			}
+		}
+
+		&:not(:has([disabled])):is(:focus-within, :hover) {
+			outline-color: $color-tertiary;
 
 			button,
 			input[type="submit"] {
@@ -83,23 +108,51 @@
 		button,
 		input[type="submit"] {
 			color: $color-primary;
-			font-size: 1.5rem;
 		}
 	}
 
 	&--text {
-		line-height: 1rem;
+		align-items: center;
+		display: flex;
 
 		button,
 		input[type="submit"] {
 			color: $color-tertiary;
-			transition: color .25s ease-in;
+			transition: color .25s $transition-cta;
 		}
 
-		&:is(:focus-within, :hover) {
+		&:not(:has([disabled])):is(:focus-within, :hover) {
 			button,
 			input[type="submit"] {
 				color: $color-primary;
+			}
+		}
+	}
+
+
+	&--mobile {
+		button,
+		input[type="submit"] {
+			column-gap: unset;
+			text-indent: -62.5rem;
+
+			@include breakpoint($width-md) {
+				column-gap: $button-gap;
+				text-indent: unset;
+			}
+		}
+
+		&:is(
+			#{$base}--outline,
+			#{$base}--solid
+		) :is(
+			button,
+			input[type="submit"]
+		) {
+			padding: .5rem;
+
+			@include breakpoint($width-md) {
+				padding: $-button-padding-sm;
 			}
 		}
 	}

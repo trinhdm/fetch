@@ -1,14 +1,44 @@
-header {
-	align-items: center;
-	display: flex;
-	justify-content: space-between;
-	/* padding: .25rem 1rem; */
-	padding: $gutter-lg;
 
-	nav {
+.header,
+.footer {
+	background-color: $color-white;
+	position: sticky;
+	width: 100%;
+	z-index: 10;
+
+	&__wrapper {
+		align-items: center;
+		column-gap: $button-gap;
+		display: flex;
+		justify-content: space-between;
+		margin-inline: $gutter-lg;
+		padding-block: $section-gap-lg;
+	}
+}
+
+.header {
+	top: 0;
+
+	&__wrapper {
+		border-bottom: .1px solid $color-divider;
+	}
+
+	&__nav {
+		column-gap: $column-gap-sm;
 		display: flex;
 		justify-content: flex-end;
-		gap: 1rem;
+
+		// @include breakpoint($width-md) {
+		// 	column-gap: $column-gap-lg;
+		// }
+	}
+}
+
+.footer {
+	bottom: 0;
+
+	&__wrapper {
+		border-top: .1px solid $color-divider;
 	}
 }
 
@@ -16,27 +46,25 @@ header {
 	$base: &;
 
 	align-items: center;
+	color: $color-placeholder;
+	column-gap: $button-gap;
 	display: flex;
-	font-size: .875rem;
-	gap: .375rem;
+	font-size: $button-font-size;
 	position: relative;
+
+	i {
+		color: $color-field;
+	}
 
 	span {
 		line-height: 1;
 	}
 
-	&__dropdown {
-		background-color: $color-white;
-		border: .1px solid $color-secondary;
-		opacity: 0;
-		padding: $row-gap-lg;
-		pointer-events: none;
-		position: absolute;
-		top: 100%;
-		width: 100%;
+	&__welcome {
+		display: none;
 
-		#{$base}__item + #{$base}__item {
-			margin-top: .25rem;
+		@include breakpoint($width-md) {
+			display: inline;
 		}
 	}
 
@@ -53,11 +81,8 @@ aside {
 
 	&,
 	&::before {
-		bottom: 0;
-		top: 0;
-		left: 0;
-		right: 0;
-		margin: 0 !important;
+		inset: 0;
+		margin: 0;
 	}
 
 	&::before {
@@ -65,12 +90,15 @@ aside {
 		content: '';
 		opacity: 0;
 		position: absolute;
-		transition: opacity .2s cubic-bezier(.3, 0, 0, 1);
+		transition: opacity .2s $transition-slide;
 		z-index: 25;
 	}
 
 	&.overlay {
-		pointer-events: all;
+		&::before,
+		.sidebar {
+			pointer-events: all;
+		}
 
 		&::before {
 			opacity: 1;
@@ -83,26 +111,54 @@ aside {
 }
 
 .sidebar {
+	$base: &;
+
 	background-color: $color-white;
+	display: flex;
+	flex-direction: column;
 	height: 100vh;
-	max-width: 37.5rem;
-	padding: $gutter-lg calc($gutter-lg + .375rem) $gutter-lg $gutter-lg;
+	overflow-y: scroll;
+	// padding-inline: $gutter-lg;
 	position: fixed;
 	right: 0;
+	scrollbar-color: $color-scrollbar-light;
+	scrollbar-width: thin;
 	top: 0;
-	transition: translate .3s cubic-bezier(.3, 0, 0, 1);
+	transition: translate .3s $transition-slide;
 	translate: 100%;
 	width: 100%;
 	z-index: 50;
 
-	&__header {
-		column-gap: 1.5rem;
-		padding: 0;
+	@include breakpoint($width-xs) {
+		max-width: 21.25rem;
+	}
 
+	&__header {
 		h2 {
-			margin: 0;
 			flex-grow: 1;
 		}
+
+		.button--icon {
+			margin-right: -0.375rem;
+		}
+	}
+
+	&__footer {
+		margin-top: auto;
+		// margin-top: calc(#{$gutter-lg} - #{$section-gap-lg});
+		// padding-bottom: $section-gap-lg;
+	}
+
+	&__wrapper {
+		padding: $section-gap-lg $gutter-lg;
+	}
+
+	&__form {
+		padding-bottom: $gutter-lg;
+	}
+
+	&__button {
+		width: 100%;
 	}
 }
 
@@ -112,16 +168,22 @@ aside {
 	background-color: $color-white;
 	border: .1px solid $color-secondary;
 	color: $color-text;
+	display: flex;
+	flex-direction: column;
+	// font-size: $label-font-size;
+	min-width: max-content;
 	opacity: 0;
-	padding: $row-gap-lg;
+	padding: .625rem $row-gap-lg;
 	pointer-events: none;
 	position: absolute;
+	right: 0;
+	row-gap: .25rem;
+	scrollbar-color: $color-scrollbar-light;
+	scrollbar-width: thin;
 	top: 100%;
+	white-space: nowrap;
 	width: 100%;
-
-	#{$base}__item + #{$base}__item {
-		margin-top: .25rem;
-	}
+	z-index: 10;
 
 	&__item {
 		cursor: pointer;

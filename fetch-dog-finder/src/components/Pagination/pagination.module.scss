@@ -3,6 +3,7 @@
 
 	display: flex;
 	justify-content: space-between;
+	width: 100%;
 
 	&__current,
 	&__indicator {
@@ -21,17 +22,17 @@
 	}
 
 	&__current {
-		min-width: 3.75rem;
 		justify-content: flex-end;
 	}
 
 	&__dropdown {
-		font-size: $label-font-size;
-		max-height: 4rem;
+		inset-block: 0;
+		margin-block: auto;
+		height: 3rem;
 		max-width: max-content;
 		overflow-y: auto;
 		padding-right: $button-gap;
-		right: 0;
+		row-gap: 0;
 		text-align: center;
 	}
 

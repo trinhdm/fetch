@@ -13,6 +13,7 @@ const Pagination = ({
 	return (
 		<nav className="pagination">
 			<Button
+				hideTextMobile
 				className="pagination__prev"
 				disabled={ current === 1 }
 				onClick={ () => handleChangePage(current - 1) }
@@ -23,9 +24,9 @@ const Pagination = ({
 			</Button>
 
 			<span className="pagination__indicator">
-				{/* <span className="pagination__label">
+				<span className="pagination__label">
 					Page:
-				</span> */}
+				</span>
 				<span className="pagination__select">
 					<span className="pagination__current">
 						{ current }
@@ -53,6 +54,7 @@ const Pagination = ({
 			</span>
 
 			<Button
+				hideTextMobile
 				className="pagination__next"
 				disabled={ current === total }
 				onClick={ () => handleChangePage(current + 1) }

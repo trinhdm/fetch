@@ -259,55 +259,8 @@ const Directory = () => {
 				</section>
 
 				<section className="directory">
-					<section>
-						{ !dogs.length && (
-							<p>Loading your future best friend..</p>
-						) }
-						{ dogs.map(({
-							age,
-							breed,
-							id,
-							img,
-							name,
-							zip_code,
-						}) => {
-							const isFavorite = !!favorites.length && favorites.includes(id)
-
-							const heartClasses = clsx({
-								'card__heart': true,
-								'card--liked': isFavorite,
-							})
-
-							const Heart = isFavorite ? BiSolidHeart : BiHeart
-
-							return (
-								<article className="card" key={ id }>
-									<figure
-										className="card__wrapper"
-										id={ id }
-										// onClick={ event => console.log(event) }
-										onClick={ handleFavorite }
-									>
-										<div className="card__favorite">
-											<Heart className={ heartClasses } />
-										</div>
-
-										<img className="card__img" src={ img } />
-										<figcaption className="card__caption">
-											<div>
-												<h3>{ name }</h3>
-												<b>{ age } years old</b>
-											</div>
-											<div>
-												<i>{ breed }</i><br />
-												<i>{ zip_code }</i>
-											</div>
-										</figcaption>
-									</figure>
-								</article>
-							)
-						}) }
-					</section>
+					{ !dogs.length && <p>Loading your future best friend...</p> }
+					{ dogs.map(dog => <Card { ...dog } key={ dog.id } />) }
 				</section>
 			</main>
 

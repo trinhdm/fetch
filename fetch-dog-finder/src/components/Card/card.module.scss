@@ -1,0 +1,120 @@
+
+.card {
+	$base: &;
+
+	outline: .1px solid transparent;
+	outline-offset: -1px;
+	position: relative;
+	transition: outline-color .2s $transition-cta;
+	z-index: 2;
+
+	&__wrapper::before,
+	&__img {
+		height: 9rem;
+	}
+
+	&__wrapper {
+		cursor: pointer;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		z-index: 1;
+		// row-gap: $row-gap-lg;
+		// padding: .75rem;
+
+		&::before {
+			background: linear-gradient(to left bottom, #{$color-black}33, transparent);
+			content: '';
+			display: block;
+			inset: 0;
+			position: absolute;
+			transition: opacity .25s $transition-button;
+			z-index: 1;
+		}
+	}
+
+	&__favorite,
+	&--liked {
+		&:hover #{$base}__heart {
+			color: $color-heart-dark;
+		}
+	}
+
+	&__favorite {
+		cursor: pointer;
+		position: absolute;
+		right: .625rem;
+		top: .625rem;
+		z-index: 5;
+	}
+
+	&__heart {
+		color: $color-white;
+		transition: color .2s $transition-cta;
+
+		// &#{$base}--liked {
+		// 	color: $color-heart-light;
+		// }
+	}
+
+	&__img {
+		object-fit: cover;
+		margin: 1px auto 0;
+		position: relative;
+		width: calc(100% - 2px);
+		z-index: -1;
+	}
+
+	&__caption {
+		padding: .625rem .5rem;
+		pointer-events: none;
+	}
+
+	&__details {
+		color: $color-field;
+		display: flex;
+
+		& > * {
+			color: inherit;
+
+			&:last-child {
+				flex: 1;
+				text-align: end;
+			}
+		}
+	}
+
+	h3 {
+		color: $color-secondary;
+		margin: 0;
+		transition: color .2s $transition-cta;
+	}
+
+	b,
+	i {
+		font-size: $button-font-size;
+	}
+
+	&:focus-visible,
+	&:hover,
+	&--liked {
+		#{$base} {
+			&__wrapper::before {
+				opacity: 0;
+			}
+
+			&__heart {
+				color: $color-heart-light;
+			}
+		}
+	}
+
+	&:focus-visible,
+	&:hover {
+		outline-color: $color-secondary;
+
+		h3 {
+			color: $color-tertiary;
+		}
+	}
+}

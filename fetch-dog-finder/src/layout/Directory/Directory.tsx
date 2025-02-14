@@ -166,8 +166,8 @@ const Directory = () => {
 
 
 	return (
-		<main className="container">
-			<Header handleSidebar={ handleSidebar } />
+		<>
+			<Header handleSidebar={ toggleSidebar } />
 
 			<aside className={ sidebarClasses }>
 				<nav className="sidebar">
@@ -235,32 +235,92 @@ const Directory = () => {
 				</nav>
 			</aside>
 
-				<section>
-					{ dogs.map(({
-						age,
-						breed,
-						id,
-						img,
-						name,
-						zip_code,
-					}) => {
-						return (
-							<div>
-								<img src={ img } />
-								<h3>{ name }</h3>
-								<h4>{ breed }</h4>
-								<b>{ age }</b> | <i>{ zip_code }</i>
-							</div>
-						)
-					}) }
+			<main className="container">
+				<hgroup className="heading">
+					<h1 className="heading__title">
+						{/* { filter.breeds?.length
+							? filter.breeds.map((breed, i) => {
+								const heading = `${ breed }s${ filter.breeds!.length - 1 !== i && ' · ' }`
+
+								return (
+									<Fragment key={ `${breed}-heading` }>{ heading }</Fragment>
+								)
+							})
+							: 'All Dogs'
+						} */}
+						{ title }
+					</h1>
+					<span className="heading__count">({ total.items })</span>
+				</hgroup>
+
+				<section className="description">
+					<p>Browse through our network of paw-fect dogs and favorite the ones that steal your heart. Use the <b>Filter & Sort</b> button above to narrow your search by breed, age, and location. Once you've built your list, click <b>Find Your Match</b>, and we'll pair you with your ideal furry companion.</p>
+					<p>You deserve a best friend, and every good pup deserves a loving home.</p>
 				</section>
-				<Pagination
-					current={ page }
-					handleChangePage={ changePageTo }
-					total={ totalPages }
-				/>
-			</div>
-		</main>
+
+				<section className="directory">
+					<section>
+						{ !dogs.length && (
+							<p>Loading your future best friend..</p>
+						) }
+						{ dogs.map(({
+							age,
+							breed,
+							id,
+							img,
+							name,
+							zip_code,
+						}) => {
+							const isFavorite = !!favorites.length && favorites.includes(id)
+
+							const heartClasses = clsx({
+								'card__heart': true,
+								'card--liked': isFavorite,
+							})
+
+							const Heart = isFavorite ? BiSolidHeart : BiHeart
+
+							return (
+								<article className="card" key={ id }>
+									<figure
+										className="card__wrapper"
+										id={ id }
+										// onClick={ event => console.log(event) }
+										onClick={ handleFavorite }
+									>
+										<div className="card__favorite">
+											<Heart className={ heartClasses } />
+										</div>
+
+										<img className="card__img" src={ img } />
+										<figcaption className="card__caption">
+											<div>
+												<h3>{ name }</h3>
+												<b>{ age } years old</b>
+											</div>
+											<div>
+												<i>{ breed }</i><br />
+												<i>{ zip_code }</i>
+											</div>
+										</figcaption>
+									</figure>
+								</article>
+							)
+						}) }
+					</section>
+				</section>
+			</main>
+
+			<footer className="footer">
+				<div className="footer__wrapper">
+					<Pagination
+						current={ page }
+						handleChangePage={ changePageTo }
+						total={ total.pages }
+					/>
+				</div>
+			</footer>
+		</>
 	)
 }
 

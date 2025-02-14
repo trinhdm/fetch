@@ -1,3 +1,6 @@
+$-pagination-gap: calc(#{$button-gap} * .5);
+
+
 .pagination {
 	$base: &;
 
@@ -5,35 +8,39 @@
 	justify-content: space-between;
 	width: 100%;
 
-	&__current,
+	&__label,
+	&__menu .menu__toggle svg {
+		color: $color-field;
+	}
+
 	&__indicator {
 		align-items: center;
-		column-gap: $button-gap;
+		column-gap: $-pagination-gap;
 		display: flex;
 	}
 
-	&__select {
-		position: relative;
+	&__menu {
+		padding-left: $-pagination-gap;
+	}
 
-		&:hover #{$base}__dropdown {
-			opacity: 1;
-			pointer-events: all;
+	&__menu .menu {
+		&__dropdown {
+			height: 3rem;
+			inset-block: 0;
+			margin-block: auto;
+			padding-right: $button-gap;
+			row-gap: 0;
 		}
-	}
 
-	&__current {
-		justify-content: flex-end;
-	}
+		&__list {
+			height: calc(3rem - (.625rem * 2));
+			overflow-y: auto;
+		}
 
-	&__dropdown {
-		inset-block: 0;
-		margin-block: auto;
-		height: 3rem;
-		max-width: max-content;
-		overflow-y: auto;
-		padding-right: $button-gap;
-		row-gap: 0;
-		text-align: center;
+		&__toggle {
+			column-gap: $-pagination-gap;
+			font-size: unset;
+		}
 	}
 
 	&__next svg {

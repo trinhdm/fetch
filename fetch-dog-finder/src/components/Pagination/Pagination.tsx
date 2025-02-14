@@ -1,5 +1,6 @@
 import { BiArrowBack, BiExpandVertical } from 'react-icons/bi'
 import { Button } from '@components/Button'
+import { Menu } from '@components/Menu'
 import type { PaginationProps } from './Pagination.types'
 import './pagination.module.scss'
 
@@ -27,24 +28,17 @@ const Pagination = ({
 				<span className="pagination__label">
 					Page:
 				</span>
-				<span className="pagination__select">
-					<span className="pagination__current">
-						{ current }
-						{ total > 1 && <BiExpandVertical /> }
-					</span>
 
-					{ total > 1 && (
-						<ul className="dropdown pagination__dropdown">
-							{ Array.from(Array(total).keys()).map(pgNum => (
-								<li className="dropdown__item" key={ `page-${pgNum}` }>
-									<span onClick={ () => handleChangePage(pgNum + 1) }>
-										{ pgNum + 1 }
-									</span>
-								</li>
-							)) }
-						</ul>
-					) }
-				</span>
+				<Menu className="pagination__menu">
+					<Menu.Toggle>
+						{ current } <BiExpandVertical />
+					</Menu.Toggle>
+					{ Array.from(Array(total).keys()).map(pgNum => (
+						<Menu.Item key={ `page-${pgNum}` } onClick={ () => handleChangePage(pgNum + 1) }>
+							{ pgNum + 1 }
+						</Menu.Item>
+					)) }
+				</Menu>
 
 				<span>/</span>
 

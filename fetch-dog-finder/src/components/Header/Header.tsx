@@ -8,6 +8,7 @@ import { useUserContext } from '@providers/UserProvider'
 import { fetchMatch, logout } from '@utils/services'
 import { Button } from '@components/Button'
 import { Logo } from '@components/Logo'
+import { Menu } from '@components/Menu'
 import type { HeaderProps } from './Header.types'
 import './header.module.scss'
 
@@ -52,20 +53,20 @@ const Header = ({
 			<div className="header__wrapper">
 				<Logo />
 				<nav className="header__nav">
-					<div className="settings">
-						<span>
-							<span className="settings__welcome">Welcome,&nbsp;</span><i>{ name }</i>
-						</span>
-						<BiCog />
-						<ul className="dropdown settings__dropdown">
-							<li className="dropdown__item">
-								View Favorites
-							</li>
-							<li className="dropdown__item" onClick={ handleLogout }>
-								Logout
-							</li>
-						</ul>
-					</div>
+					<Menu className="settings">
+						<Menu.Toggle>
+							<span className="settings__welcome">
+								<span>Welcome,&nbsp;</span><i>{ name }</i>
+							</span>
+							<BiCog />
+						</Menu.Toggle>
+						<Menu.Item>
+							View Favorites
+						</Menu.Item>
+						<Menu.Item onClick={ handleLogout }>
+							Logout
+						</Menu.Item>
+					</Menu>
 					<Button
 						hideTextMobile
 						onClick={ handleSidebar }

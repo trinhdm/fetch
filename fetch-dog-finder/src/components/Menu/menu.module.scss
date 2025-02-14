@@ -1,0 +1,56 @@
+
+
+.menu {
+	$base: &;
+
+	align-items: center;
+	display: flex;
+	position: relative;
+
+	&__toggle {
+		column-gap: $button-gap;
+		line-height: 1;
+	}
+
+	&__dropdown {
+		background-color: $color-white;
+		border: .1px solid $color-secondary;
+		min-width: max-content;
+		opacity: 0;
+		padding: .625rem $row-gap-lg;
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		top: 100%;
+		z-index: 10;
+	}
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		row-gap: .25rem;
+		scrollbar-color: $color-scrollbar-light;
+		scrollbar-width: thin;
+		white-space: nowrap;
+		width: 100%;
+	}
+
+	&__item {
+		color: $color-field;
+
+		.button {
+			line-height: unset;
+		}
+
+		a,
+		button {
+			color: inherit;
+			justify-content: flex-start;
+		}
+	}
+
+	&:hover #{$base}__dropdown {
+		opacity: 1;
+		pointer-events: all;
+	}
+}

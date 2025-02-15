@@ -1,3 +1,6 @@
+$-selection-size: .625rem;
+
+
 .field {
 	$base: &;
 
@@ -22,50 +25,55 @@
 	}
 
 	&__container {
+		padding-top: $row-gap-lg;
 		position: relative;
 
-		&::before,
-		&::after {
-			bottom: 0;
-			content: '';
-			display: block;
-			height: .1px;
-			left: 0;
-			position: absolute;
-			transition: opacity .2s ease-in;
-			width: 100%;
-		}
+		&:has(#{$base}__input) {
+			padding-bottom: $row-gap-lg;
 
-		&::before {
-			background-color: $color-secondary;
-		}
+			&::before,
+			&::after {
+				bottom: 0;
+				content: '';
+				display: block;
+				height: .1px;
+				left: 0;
+				position: absolute;
+				transition: opacity .2s $transition-cta;
+				width: 100%;
+			}
 
-		&::after {
-			background-color: $color-tertiary;
-			opacity: 0;
-			z-index: 2;
+			&::before {
+				background-color: $color-secondary;
+			}
+
+			&::after {
+				background-color: $color-tertiary;
+				opacity: 0;
+				z-index: 2;
+			}
 		}
 	}
 
-	&__button,
-	&__container,
-	&__message {
-		padding: $row-gap-lg 0;
-	}
-
-	&__button button,
 	&__label,
 	&__message {
-		font-size: $label-font-size;
+		font-size: .625rem;
+
+		@include breakpoint($width-md) {
+			font-size: $label-font-size;
+		}
 	}
 
 	&__button,
 	&__icon {
-		bottom: 0;
+		inset: 0 0 0 auto;
 		margin: auto;
 		position: absolute;
-		right: 0;
-		top: 0;
+	}
+
+	&__button,
+	&__message {
+		padding: $row-gap-lg 0;
 	}
 
 	&__icon,
@@ -76,7 +84,11 @@
 	}
 
 	&__button {
-		margin-right: calc(#{$field-font-size} + #{$button-gap});
+		margin-right: calc(#{$icon-size-sm} + #{$button-gap});
+
+		@include breakpoint($width-md) {
+			margin-right: calc(#{$icon-size-lg} + #{$button-gap});
+		}
 	}
 
 	&__icon {
@@ -113,20 +125,20 @@
 		width: 100%;
 	}
 
-	&__checkbox {
+	&__checkbox,
+	&__radio {
 		-webkit-appearance: none;
 		appearance: none;
 		background-color: $color-white;
 		background: none;
-		border-radius: .125rem;
 		border: 0;
 		color: $color-tertiary;
 		flex-grow: 0;
-		height: .625rem;
+		height: $-selection-size;
 		outline: 0;
-		transition: background .25s;
+		transition: background .25s $transition-cta;
 		vertical-align: middle;
-		width: .625rem;
+		width: $-selection-size;
 
 		&::before {
 			background-color: transparent;
@@ -145,7 +157,6 @@
 			background-color: currentColor;
 
 			&::before {
-				background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
 				box-shadow: none;
 			}
 		}
@@ -155,29 +166,42 @@
 		}
 	}
 
-	&__selection {
+	&__checkbox {
+		border-radius: .125rem;
+
+		&:checked::before {
+			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
+		}
+	}
+
+	&__radio {
+		border-radius: 50%;
+	}
+
+	&__list {
 		background-color: $color-white;
 		border: .1px solid $color-secondary;
 		margin-inline: -.1px 0;
 		padding: $row-gap-lg $button-gap $row-gap-lg $row-gap-lg;
+
+		#{$base}__choices {
+			height: 6.25rem;
+			overflow-y: auto;
+			padding-right: $row-gap-lg;
+
+			@include breakpoint($width-md) {
+				height: 13.5rem;
+			}
+		}
 	}
 
-	&__list,
-	&__results {
-		overflow-y: auto;
-		scrollbar-color: $color-scrollbar-light;
-		scrollbar-width: thin;
-	}
-
-	&__list {
+	&__choices {
 		display: flex;
 		flex-direction: column;
-		height: 14.25rem;
-		padding-right: $row-gap-lg;
-		row-gap: .25rem;
+		row-gap: $button-gap;
 	}
 
-	&__item,
+	&__choice,
 	&__tag {
 		max-height: max-content;
 		max-width: max-content;
@@ -187,23 +211,24 @@
 			cursor: pointer;
 		}
 
-		:is(span, svg) {
+		span {
 			pointer-events: none;
 		}
 
+		&:focus-within,
 		&:has(:checked) {
 			color: $color-secondary;
 		}
 	}
 
-	&__item {
+	&__choice {
 		align-items: center;
 		display: flex;
 
 		&:is(:focus-within, :hover) {
 			color: $color-primary;
 
-			#{$base}__checkbox::before {
+			:is(#{$base}__checkbox, #{$base}__radio)::before {
 				box-shadow: inset 0 0 0 .0625rem $color-tertiary;
 			}
 		}
@@ -218,13 +243,19 @@
 		display: inline-flex;
 		font-size: $label-font-size;
 		margin: 0 .5rem $button-gap 0;
-		padding: .375rem .5rem;
-		transition: background-color .25s ease-in-out,
-			color .25s ease-in-out;
+		padding: .25rem .5rem;
+		transition: background-color .25s $transition-cta,
+			color .25s $transition-cta;
 
 		&:is(:focus, :hover) {
 			background-color: #{$color-tag}E6;
 			color: $color-white;
+		}
+
+		svg {
+			font-size: $icon-size-sm;
+			height: $icon-size-sm;
+			width: $icon-size-sm;
 		}
 	}
 

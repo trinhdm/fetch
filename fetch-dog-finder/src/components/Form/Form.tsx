@@ -5,6 +5,7 @@ import {
 	type FunctionComponent,
 	type ReactElement,
 } from 'react'
+import clsx from 'clsx'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Button } from '@components/Button'
 import type { FieldProps, FieldValidations } from '@components/Field'
@@ -14,6 +15,7 @@ import './form.module.scss'
 const Form = ({
 	buttonText,
 	children,
+	className,
 	id,
 	onSubmit = () => {},
 	role = 'form',
@@ -47,13 +49,18 @@ const Form = ({
 		return validation
 	}
 
+	const classes = clsx({
+		form: true,
+		[`${className}`]: className,
+	})
+
 	if (!children)
 		return <></>
 
 	return (
 		<FormProvider { ...methods }>
 			<form
-				className="form"
+				className={ classes }
 				id={ id }
 				noValidate={ role === 'search' }
 				onSubmit={ handleSubmit(onSubmit) }
@@ -76,8 +83,9 @@ const Form = ({
 					hidden
 					aria-hidden="true"
 					className="field__honeypot"
+					name={ `${id}-honeypot` }
 					tabIndex={ -1 }
-					type="text"
+					type="email"
 				/>
 
 				{ !!buttonText && (

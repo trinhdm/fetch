@@ -1,5 +1,9 @@
 import clsx from 'clsx'
-import { BiSearch, BiX } from 'react-icons/bi'
+import {
+	BiHash,
+	BiSearch,
+	BiX,
+} from 'react-icons/bi'
 import { useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { capitalize, slugify } from '@utils/helpers'
@@ -12,6 +16,7 @@ import type {
 import './field.module.scss'
 
 const Field = ({
+	defaultOption,
 	multiple = false,
 	name,
 	onChange,
@@ -34,7 +39,8 @@ const Field = ({
 
 	const hasOnChange = !!onChange && typeof onChange === 'function',
 		hasOptions = !!options && options?.length > 0,
-		hasSelected = !!selected && selected?.length > 0
+		hasSelected = !!selected && selected?.length > 0,
+		isSearchField = type === 'search'
 
 	const handleOnChange: FieldChangeHandler = (event) => (hasOnChange
 		? onChange(event)
@@ -64,6 +70,14 @@ const Field = ({
 		'field--error': error,
 	})
 
+	const BiIcon = (value ? BiX : BiSearch)
+
+	const attrs = {
+		...ariaLabels,
+		...handlers,
+		...props,
+	}
+
 	return (
 		<div className={ classes }>
 			<div className="field__container">
@@ -77,20 +91,45 @@ const Field = ({
 					</label>
 				) }
 
-				<input
-					className="field__input"
-					name={ name }
-					placeholder={ placehold }
-					tabIndex={ 0 }
-					type={ type }
-					{ ...ariaLabels }
-					{ ...handlers }
-					{ ...props }
-				/>
+				{ type !== 'radio' && (
+					<input
+						className="field__input"
+						id={ name }
+						name={ name }
+						placeholder={ placehold }
+						tabIndex={ 0 }
+						type={ type }
+						{ ...attrs }
+					/>
+				) }
 
-				{ type === 'search' && <BiSearch className="field__icon" /> }
+				{ type === 'radio' && hasOptions && (
+					<ul className="field__choices">
+						{ options.sort().map(opt => (
+							<li className="field__choice" key={ slugify(`${opt}`) }>
+								<input
+									checked={ selected?.includes(opt) || defaultOption === opt || false }
+									className="field__radio"
+									id={ slugify(opt) }
+									name={ slugify(name) }
+									// onChange={ onSelect }
+									tabIndex={ 0 }
+									type={ type }
+									value={ opt || '' }
+									{ ...attrs }
+								/>
+								<label htmlFor={ slugify(opt) }>
+									{ capitalize(opt) }
+								</label>
+							</li>
+						)) }
+					</ul>
+				) }
 
-				{ !!(hasOptions && hasSelected && onReset) && (
+				{/* { type === 'number'&& <BiHash className="field__icon" /> } */}
+				{ isSearchField && <BiIcon className="field__icon" /> }
+
+				{ !!(isSearchField && hasOptions && hasSelected && onReset) && (
 					<Button
 						className="field__button"
 						onClick={ onReset }
@@ -107,16 +146,16 @@ const Field = ({
 				) }
 			</div>
 
-			{ hasOptions && (
+			{ (isSearchField && hasOptions) && (
 				<>
-					<fieldset className="field__selection">
+					<fieldset className="field__list">
 						{ showLabel && (
 							<legend className="field__label" id={ labelledby }>
 								{ placehold }
 							</legend>
 						) }
 
-						<ul className="field__list">
+						<ul className="field__choices">
 							{ options.filter(opt => opt.toString().toLowerCase().includes(
 								value.toLowerCase()
 							)).map(opt => {
@@ -124,7 +163,7 @@ const Field = ({
 									fieldset = slugify(name)
 
 								return (
-									<li className="field__item" key={ option }>
+									<li className="field__choice" key={ option }>
 										<input
 											checked={ selected?.includes(opt) || false }
 											className={ `field__${selection}` }

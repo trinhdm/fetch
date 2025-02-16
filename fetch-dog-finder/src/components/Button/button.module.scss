@@ -1,17 +1,15 @@
 $-button-padding-sm: .625rem .875rem;
-$-button-padding-lg: .75rem 1rem;
+$-button-padding-lg: .875rem 1rem;
 
 
 .button {
 	$base: &;
 
-	// border: .0625rem solid transparent;
 	font-size: $button-font-size;
 	line-height: 1;
 	min-height: fit-content;
 	overflow: hidden;
 	position: relative;
-	text-align: center;
 
 	button,
 	input[type="submit"] {
@@ -26,8 +24,8 @@ $-button-padding-lg: .75rem 1rem;
 		width: 100%;
 		z-index: 2;
 
-		&[disabled] {
-			cursor: not-allowed;
+		&:focus-visible {
+			outline: 0;
 		}
 	}
 
@@ -49,13 +47,8 @@ $-button-padding-lg: .75rem 1rem;
 			background-color: $color-tertiary;
 		}
 
-		button,
-		input[type="submit"] {
-			color: $color-white;
-		}
-
+		&::before,
 		&::after {
-			background-color: $color-tertiary;
 			content: '';
 			display: block;
 			height: 100%;
@@ -63,13 +56,30 @@ $-button-padding-lg: .75rem 1rem;
 			position: absolute;
 			top: 0;
 			transition: translate .3s $transition-slide;
-			translate: 100%;
+			translate: 101%;
 			width: 100%;
 			z-index: 1;
 		}
 
-		&:not(:has([disabled])):is(:focus-within, :hover)::after {
+		&::before {
+			background-color: $color-disabled;
+		}
+
+		&::after {
+			background-color: $color-tertiary;
+		}
+
+		&:not(:has([disabled])):hover::after {
 			translate: 0;
+		}
+
+		&:has([disabled])::before {
+			translate: 0;
+		}
+
+		button,
+		input[type="submit"] {
+			color: $color-white;
 		}
 	}
 
@@ -85,21 +95,21 @@ $-button-padding-lg: .75rem 1rem;
 			transition: color .25s $transition-cta;
 		}
 
+		&:not(:has([disabled])):hover {
+			outline-color: $color-tertiary;
+
+			button,
+			input[type="submit"] {
+				color: $color-tertiary;
+			}
+		}
+
 		&:has([disabled]) {
 			outline-color: $color-disabled;
 
 			button,
 			input[type="submit"] {
 				color: $color-disabled;
-			}
-		}
-
-		&:not(:has([disabled])):is(:focus-within, :hover) {
-			outline-color: $color-tertiary;
-
-			button,
-			input[type="submit"] {
-				color: $color-tertiary;
 			}
 		}
 	}
@@ -119,6 +129,10 @@ $-button-padding-lg: .75rem 1rem;
 		input[type="submit"] {
 			color: $color-tertiary;
 			transition: color .25s $transition-cta;
+
+			&:focus-visible {
+				color: $color-primary;
+			}
 		}
 
 		&:not(:has([disabled])):is(:focus-within, :hover) {
@@ -149,7 +163,7 @@ $-button-padding-lg: .75rem 1rem;
 			button,
 			input[type="submit"]
 		) {
-			padding: .5rem;
+			padding: .625rem;
 
 			@include breakpoint($width-md) {
 				padding: $-button-padding-sm;

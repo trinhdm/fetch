@@ -8,8 +8,8 @@ import './button.module.scss'
 
 const Button = ({
 	children,
-	color = 'secondary',
 	className,
+	color = 'secondary',
 	disabled,
 	hideTextMobile = false,
 	onClick = () => {},

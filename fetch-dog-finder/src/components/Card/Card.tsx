@@ -46,10 +46,12 @@ const Card = ({
 	useEffect(() => {
 		const findLoc = async () => {
 			const [result] = await retrieveLocations([zip_code])
-			const { city, state } = result
-			setLocation(`${city}, ${state} · ${zip_code}`)
+			// console.log( parseInt(`09060`))
 
-			// console.log(result)
+			if (result) {
+				const { city, state } = result
+				setLocation(`${city}, ${state} · ${zip_code}`)
+			}
 		}
 
 		findLoc()
@@ -78,7 +80,13 @@ const Card = ({
 					</div>
 				) }
 
-				{ img && <img className="card__img" src={ img } /> }
+				{ img && (
+					<img
+						alt={ `${name} · ${ breed } · ${age} years old` }
+						className="card__img"
+						src={ img }
+					/>
+				) }
 
 				<figcaption className="card__caption">
 					{ name && <h3>{ name }</h3> }

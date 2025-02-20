@@ -1,46 +1,21 @@
 
-.header,
-.footer {
+.header {
 	$base: &;
 
 	background-color: $color-white;
 	position: sticky;
+	top: 0;
 	width: 100%;
 	z-index: 10;
 
 	&__wrapper {
 		align-items: center;
+		border-bottom: .1px solid $color-divider;
 		column-gap: $button-gap;
 		display: flex;
 		justify-content: space-between;
 		margin-inline: $gutter-lg;
 		padding-block: $section-gap-lg;
-	}
-}
-
-.header {
-	$base: &;
-
-	top: 0;
-
-	&__wrapper {
-		border-bottom: .1px solid $color-divider;
-	}
-
-	&__nav {
-		column-gap: $column-gap-sm;
-		display: flex;
-		justify-content: flex-end;
-	}
-}
-
-.footer {
-	$base: &;
-
-	bottom: 0;
-
-	&__wrapper {
-		border-top: .1px solid $color-divider;
 	}
 }
 
@@ -79,31 +54,6 @@
 	&__footer .footer__wrapper {
 		column-gap: $column-gap-lg;
 		justify-content: center;
-	}
-}
-
-.settings {
-	$base: &;
-
-	font-size: $button-font-size;
-
-	&__welcome,
-	.menu__toggle svg {
-		color: $color-placeholder;
-	}
-
-	&__welcome {
-		i {
-			color: $color-field;
-		}
-
-		span {
-			display: none;
-
-			@include breakpoint($width-md) {
-				display: inline;
-			}
-		}
 	}
 }
 

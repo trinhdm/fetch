@@ -1,0 +1,28 @@
+.navbar {
+	$base: &;
+
+	column-gap: $column-gap-sm;
+	display: flex;
+	justify-content: flex-end;
+
+	&__welcome,
+	.menu__toggle svg {
+		color: $color-placeholder;
+	}
+
+	&__settings {
+		font-size: $button-font-size;
+	}
+
+	&__username {
+		color: $color-field;
+	}
+
+	&__welcome {
+		display: none;
+
+		@include breakpoint($width-md) {
+			display: inline;
+		}
+	}
+}

@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import {
 	useCallback,
 	useEffect,
@@ -5,35 +6,29 @@ import {
 	useState,
 } from 'react'
 import {
-	BiCog,
 	BiRefresh,
-	BiSlider,
-	BiSolidDog,
 	BiUndo,
 	BiX,
 } from 'react-icons/bi'
 import {
-	logout,
 	retrieveDogs,
 	retrieveMatch,
 } from '@utils/services'
 import { useUserContext } from '@providers/UserProvider'
 import { Button } from '@components/Button'
 import { Card } from '@components/Card'
-import { Logo } from '@components/Logo'
-import { Menu } from '@components/Menu'
 import type { Dog } from '@typings/shared'
 import type { HeaderProps } from './Header.types'
 import './header.module.scss'
 
 const Header = ({
-	handleSidebar = () => {},
+	children,
+	className,
 }: HeaderProps) => {
 	const {
 		favorites,
 		handleUser,
 		// matchID,
-		name,
 	} = useUserContext()!
 
 	const dialogRef = useRef<HTMLDialogElement>(null)
@@ -49,15 +44,6 @@ const Header = ({
 		handleUser({ favorites: [] })
 		// handleUser({ favorites: [], matchID: [] })
 		setMatchID([])
-	}
-
-	const handleLogout = async () => {
-		try {
-			await logout()
-			handleUser({ isLoggedIn: false })
-		} catch (error) {
-			console.log(error)
-		}
 	}
 
 	const handleMatch = useCallback(async () => {
@@ -89,50 +75,23 @@ const Header = ({
 		getMatch()
 	}, [matchID])
 
+	const classes = clsx({
+		header: true,
+		[`${className}`]: className,
+	})
+
 	return (
 		<>
-			<header className="header">
+			<header className={ classes }>
 				<div className="header__wrapper">
-					<Logo />
-					<nav className="header__nav">
-						<Menu className="settings">
-							<Menu.Toggle>
-								<span className="settings__welcome">
-									<span>Welcome,&nbsp;</span><i>{ name }</i>
-								</span>
-								<BiCog />
-							</Menu.Toggle>
-							<Menu.Item>
-								View Favorites
-							</Menu.Item>
-							<Menu.Item onClick={ handleLogout }>
-								Logout
-							</Menu.Item>
-						</Menu>
-						<Button
-							hideTextMobile
-							onClick={ handleSidebar }
-							variant="outline"
-						>
-							Filter & Sort
-							<BiSlider />
-						</Button>
-						<Button
-							hideTextMobile
-							disabled={ !favorites.length }
-							onClick={ handleMatch }
-						>
-							Find Your Match
-							<BiSolidDog />
-						</Button>
-					</nav>
+					{ children }
 				</div>
 			</header>
 
 			<dialog className="modal" ref={ dialogRef }>
 				<header className="header modal__header">
 					<div className="header__wrapper">
-					<h2>Meet Your Paw-fect Match</h2>
+						<h2>Meet Your Paw-fect Match</h2>
 						<Button
 							className="modal__close"
 							onClick={ closeModal }

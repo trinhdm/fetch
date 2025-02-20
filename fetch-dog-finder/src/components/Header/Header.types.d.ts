@@ -1,5 +1,8 @@
+import type { ReactNode } from 'react'
+
 interface HeaderProps {
-	handleSidebar: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
+	children: ReactNode
+	className?: string
 }
 
 export type { HeaderProps }

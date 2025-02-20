@@ -237,19 +237,7 @@ const Directory = () => {
 
 			<main className="container">
 				<hgroup className="heading">
-					<h1 className="heading__title">
-						{/* { filter.breeds?.length
-							? filter.breeds.map((breed, i) => {
-								const heading = `${ breed }s${ filter.breeds!.length - 1 !== i && ' · ' }`
-
-								return (
-									<Fragment key={ `${breed}-heading` }>{ heading }</Fragment>
-								)
-							})
-							: 'All Dogs'
-						} */}
-						{ title }
-					</h1>
+					<h1 className="heading__title">{ title }</h1>
 					<span className="heading__count">({ total.items })</span>
 				</hgroup>
 
@@ -264,15 +252,13 @@ const Directory = () => {
 				</section>
 			</main>
 
-			<footer className="footer">
-				<div className="footer__wrapper">
-					<Pagination
-						current={ page }
-						handleChangePage={ changePageTo }
-						total={ total.pages }
-					/>
-				</div>
-			</footer>
+			<Footer className="paginate">
+				<Pagination
+					current={ page }
+					handleChangePage={ changePageTo }
+					total={ total.pages }
+				/>
+			</Footer>
 		</>
 	)
 }

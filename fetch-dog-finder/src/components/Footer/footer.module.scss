@@ -1,0 +1,19 @@
+.footer {
+	$base: &;
+
+	background-color: $color-white;
+	bottom: 0;
+	position: sticky;
+	width: 100%;
+	z-index: 10;
+
+	&__wrapper {
+		align-items: center;
+		border-top: .1px solid $color-divider;
+		column-gap: $button-gap;
+		display: flex;
+		justify-content: space-between;
+		margin-inline: $gutter-lg;
+		padding-block: $section-gap-lg;
+	}
+}

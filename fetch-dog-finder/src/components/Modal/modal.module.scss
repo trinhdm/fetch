@@ -1,0 +1,32 @@
+.modal {
+	background-color: $color-white;
+	height: fit-content;
+
+	@include breakpoint($width-sm) {
+		max-width: fit-content;
+	}
+
+	@include breakpoint($width-md) {
+		max-width: 30rem;
+		min-width: fit-content;
+		width: 100%;
+	}
+
+	&::backdrop {
+		background-color: rgba(0, 0, 0, .2);
+		transition: opacity .2s $transition-slide;
+	}
+
+	&__close {
+		width: fit-content;
+	}
+
+	&__content {
+		padding: $section-gap-lg;
+	}
+
+	&__footer .footer__wrapper {
+		column-gap: $column-gap-lg;
+		justify-content: center;
+	}
+}

@@ -1,10 +1,16 @@
 import clsx from 'clsx'
-import { BiHeart, BiX } from 'react-icons/bi'
-import { useEffect, useState } from 'react'
 import { fetchBreeds, retrieveDogs, fetchMatch, fetchDogs } from '@utils/services'
+import { BiRefresh, BiSlider, BiSolidBone, BiSolidDog, BiUndo, BiX } from 'react-icons/bi'
+import { useEffect, useRef, useState } from 'react'
+import { useUserContext } from '@providers/UserProvider'
 import { Button } from '@components/Button'
-import { Header } from '@components/Header'
+import { Card } from '@components/Card'
+import { Footer } from '@components/Footer'
 import { Form } from '@components/Form'
+import { Header } from '@components/Header'
+import { Logo } from '@components/Logo'
+import { Modal } from '@components/Modal'
+import { Navbar } from '@components/Navbar'
 import { Pagination } from '@components/Pagination'
 import {
 	Field,
@@ -27,6 +33,9 @@ interface FilterValues {
 }
 
 const Directory = () => {
+	const dialogRef = useRef<HTMLDialogElement>(null)
+
+	const { favorites, handleUser, match } = useUserContext()!
 
 	const [breeds, setBreeds] = useState<string[]>([])
 	const [dogs, setDogs] = useState<Dog[]>([])
@@ -41,7 +50,10 @@ const Directory = () => {
 
 
 	const changePageTo = (target: number) => setPage(target)
-	const handleSidebar = () => setSidebarOpen(state => !state)
+	const toggleSidebar = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+		if (event.target === event.currentTarget)
+			setSidebarOpen(state => !state)
+	}
 
 	const resetBreeds = () => setFilter(state => ({ ...state, breeds: [] }))
 	const resetFilters = () => setFilter({})
@@ -164,12 +176,62 @@ const Directory = () => {
 		overlay: isSidebarOpen,
 	})
 
+	const toggleModal = () => {
+		const modal = dialogRef.current
+
+		if (!modal)
+			return
+		else if (modal.open)
+			modal.close()
+		else
+			modal.showModal()
+	}
+
+	const handleMatch = async () => {
+		try {
+			const { match: id } = await retrieveMatch(favorites)
+			const [match] = await retrieveDogs([id])
+			handleUser({ match })
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	const clearFavorites = () => {
+		toggleModal()
+		handleUser({ favorites: [], match: {} })
+	}
 
 	return (
 		<>
-			<Header handleSidebar={ toggleSidebar } />
+			<Header className="navigation__header">
+				<Logo />
+				<Navbar handleModal={ toggleModal } handleSidebar={ toggleSidebar } />
+			</Header>
 
-			<aside className={ sidebarClasses }>
+			<Modal handleModal={ toggleModal } ref={ dialogRef }>
+				<Modal.Header>
+					Meet Your Paw-fect Match
+				</Modal.Header>
+				<Modal.Content>
+					<Card
+						{ ...match }
+						disableLike
+					/>
+				</Modal.Content>
+				<Modal.Footer>
+					{ favorites.length > 1 && (
+						<Button onClick={ handleMatch }>
+							Refresh Match <BiRefresh />
+						</Button>
+					) }
+					<Button onClick={ clearFavorites } variant="outline">
+						Clear Favorites <BiUndo />
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<aside className={ sidebarClasses } onClick={ toggleSidebar }>
 				<nav className="sidebar">
 					<header className="sidebar__header">
 						<h2>Filter & Sort</h2>
@@ -178,7 +240,7 @@ const Directory = () => {
 								Reset All
 							</Button>
 						) }
-						<Button onClick={ handleSidebar } variant="icon">
+						<Button onClick={ toggleSidebar } variant="icon">
 							<BiX />
 						</Button>
 					</header>
@@ -232,6 +294,12 @@ const Directory = () => {
 							/>
 						</div>
 					</Form>
+
+					<Footer className="sidebar__footer">
+						<Button className="sidebar__button" onClick={ toggleSidebar }>
+							View Dogs ({ total.items }) <BiSolidBone />
+						</Button>
+					</Footer>
 				</nav>
 			</aside>
 
@@ -242,7 +310,7 @@ const Directory = () => {
 				</hgroup>
 
 				<section className="description">
-					<p>Browse through our network of paw-fect dogs and favorite the ones that steal your heart. Use the <b>Filter & Sort</b> button above to narrow your search by breed, age, and location. Once you've built your list, click <b>Find Your Match</b>, and we'll pair you with your ideal furry companion.</p>
+					<p>Browse through our network of paw-fect dogs and favorite the ones that steal your heart. Use the <b>Filter & Sort <BiSlider /></b> button above to narrow your search by breed, age, and location. Once you've built your list, click <b>Find Your Match <BiSolidDog /></b>, and we'll pair you with your ideal furry companion.</p>
 					<p>You deserve a best friend, and every good pup deserves a loving home.</p>
 				</section>
 

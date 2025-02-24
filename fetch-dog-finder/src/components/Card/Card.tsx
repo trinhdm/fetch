@@ -13,6 +13,7 @@ const Card = ({
 	id,
 	img,
 	name,
+	variant = 'vertical',
 	zip_code,
 }: CardProps) => {
 	const {
@@ -25,7 +26,7 @@ const Card = ({
 	const handleFavorite = useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
 		event.stopPropagation()
 
-		if (disableLike)
+		if (disableLike || !id)
 			return
 
 		let faves = favorites
@@ -45,23 +46,26 @@ const Card = ({
 
 	useEffect(() => {
 		const findLoc = async () => {
-			const [result] = await retrieveLocations([zip_code])
-			// console.log( parseInt(`09060`))
+			if (!zip_code) return
 
-			if (result) {
+			try {
+				const [result] = await retrieveLocations([`${zip_code}`])
 				const { city, state } = result
 				setLocation(`${city}, ${state} · ${zip_code}`)
+			} catch (err) {
+				console.log(err)
 			}
 		}
 
 		findLoc()
 	}, [zip_code])
 
-	const isFavorite = !!favorites.length && favorites.includes(id)
+	const isFavorite = (id && !!favorites.length) && favorites.includes(id)
 
 	const classes = clsx({
 		card: true,
 		'card--liked': isFavorite,
+		[`card--${variant}`]: variant,
 	})
 
 	const Heart = isFavorite ? BiSolidHeart : BiHeart
@@ -81,22 +85,24 @@ const Card = ({
 				) }
 
 				{ img && (
-					<img
-						alt={ `${name} · ${ breed } · ${age} years old` }
-						className="card__img"
-						src={ img }
-					/>
+					<div className="card__image">
+						<img
+							alt={ `${name} · ${ breed } · ${age} years old` }
+							className="card__img"
+							src={ img }
+						/>
+					</div>
 				) }
 
 				<figcaption className="card__caption">
-					{ name && <h3>{ name }</h3> }
-					{ breed && <b>{ breed }</b> }
+					{ name && <h3 className="card__heading">{ name }</h3> }
+					{ breed && <b className="card__subheading">{ breed }</b> }
 
 					<span className="card__details">
 						{ typeof age === 'number' && (
-							<i>{ age } { age > 1 ? 'years' : 'year' } old</i>
+							<span>{ age } { age > 1 ? 'years' : 'year' } old</span>
 						) }
-						<i>{ location ? location : zip_code }</i>
+						<span>{ location ? location : zip_code }</span>
 					</span>
 				</figcaption>
 			</figure>

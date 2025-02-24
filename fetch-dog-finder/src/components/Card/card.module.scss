@@ -7,23 +7,11 @@
 	transition: outline-color .2s $transition-cta;
 	z-index: 2;
 
-	&__img,
-	&__wrapper::before {
-		height: 9rem;
-	}
-
 	&__wrapper {
 		display: flex;
 		flex-direction: column;
 		position: relative;
 		z-index: 1;
-	}
-
-	&__favorite,
-	&--liked {
-		&:hover #{$base}__heart {
-			color: $color-heart-dark;
-		}
 	}
 
 	&__favorite {
@@ -47,8 +35,8 @@
 			transition: color .2s $transition-cta;
 		}
 
-		b,
-		i {
+		b {
+			color: $color-primary;
 			font-size: $button-font-size;
 		}
 	}
@@ -56,18 +44,27 @@
 	&__details {
 		color: $color-field;
 		display: flex;
+		font-size: $button-font-size;
 
 		& > * {
 			color: inherit;
 		}
 	}
 
+	&__image,
 	&__img {
 		position: relative;
 		z-index: -1;
 	}
 
-	&:not(:has(#{$base}__heart)) #{$base} {
+	&__img {
+		height: 9rem;
+		margin-block: 1px 0;
+		object-fit: cover;
+		object-position: 50% 30%;
+	}
+
+	&--horizontal #{$base} {
 		&__caption {
 			flex: 1;
 			padding-bottom: 0;
@@ -77,63 +74,94 @@
 			flex-direction: column;
 		}
 
-		&__img {
+		&__image {
 			margin-inline: auto;
 			width: fit-content;
 		}
 
 		&__wrapper {
-			column-gap: calc($column-gap-lg * 2);
 			flex-direction: row-reverse;
 			justify-content: space-between;
+		}
+	}
+
+	&--vertical #{$base} {
+		&__caption {
+			padding: .625rem .5rem;
+		}
+
+		&__details > *:last-child {
+			flex: 1;
+			text-align: end;
+		}
+
+		&__img {
+			margin-inline: auto;
+			width: calc(100% - 2px);
+		}
+	}
+
+	&:not(:has(#{$base}__heart)) #{$base} {
+		&__wrapper {
+			column-gap: calc($column-gap-lg * 2);
 			padding-inline: .5rem;
 		}
 	}
 
 	&:has(#{$base}__heart) {
-		#{$base} {
+		&#{$base}--horizontal #{$base} {
 			&__caption {
-				padding: .625rem .5rem;
+				display: flex;
+				flex-basis: 55%;
+				flex-direction: column;
+				justify-content: center;
+				padding-inline: $row-gap-lg;
+
+				@include breakpoint ($width-sm) {
+					flex-basis: 65%;
+				}
 			}
 
-			&__details > *:last-child {
-				flex: 1;
-				text-align: end;
+			&__image {
+				flex-basis: 45%;
+
+				@include breakpoint ($width-sm) {
+					flex-basis: 35%;
+				}
 			}
 
 			&__img {
-				margin: 1px auto 0;
-				object-fit: cover;
-				object-position: 50% 30%;
-				width: calc(100% - 2px);
-			}
-
-			&__wrapper {
-				cursor: pointer;
-
-				&::before {
-					background: linear-gradient(to left bottom, #{$color-black}33, transparent);
-					content: '';
-					display: block;
-					inset: 0;
-					position: absolute;
-					transition: opacity .25s $transition-button;
-					z-index: 1;
-				}
+				margin-inline: -1px 0;
+				max-height: calc(100% - 2px);
+				width: 100%;
 			}
 		}
 
-		&:focus-visible,
-		&:hover,
-		&#{$base}--liked {
-			#{$base} {
-				&__wrapper::before {
-					opacity: 0;
-				}
+		#{$base}__wrapper {
+			cursor: pointer;
+		}
 
-				&__heart {
-					color: $color-heart-light;
-				}
+		#{$base}__image::before {
+			background: linear-gradient(to left bottom, #{$color-black}33, transparent);
+			content: '';
+			display: block;
+			inset: 0;
+			position: absolute;
+			transition: opacity .25s $transition-button;
+			z-index: 2;
+		}
+
+		&:is(
+			:focus-visible,
+			:hover,
+			#{$base}--liked
+		) #{$base} {
+			&__heart {
+				color: $color-heart-light;
+			}
+
+			&__image::before {
+				opacity: 0;
 			}
 		}
 

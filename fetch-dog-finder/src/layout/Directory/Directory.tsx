@@ -154,23 +154,6 @@ const Directory = () => {
 		fetchDogIds()
 	}, [filter, page, sortOrder])
 
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		const breeds = await retrieveDogs(dogs)
-	// 		console.log(breeds)
-	// 		// setDogs(breeds)
-	// 	}
-	// 	fetchData()
-	// }, [dogs])
-
-	// useEffect(() => {
-	// 	const matchData = async () => {
-	// 		const result = await fetchMatch(dogs)
-	// 		console.log(result)
-	// 	}
-
-	// 	matchData()
-	// }, [dogs])
 
 	const sidebarClasses = clsx({
 		overlay: isSidebarOpen,
@@ -217,6 +200,7 @@ const Directory = () => {
 					<Card
 						{ ...match }
 						disableLike
+						variant="horizontal"
 					/>
 				</Modal.Content>
 				<Modal.Footer>
@@ -316,7 +300,13 @@ const Directory = () => {
 
 				<section className="directory">
 					{ !dogs.length && <p>Loading your future best friend...</p> }
-					{ dogs.map(dog => <Card { ...dog } key={ dog.id } />) }
+					{ dogs.map(dog => (
+						<Card
+							{ ...dog }
+							key={ dog.id }
+							variant={ view.layout === 'Grid' ? 'vertical' : 'horizontal' }
+						/>
+					)) }
 				</section>
 			</main>
 

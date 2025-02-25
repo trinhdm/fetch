@@ -3,11 +3,8 @@ import {
 	BiSlider,
 	BiSolidDog,
 } from 'react-icons/bi'
-import {
-	logout,
-	retrieveDogs,
-	retrieveMatch,
-} from '@utils/services'
+import { matchPath, useLocation } from 'react-router'
+import { logout, retrieveMatch } from '@utils/services'
 import { useUserContext } from '@providers/UserProvider'
 import { Button } from '@components/Button'
 import { Menu } from '@components/Menu'
@@ -24,10 +21,12 @@ const Navbar = ({
 		name,
 	} = useUserContext()!
 
+	const { pathname } = useLocation()
+	const isFavoritesPath = matchPath('/favorites', pathname)
+
 	const handleMatch = async () => {
 		try {
-			const { match: id } = await retrieveMatch(favorites)
-			const [match] = await retrieveDogs([id])
+			const match = await retrieveMatch(favorites)
 			handleUser({ match })
 		} catch (error) {
 			console.log(error)
@@ -47,7 +46,7 @@ const Navbar = ({
 
 	return (
 		<nav className="navbar">
-			<Menu className="navbar__settings">
+			<Menu className="navbar__settings" scrollable={ false }>
 				<Menu.Toggle>
 					<span>
 						<span className="navbar__welcome">Welcome,&nbsp;</span>
@@ -55,7 +54,7 @@ const Navbar = ({
 					</span>
 					<BiCog />
 				</Menu.Toggle>
-				<Menu.Item>
+				<Menu.Item disabled={ isFavoritesPath } href="/favorites">
 					View Favorites
 				</Menu.Item>
 				<Menu.Item onClick={ handleLogout }>
@@ -64,6 +63,7 @@ const Navbar = ({
 			</Menu>
 			<Button
 				hideTextMobile
+				disabled={ !!isFavoritesPath }
 				onClick={ handleSidebar }
 				variant="outline"
 			>

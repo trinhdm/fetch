@@ -1,20 +1,27 @@
 import type { ReactNode } from 'react'
 
-interface MenuItemProps {
+interface MenuBaseProps {
 	children: ReactNode
-	onClick?: () => void
+	className?: string
 }
 
-interface MenuToggleProps {
-	children: ReactNode
+interface MenuItemProps extends MenuBaseProps {
+	href?: string
+	isActive?: boolean
+	name?: string
+	onClick?:
+		| (() => void)
+		| ((event: React.MouseEvent<HTMLElement, MouseEvent>) => void)
+	value?: number | string
 }
 
-interface MenuProps {
+type MenuToggleProps = MenuBaseProps
+
+interface MenuProps extends MenuBaseProps {
 	// children:
 	// 	| (ReactElement<MenuItemProps> | ReactElement<MenuItemProps>[])
 	// 	| ReactElement<MenuToggleProps>
-	children: ReactNode
-	className?: string
+	scrollable?: boolean
 }
 
 export type {

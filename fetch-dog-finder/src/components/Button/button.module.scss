@@ -1,5 +1,6 @@
 $-button-padding-sm: .625rem .875rem;
 $-button-padding-lg: .875rem 1rem;
+$-transition-button: .3s $transition-slide;
 
 
 .button {
@@ -11,10 +12,10 @@ $-button-padding-lg: .875rem 1rem;
 	overflow: hidden;
 	position: relative;
 
-	button,
-	input[type="submit"] {
+	&__inner {
 		align-items: center;
 		background-color: transparent;
+		color: inherit;
 		column-gap: $button-gap;
 		display: flex;
 		font-size: inherit;
@@ -31,6 +32,7 @@ $-button-padding-lg: .875rem 1rem;
 
 	&--outline,
 	&--solid {
+		a,
 		button {
 			padding: $-button-padding-sm;
 		}
@@ -42,8 +44,9 @@ $-button-padding-lg: .875rem 1rem;
 
 	&--solid {
 		background-color: $color-secondary;
+		color: $color-white;
 
-		&:is(#{$base}--tertiary) {
+		&#{$base}--tertiary {
 			background-color: $color-tertiary;
 		}
 
@@ -55,7 +58,7 @@ $-button-padding-lg: .875rem 1rem;
 			left: 0;
 			position: absolute;
 			top: 0;
-			transition: translate .3s $transition-slide;
+			transition: translate $-transition-button;
 			translate: 101%;
 			width: 100%;
 			z-index: 1;
@@ -76,77 +79,82 @@ $-button-padding-lg: .875rem 1rem;
 		&:has([disabled])::before {
 			translate: 0;
 		}
-
-		button,
-		input[type="submit"] {
-			color: $color-white;
-		}
 	}
 
 	&--outline {
 		background-color: transparent;
-		outline: .1px solid $color-secondary;
+		color: $color-secondary;
 		outline-offset: -1px;
-		transition: outline-color .25s $transition-cta;
-
-		button,
-		input[type="submit"] {
-			color: $color-secondary;
-			transition: color .25s $transition-cta;
-		}
+		outline: .1px solid $color-secondary;
+		transition: color $-transition-button,
+			outline-color $-transition-button;
 
 		&:not(:has([disabled])):hover {
+			color: $color-tertiary;
 			outline-color: $color-tertiary;
-
-			button,
-			input[type="submit"] {
-				color: $color-tertiary;
-			}
 		}
 
 		&:has([disabled]) {
+			color: $color-disabled;
 			outline-color: $color-disabled;
-
-			button,
-			input[type="submit"] {
-				color: $color-disabled;
-			}
 		}
 	}
 
 	&--icon {
-		button,
-		input[type="submit"] {
-			color: $color-primary;
+		color: $color-primary;
+	}
+
+	&--tag {
+		align-items: center;
+		background-color: #{$color-tag}40;
+		border-radius: 1rem;
+		color: $color-tag;
+		display: inline-flex;
+		font-size: $label-font-size;
+		transition: background-color $-transition-button,
+			color $-transition-button;
+
+		#{$base}__inner {
+			column-gap: .125rem;
+			padding: .25rem .5rem;
+		}
+
+		span {
+			pointer-events: none;
+		}
+
+		svg {
+			font-size: $icon-size-sm;
+			height: $icon-size-sm;
+			width: $icon-size-sm;
+		}
+
+		&:focus-within,
+		&:hover {
+			background-color: #{$color-tag}E6;
+			color: $color-white;
 		}
 	}
 
 	&--text {
 		align-items: center;
+		color: $color-tertiary;
 		display: flex;
+		transition: color $-transition-button;
 
-		button,
-		input[type="submit"] {
-			color: $color-tertiary;
-			transition: color .25s $transition-cta;
-
-			&:focus-visible {
-				color: $color-primary;
-			}
+		&,
+		#{$base}__inner {
+			justify-content: flex-start;
 		}
 
-		&:not(:has([disabled])):is(:focus-within, :hover) {
-			button,
-			input[type="submit"] {
-				color: $color-primary;
-			}
+		&:focus-within {
+			color: $color-tertiary;
 		}
 	}
 
 
 	&--mobile {
-		button,
-		input[type="submit"] {
+		#{$base}__inner {
 			column-gap: unset;
 			text-indent: -62.5rem;
 
@@ -159,10 +167,7 @@ $-button-padding-lg: .875rem 1rem;
 		&:is(
 			#{$base}--outline,
 			#{$base}--solid
-		) :is(
-			button,
-			input[type="submit"]
-		) {
+		) #{$base}__inner {
 			padding: .625rem;
 
 			@include breakpoint($width-md) {

@@ -8,31 +8,41 @@ interface ButtonBase {
 		| 'tertiary'
 	disabled?: boolean
 	hideTextMobile?: boolean
+	onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
 	variant?:
 		| 'icon'
 		| 'outline'
 		| 'solid'
+		| 'tag'
 		| 'text'
 }
 
 interface ButtonType {
 	children: ReactNode
-	onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+	href?: never
 	type?: 'button'
+}
+
+interface ButtonLink {
+	children: ReactNode
+	href?: string
+	type?: 'link'
 }
 
 interface ButtonSubmit {
 	children: string
-	onClick?: (event: React.MouseEvent<HTMLInputElement, MouseEvent>) => void
+	href?: never
 	type: 'submit'
 }
 
 type ButtonProps = ButtonBase & (
-	| ButtonType
+	| ButtonLink
 	| ButtonSubmit
+	| ButtonType
 )
 
 export type {
+	ButtonLink,
 	ButtonProps,
 	ButtonSubmit,
 	ButtonType,

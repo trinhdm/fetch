@@ -1,19 +1,22 @@
 import clsx from 'clsx'
 import { getChildrenByDisplayName } from '@utils/children'
+import { Button } from '@components/Button'
+import type { ButtonLink, ButtonType } from '@components/Button/Button.types'
 import type {
 	MenuItemProps,
 	MenuProps,
 	MenuToggleProps,
 } from './Menu.types'
 import './menu.module.scss'
-import { Button } from '@components/Button'
 
 const Menu = ({
 	children,
 	className,
+	scrollable = true,
 }: MenuProps) => {
 	const classes = clsx({
 		menu: true,
+		'menu--scrollable': scrollable,
 		[`${className}`]: className,
 	})
 
@@ -36,12 +39,36 @@ const Menu = ({
 
 const Item = ({
 	children,
-	onClick = () => {},
-}: MenuItemProps) => (
-	<li className="menu__item">
-		<Button onClick={ onClick } variant="text">{ children }</Button>
-	</li>
-)
+	className,
+	href,
+	isActive,
+	onClick,
+	...props
+}: MenuItemProps) => {
+	const classes = clsx({
+		'menu__item': true,
+		'menu__item--active': isActive,
+		[`${className}`]: className,
+	})
+
+	const itemProps = href ? ({
+		href,
+		type: 'link',
+		...props
+	} as ButtonLink) : ({
+		onClick,
+		type: 'button',
+		...props
+	} as Extract<ButtonType, 'children'>)
+
+	return (
+		<li className={ classes }>
+			<Button { ...itemProps } variant="text">
+				{ children }
+			</Button>
+		</li>
+	)
+}
 
 const Toggle = ({
 	children,

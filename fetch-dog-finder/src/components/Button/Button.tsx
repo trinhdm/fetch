@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { Link } from 'react-router'
 import type {
 	ButtonProps,
 	ButtonSubmit,
@@ -12,9 +13,11 @@ const Button = ({
 	color = 'secondary',
 	disabled,
 	hideTextMobile = false,
+	href,
 	onClick = () => {},
 	type = 'button',
 	variant = 'solid',
+	...props
 }: ButtonProps) => {
 	const classes = clsx({
 		button: true,
@@ -24,24 +27,39 @@ const Button = ({
 		[`${className}`]: className,
 	})
 
-	const props: Omit<ButtonProps, 'children'> = {
+	const sharedProps: Omit<ButtonProps, 'children'> = {
+		className: 'button__inner',
 		disabled,
 		onClick,
-		type,
+		...props
 	}
 
 	switch (type) {
 		case 'submit':
 			return (
 				<div className={ classes }>
-					<input { ...props as ButtonSubmit } value={ children as string } />
+					<input
+						{ ...sharedProps as ButtonSubmit }
+						value={ children as string }
+						type={ type }
+					/>
+				</div>
+			)
+		case 'link':
+			return (
+				<div className={ classes }>
+					<Link { ...sharedProps as ButtonType } to={ href! }>
+						{ children }
+					</Link>
 				</div>
 			)
 		case 'button':
 		default:
 			return (
 				<div className={ classes }>
-					<button { ...props as ButtonType }>{ children }</button>
+					<button { ...sharedProps as ButtonType } type={ type }>
+						{ children }
+					</button>
 				</div>
 			)
 	}

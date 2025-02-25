@@ -1,17 +1,100 @@
 .form {
+	column-gap: $column-gap-sm;
 	display: flex;
-	row-gap: $row-gap-lg;
+	flex-wrap: wrap;
+	position: relative;
+	row-gap: $section-gap-lg;
 	text-align: left;
+	width: 100%;
+
+	&#sort,
+	&#view {
+		column-gap: $column-gap-lg;
+	}
+
+	&#filter .field:has([name="ages"], [name="distance"]) {
+		flex: 1 100%;
+	}
 
 	&#login {
 		flex-direction: column;
-	}
-
-	&#search {
-		column-gap: 2rem;
+		padding-top: $row-gap-lg;
 	}
 
 	&__button {
-		margin-top: $row-gap-lg;
+		margin-top: $column-gap-sm;
+	}
+
+	&__error {
+		bottom: calc(($section-gap-lg * -1) - .875rem);
+		color: $color-danger;
+		display: block;
+		font-size: .625rem;
+		line-height: $field-font-size;
+		position: absolute;
+		text-align: center;
+		width: 100%;
+
+		@include breakpoint($width-md) {
+			font-size: $label-font-size;
+		}
+	}
+}
+
+.intro {
+	align-items: center;
+	background-color: $color-white;
+	display: flex;
+	flex-direction: column-reverse;
+	max-width: 100%;
+	position: relative;
+	text-align: center;
+	width: 100%;
+
+	@include breakpoint($width-md) {
+		flex-direction: row;
+	}
+
+	& > .column {
+		height: 100%;
+		width: 100%;
+
+		@include breakpoint($width-md) {
+			flex: 1 1 50%;
+			max-height: calc(100vh - 6rem);
+		}
+
+		&:has(> img) {
+			background-color: #EDB505;
+			z-index: 0;
+
+			img {
+				height: 100%;
+				max-height: 30vh;
+				object-fit: cover;
+				width: 100%;
+
+				@include breakpoint($width-md) {
+					max-height: calc(100vh - 6rem);
+					object-fit: none;
+					object-position: bottom;
+				}
+			}
+		}
+	}
+
+
+	.content {
+		margin: 1.5rem;
+
+		@include breakpoint($width-md) {
+			margin: 0 4.25rem;
+		}
+	}
+
+	.logo {
+		left: $gutter-lg;
+		position: absolute;
+		top: $gutter-lg;
 	}
 }

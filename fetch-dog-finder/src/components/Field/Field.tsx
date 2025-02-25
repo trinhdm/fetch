@@ -1,32 +1,33 @@
 import clsx from 'clsx'
 import {
-	BiHash,
+	BiChevronDown,
 	BiSearch,
 	BiX,
 } from 'react-icons/bi'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { capitalize, slugify } from '@utils/helpers'
 import { Button } from '@components/Button'
+import { Menu } from '@components/Menu'
 import type {
+	CheckboxRadioValues,
 	FieldChangeHandler,
 	FieldProps,
+	FieldSelectHandler,
 	FieldValidations,
+	SelectValues,
 } from './Field.types'
 import './field.module.scss'
 
 const Field = ({
-	defaultOption,
-	multiple = false,
 	name,
 	onChange,
 	onReset,
-	onSelect,
 	onValidation,
 	options,
 	placeholder,
 	selected,
-	showLabel = false,
+	showLabel = true,
 	type = 'text',
 	...props
  }: FieldProps) => {
@@ -37,65 +38,89 @@ const Field = ({
 
 	const [value, setValue] = useState('')
 
-	const hasOnChange = !!onChange && typeof onChange === 'function',
-		hasOptions = !!options && options?.length > 0,
+	const debounceRef = useRef<NodeJS.Timeout>(null)
+
+	const hasOptions = !!options && options?.length > 0,
 		hasSelected = !!selected && selected?.length > 0,
 		isSearchField = type === 'search'
 
-	const handleOnChange: FieldChangeHandler = (event) => (hasOnChange
-		? onChange(event)
-		: setValue(event.target.value)
-	)
-
-	const validateField = () => (typeof onValidation === 'function'
-		? register(name, onValidation!(type as FieldValidations))
-		: register(name)
-	)
-
 	const error = errors[name],
 		labelledby = `${name}-label`,
-		placehold = placeholder ?? capitalize(name),
-		selection = multiple ? "checkbox" : "radio"
+		placehold = placeholder ?? capitalize(name)
+
+	const handleInputChange: FieldChangeHandler = event => {
+		let debounceID = debounceRef.current
+
+		clearTimeout(debounceID!)
+
+		debounceID = setTimeout(() => {
+			if (isSearchField)
+				setValue(event.target.value)
+			else if (!!onChange && typeof onChange === 'function')
+				onChange(event)
+		}, 300)
+	}
+
+	const handleSelect = (event, index: number) => {
+		setValue(index === 0 ? '' : event.target.innerText)
+
+		if (!!onChange && typeof onChange === 'function')
+			onChange(event)
+	}
+
+	const BiIcon = {
+		checkbox: null,
+		email: null,
+		number: null,
+		radio: null,
+		search: (value ? BiX : BiSearch),
+		select: BiChevronDown,
+		text: null,
+	}[`${type}`]
 
 	const ariaLabels = showLabel
 		? { 'aria-labelledby': labelledby }
 		: { 'aria-label': placehold }
 
-	const handlers = hasOnChange || hasOptions
-		? { onChange: handleOnChange }
-		: validateField()
+	const attrs = {
+		...ariaLabels,
+		...props,
+	}
 
 	const classes = clsx({
 		'field': true,
 		'field--error': error,
 	})
 
-	const BiIcon = (value ? BiX : BiSearch)
-
-	const attrs = {
-		...ariaLabels,
-		...handlers,
-		...props,
-	}
-
 	return (
 		<div className={ classes }>
-			<div className="field__container">
-				{ showLabel && (
-					<label
-						className="field__label"
-						htmlFor={ name }
-						id={ labelledby }
-					>
-						{ placehold }
-					</label>
-				) }
+			{ showLabel && (
+				type === 'checkbox' || type === 'radio' || type === 'select'
+					? (
+						<span className="field__label" id={ labelledby }>
+							{ capitalize(name) }
+						</span>
+					)
+					: (
+						<label
+							className="field__label"
+							htmlFor={ name }
+							id={ labelledby }
+						>
+							{ capitalize(name) }
+						</label>
+					)
+			) }
 
-				{ type !== 'radio' && (
+			<div className="field__container">
+				{ (type === 'email' || type === 'number' || type === 'search' || type === 'text') && (
 					<input
+						{ ...register(name, {
+							onChange: handleInputChange,
+							...onValidation!(type as FieldValidations)
+						}) }
 						className="field__input"
 						id={ name }
-						name={ name }
 						placeholder={ placehold }
 						tabIndex={ 0 }
 						type={ type }
@@ -103,31 +128,56 @@ const Field = ({
 					/>
 				) }
 
-				{ type === 'radio' && hasOptions && (
+				{ (type === 'checkbox' || type === 'radio') && (
 					<ul className="field__choices">
-						{ options.sort().map(opt => (
-							<li className="field__choice" key={ slugify(`${opt}`) }>
-								<input
-									checked={ selected?.includes(opt) || defaultOption === opt || false }
-									className="field__radio"
-									id={ slugify(opt) }
-									name={ slugify(name) }
-									// onChange={ onSelect }
-									tabIndex={ 0 }
-									type={ type }
-									value={ opt || '' }
-									{ ...attrs }
-								/>
-								<label htmlFor={ slugify(opt) }>
-									{ capitalize(opt) }
-								</label>
-							</li>
-						)) }
+						{ (options as CheckboxRadioValues['options']).map(opt => {
+							const group = slugify(name),
+								option = slugify(`${opt}`)
+
+							return (
+								<li className="field__choice" key={ option }>
+									<input
+										checked={ selected?.includes(opt) || false }
+										className={ `field__${type}` }
+										id={ option }
+										name={ group }
+										onChange={ onChange }
+										tabIndex={ 0 }
+										type={ type }
+										value={ opt || '' }
+									/>
+
+									<label htmlFor={ option }>
+										{ opt }
+									</label>
+								</li>
+							)
+						}) }
 					</ul>
 				) }
 
-				{/* { type === 'number'&& <BiHash className="field__icon" /> } */}
-				{ isSearchField && <BiIcon className="field__icon" /> }
+				{ type === 'select' && (
+					<Menu className="field__select">
+						<Menu.Toggle>
+							<span className={ `field__selected ${value ? 'field__selected--value' : 'field__selected--default' }` }>
+								{ value ? value : Object.keys(options as SelectValues['options'])[0] }
+							</span>
+						</Menu.Toggle>
+						{ Object.entries(options as SelectValues['options']).map(([label], i) => (
+							<Menu.Item
+								isActive={ value === label }
+								key={ slugify(`${label}`) }
+								name={ name }
+								onClick={ event => handleSelect(event, i) }
+								value={ label }
+							>
+								{ label }
+							</Menu.Item>
+						)) }
+					</Menu>
+				) }
+
+				{ BiIcon && <BiIcon className="field__icon" /> }
 
 				{ !!(isSearchField && hasOptions && hasSelected && onReset) && (
 					<Button
@@ -149,29 +199,23 @@ const Field = ({
 			{ (isSearchField && hasOptions) && (
 				<>
 					<fieldset className="field__list">
-						{ showLabel && (
-							<legend className="field__label" id={ labelledby }>
-								{ placehold }
-							</legend>
-						) }
-
 						<ul className="field__choices">
 							{ options.filter(opt => opt.toString().toLowerCase().includes(
 								value.toLowerCase()
 							)).map(opt => {
-								const option = slugify(`${opt}`),
-									fieldset = slugify(name)
+								const group = slugify(name),
+									option = slugify(`${opt}`)
 
 								return (
 									<li className="field__choice" key={ option }>
 										<input
 											checked={ selected?.includes(opt) || false }
-											className={ `field__${selection}` }
+											className="field__checkbox"
 											id={ option }
-											name={ fieldset }
-											onChange={ onSelect }
+											name={ group }
+											onChange={ onChange }
 											tabIndex={ 0 }
-											type={ selection }
+											type="checkbox"
 											value={ opt || '' }
 										/>
 
@@ -185,16 +229,13 @@ const Field = ({
 					</fieldset>
 
 					{ hasSelected && (
-						<ul className="field__results">
+						<ul className="field__tags">
 							{ selected.sort().map(option => (
-								<li
-									className="field__tag"
-									onClick={ onSelect }
-									key={ `${option}-tag` }
-									tabIndex={ 0 }
-								>
-									<span>{ option }</span>
-									<BiX />
+								<li className="field__tag" key={ `${option}-tag` }>
+									<Button onClick={ onChange as FieldSelectHandler } variant="tag">
+										<span>{ option }</span>
+										<BiX />
+									</Button>
 								</li>
 							)) }
 						</ul>

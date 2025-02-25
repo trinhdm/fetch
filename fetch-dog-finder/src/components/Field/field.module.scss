@@ -4,14 +4,15 @@ $-selection-size: .625rem;
 .field {
 	$base: &;
 
+	flex: 1;
 	font-size: $field-font-size;
 	line-height: 1;
 	position: relative;
 
-	&:has(fieldset) {
+	&:has(#{$base}__list) {
 		display: flex;
 		flex-direction: column;
-		row-gap: $section-gap-lg;
+		flex: 1 100%;
 	}
 
 	&--error #{$base}__container {
@@ -28,9 +29,7 @@ $-selection-size: .625rem;
 		padding-top: $row-gap-lg;
 		position: relative;
 
-		&:has(#{$base}__input) {
-			padding-bottom: $row-gap-lg;
-
+		&:has(#{$base}__input, #{$base}__select) {
 			&::before,
 			&::after {
 				bottom: 0;
@@ -38,6 +37,7 @@ $-selection-size: .625rem;
 				display: block;
 				height: .1px;
 				left: 0;
+				pointer-events: none;
 				position: absolute;
 				transition: opacity .2s $transition-cta;
 				width: 100%;
@@ -52,6 +52,10 @@ $-selection-size: .625rem;
 				opacity: 0;
 				z-index: 2;
 			}
+		}
+
+		&:has(#{$base}__input) {
+			padding-bottom: $row-gap-lg;
 		}
 	}
 
@@ -96,9 +100,11 @@ $-selection-size: .625rem;
 	}
 
 	&__label {
-		color: $color-text;
+		color: $color-secondary;
 		display: block;
-		margin-bottom: $button-gap;
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.1;
 	}
 
 	&__message {
@@ -117,12 +123,54 @@ $-selection-size: .625rem;
 		position: absolute;
 	}
 
-	&__input,
-	&__select {
+	&__input {
 		background-color: transparent;
 		color: $color-field;
 		outline: 0;
 		width: 100%;
+	}
+
+	&__select {
+		padding-bottom: $row-gap-lg;
+
+		.menu {
+			&__dropdown {
+				height: 6.875rem;
+				width: 100%;
+			}
+
+			&__item {
+				&:first-of-type .button {
+					border-bottom: .1px solid $color-divider;
+					color: $color-placeholder;
+					margin-bottom: .25rem;
+					padding-bottom: .375rem;
+
+					&:hover {
+						color: $color-primary;
+					}
+				}
+			}
+
+			&__toggle {
+				width: 100%;
+			}
+		}
+	}
+
+	&__selected {
+		align-items: center;
+		display: flex;
+		flex: 1;
+		height: 1.125rem;
+
+		&--default {
+			color: $color-placeholder;
+		}
+
+		&--value {
+			color: $color-field;
+		}
 	}
 
 	&__checkbox,
@@ -136,7 +184,7 @@ $-selection-size: .625rem;
 		flex-grow: 0;
 		height: $-selection-size;
 		outline: 0;
-		transition: background .25s $transition-cta;
+		transition: background .2s $transition-cta;
 		vertical-align: middle;
 		width: $-selection-size;
 
@@ -150,6 +198,7 @@ $-selection-size: .625rem;
 			content: "";
 			display: block;
 			height: inherit;
+			transition: box-shadow .2s $transition-cta;
 			width: inherit;
 		}
 
@@ -181,13 +230,14 @@ $-selection-size: .625rem;
 	&__list {
 		background-color: $color-white;
 		border: .1px solid $color-secondary;
-		margin-inline: -.1px 0;
+		margin: $section-gap-lg -.1px 0 0;
 		padding: $row-gap-lg $button-gap $row-gap-lg $row-gap-lg;
 
 		#{$base}__choices {
 			height: 6.25rem;
 			overflow-y: auto;
 			padding-right: $row-gap-lg;
+			scrollbar-width: thin;
 
 			@include breakpoint($width-md) {
 				height: 13.5rem;
@@ -201,10 +251,12 @@ $-selection-size: .625rem;
 		row-gap: $button-gap;
 	}
 
-	&__choice,
-	&__tag {
+	&__choice {
+		align-items: center;
+		display: flex;
 		max-height: max-content;
 		max-width: max-content;
+		transition: color .2s $transition-cta;
 
 		&,
 		label {
@@ -219,13 +271,9 @@ $-selection-size: .625rem;
 		&:has(:checked) {
 			color: $color-secondary;
 		}
-	}
 
-	&__choice {
-		align-items: center;
-		display: flex;
-
-		&:is(:focus-within, :hover) {
+		&:focus-within,
+		&:hover {
 			color: $color-primary;
 
 			:is(#{$base}__checkbox, #{$base}__radio)::before {
@@ -234,29 +282,11 @@ $-selection-size: .625rem;
 		}
 	}
 
-	&__tag {
-		align-items: center;
-		background-color: #{$color-tag}40;
-		border-radius: 1rem;
-		color: $color-tag;
-		column-gap: .125rem;
-		display: inline-flex;
-		font-size: $label-font-size;
-		margin: 0 .5rem $button-gap 0;
-		padding: .25rem .5rem;
-		transition: background-color .25s $transition-cta,
-			color .25s $transition-cta;
-
-		&:is(:focus, :hover) {
-			background-color: #{$color-tag}E6;
-			color: $color-white;
-		}
-
-		svg {
-			font-size: $icon-size-sm;
-			height: $icon-size-sm;
-			width: $icon-size-sm;
-		}
+	&__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $button-gap;
+		margin-top: $section-gap-lg;
 	}
 
 	&:focus-within {

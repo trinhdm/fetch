@@ -2,14 +2,18 @@ import type { ChangeEvent } from 'react'
 
 
 type FieldTypes =
+	| 'checkbox'
 	| 'email'
 	| 'number'
+	| 'radio'
 	| 'range'
 	| 'search'
 	| 'select'
 	| 'text'
 
 type FieldValidations = Exclude<FieldTypes,
+	| 'checkbox'
+	| 'radio'
 	| 'range'
 	| 'select'
 >
@@ -21,7 +25,7 @@ type FieldSelectHandler = (event: FieldChangeEvent | React.MouseEvent<HTMLElemen
 
 type FieldBase = {
 	name: string
-	onChange?: FieldChangeHandler
+	onChange?: FieldChangeHandler | FieldSelectHandler
 	placeholder?: string
 	// type: FieldTypes
 }
@@ -31,7 +35,6 @@ type InputValues = {
 	max?: never
 	min?: never
 	onReset?: never
-	onSelect?: never
 	options?: never
 	selected?: never
 	type: Extract<FieldTypes, 'email' | 'text'>
@@ -42,26 +45,46 @@ type NumberValues = {
 	max?: number
 	min?: number
 	onReset?: never
-	onSelect?: never
 	options?: never
 	selected?: never
 	type: Extract<FieldTypes, 'number'>
+}
+
+type SearchValues = {
+	autoComplete?: never
+	max?: never
+	min?: never
+	onReset?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
+	options: (number | string)[]
+	selected?: (number | string)[]
+	type: Extract<FieldTypes, 'search'>
 }
 
 type SelectValues = {
 	autoComplete?: never
 	max?: never
 	min?: never
-	onReset?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-	onSelect: FieldSelectHandler
+	onReset?: never
+	options: Record<string, number | string>
+	selected?: never
+	type: Extract<FieldTypes, 'select'>
+}
+
+type CheckboxRadioValues = {
+	autoComplete?: never
+	max?: never
+	min?: never
+	onReset?: never
 	options: (number | string)[]
 	selected?: (number | string)[]
-	type: Extract<FieldTypes, 'search'>
+	type: Extract<FieldTypes, 'checkbox' | 'radio'>
 }
 
 type FieldValues = FieldBase & (
+	| CheckboxRadioValues
 	| InputValues
 	| NumberValues
+	| SearchValues
 	| SelectValues
 )
 
@@ -73,7 +96,7 @@ type ValidationPattern = {
 
 type FieldProps = FieldValues & {
 	onValidation?: (field: FieldValidations) => {
-		required: string;
+		required: string
 		pattern: ValidationPattern
 	}
 	showLabel?: boolean
@@ -81,8 +104,10 @@ type FieldProps = FieldValues & {
 
 
 export type {
+	CheckboxRadioValues,
 	FieldChangeHandler,
 	FieldProps,
 	FieldSelectHandler,
 	FieldValidations,
+	SelectValues,
 }

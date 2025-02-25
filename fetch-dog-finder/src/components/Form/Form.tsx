@@ -16,6 +16,7 @@ const Form = ({
 	buttonText,
 	children,
 	className,
+	error,
 	id,
 	onSubmit = () => {},
 	role = 'form',
@@ -64,7 +65,7 @@ const Form = ({
 				id={ id }
 				noValidate={ role === 'search' }
 				onSubmit={ handleSubmit(onSubmit) }
-				{ ...(role === 'search' ? { role } : {}) }
+				role={ role }
 			>
 				{ Children.map(children, child => {
 					if (!isValidElement(child))
@@ -93,6 +94,8 @@ const Form = ({
 						{ buttonText }
 					</Button>
 				) }
+
+				{ error && <span className="form__error">{ error }</span> }
 			</form>
 		</FormProvider>
 	)

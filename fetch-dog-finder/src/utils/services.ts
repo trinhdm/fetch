@@ -1,8 +1,8 @@
 import axios from 'axios'
-import type { Auth } from '@typings/shared'
+import type { Auth, DogParams, Location, LocationParams } from '@typings/shared'
 
 
-const API_URL = 'https://frontend-take-home-service.fetch.com'
+const API_URL: string = 'https://frontend-take-home-service.fetch.com'
 
 const api = axios.create({
 	baseURL: API_URL,
@@ -17,26 +17,93 @@ api.interceptors.request.use(config => {
 
 export const login = async (credentials: Auth) => await api.post('/auth/login', credentials)
 
-export const logout = async () => {
-	await api.post('/auth/logout')
-}
+export const logout = async () => await api.post('/auth/logout')
 
 export const fetchBreeds = async () => {
-	const response = await api.get('/dogs/breeds')
-	return response.data
+	const { data } = await api.get('/dogs/breeds')
+	return data
 }
 
-export const fetchDogs = async (query: Record<string, any>) => {
-	const response = await api.get('/dogs/search', { params: query })
-	return response.data
+export const fetchDogs = async (params: DogParams) => {
+	const { data } = await api.get('/dogs/search', { params })
+	return data
+}
+
+// Haversine formula to calculate the distance between two lat/lng points
+const haversineDistance = (
+	lat1: number,
+	lon1: number,
+	lat2: number,
+	lon2: number
+) => {
+	const EARTH_RADIUS_MILES = 3958.8
+	const toRadians = (degrees: number) => (degrees * Math.PI) / 180
+
+	const dLat = toRadians(lat2 - lat1)
+	const dLon = toRadians(lon2 - lon1)
+
+	const a = Math.sin(dLat / 2) ** 2 +
+		Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) ** 2
+
+	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+	return EARTH_RADIUS_MILES * c // Distance in miles
+}
+
+export const getZipCodesWithin = async (
+	params: LocationParams,
+	radius: null | string = null
+): Promise<Pick<Location, 'zip_code'>[]> => {
+	try {
+		const { data: { results } } = await api.post('/locations/search', params)
+
+		const zipCoordinates = (results as Location[]).map(({
+			latitude,
+			longitude,
+			zip_code,
+		}) => radius
+			? { latitude, longitude, zip_code }
+			: { zip_code }
+		)
+
+		if (!zipCoordinates.length)
+			return []
+
+		const zipCoords = zipCoordinates as Pick<Location, 'latitude' | 'longitude' | 'zip_code'>[]
+
+		if (radius) {
+			const radiusMiles = parseInt(radius)
+
+			const {
+				latitude: baseLat,
+				longitude: baseLon,
+			} = zipCoords[0] as Pick<Location, 'latitude' | 'longitude'>
+
+			return zipCoords
+				.filter(({ latitude, longitude }) => haversineDistance(baseLat, baseLon, latitude, longitude) <= radiusMiles)
+				.map(({ zip_code }) => zip_code) as unknown as Pick<Location, 'zip_code'>[]
+		}
+
+		return zipCoords.map(({ zip_code }) => zip_code) as unknown as Pick<Location, 'zip_code'>[]
+	} catch (error) {
+		console.error('Error fetching locations:', error)
+		return []
+	}
 }
 
 export const retrieveDogs = async (ids: string[]) => {
-	const response = await api.post('/dogs', ids)
-	return response.data
+	const { data } = await api.post('/dogs', ids)
+	return data
 }
 
-export const fetchMatch = async (dogIds: string[]) => {
-	const response = await api.post('/dogs/match', dogIds)
-	return response.data
+export const retrieveLocations = async (zipCodes: string[]) => {
+	const { data } = await api.post('/locations', zipCodes)
+	return data
+}
+
+export const retrieveMatch = async (ids: string[]) => {
+	const { data: { match: matchID } } = await api.post('/dogs/match', ids)
+	const [match] = await retrieveDogs([matchID])
+
+	return match
 }

@@ -11,7 +11,7 @@ type FieldTypes =
 	| 'select'
 	| 'text'
 
-type FieldValidations = Exclude<FieldTypes,
+export type FieldValidations = Exclude<FieldTypes,
 	| 'checkbox'
 	| 'radio'
 	| 'range'
@@ -20,8 +20,8 @@ type FieldValidations = Exclude<FieldTypes,
 
 type FieldChangeEvent = ChangeEvent<HTMLInputElement>
 
-type FieldChangeHandler = (event: FieldChangeEvent, index?: number) => void
-type FieldSelectHandler = (event: FieldChangeEvent | MouseEvent<HTMLElement>, index?: number) => void
+export type FieldChangeHandler = (event: FieldChangeEvent, index?: number) => void
+export type FieldSelectHandler = (event: FieldChangeEvent | MouseEvent<HTMLElement>, index?: number) => void
 
 
 type InputValues = {
@@ -104,7 +104,7 @@ type ValidationPattern = {
 	value: RegExp
 }
 
-type FieldProps = FieldValues & {
+export type FieldProps = FieldValues & {
 	onValidation?:
 		| ((field: FieldValidations) => {
 			required: string
@@ -114,31 +114,26 @@ type FieldProps = FieldValues & {
 	showLabel?: boolean
 }
 
-type ChoiceFieldProps = FieldBaseProps & Pick<ChoiceValues, 'options' | 'selected'>
-type InputFieldProps = FieldBaseProps & Pick<FieldProps, 'onValidation' | 'placeholder'>
-type SelectFieldProps = Omit<FieldBaseProps, 'handleChange'> & Pick<SelectValues, 'options'> & {
-	handleSelect: FieldSelectHandler
-	value: string
-}
-
-
-interface FieldLabelProps extends Pick<FieldValues, 'name' | 'type'> {
+export interface FieldLabelProps extends Pick<FieldValues, 'name' | 'type'> {
 	children: string
 }
 
-interface FieldTagsProps extends FieldBaseProps, Pick<SearchValues, 'options' | 'selected'> {
+export interface FieldTagsProps extends FieldBaseProps, Pick<SearchValues, 'options' | 'selected'> {
 	value: string
 }
 
 
-export type {
-	ChoiceFieldProps,
-	FieldChangeHandler,
-	FieldLabelProps,
-	FieldProps,
-	FieldSelectHandler,
-	FieldTagsProps,
-	FieldValidations,
-	InputFieldProps,
-	SelectFieldProps,
+export type ChoiceFieldProps = FieldBaseProps & Pick<ChoiceValues,
+	| 'options'
+	| 'selected'
+>
+
+export type InputFieldProps = FieldBaseProps & Pick<FieldProps,
+	| 'onValidation'
+	| 'placeholder'
+>
+
+export type SelectFieldProps = Omit<FieldBaseProps, 'handleChange'> & Pick<SelectValues, 'options'> & {
+	handleSelect: FieldSelectHandler
+	value: string
 }

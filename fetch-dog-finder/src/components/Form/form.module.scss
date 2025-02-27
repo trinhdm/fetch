@@ -1,20 +1,12 @@
 .form {
-	column-gap: $column-gap-sm;
+	column-gap: $column-gap-lg;
 	display: flex;
 	flex-wrap: wrap;
+	overflow: hidden;
 	position: relative;
 	row-gap: $section-gap-lg;
 	text-align: left;
 	width: 100%;
-
-	&#sort,
-	&#view {
-		column-gap: $column-gap-lg;
-	}
-
-	&#filter .field:has([name="ages"], [name="distance"]) {
-		flex: 1 100%;
-	}
 
 	&#login {
 		flex-direction: column;

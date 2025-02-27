@@ -16,6 +16,7 @@ const Form = ({
 	buttonText,
 	children,
 	className,
+	disabled,
 	error,
 	id,
 	onSubmit = () => {},
@@ -23,6 +24,8 @@ const Form = ({
  }: FormProps) => {
 	const methods = useForm<FormValues>()
 	const { handleSubmit } = methods
+
+	const classes = clsx('form', className)
 
 	const handleValidation = (fieldType: FieldValidations) => {
 		const pattern = {
@@ -50,13 +53,8 @@ const Form = ({
 		return validation
 	}
 
-	const classes = clsx({
-		form: true,
-		[`${className}`]: className,
-	})
-
 	if (!children)
-		return <></>
+		return null
 
 	return (
 		<FormProvider { ...methods }>
@@ -75,8 +73,13 @@ const Form = ({
 					const { type: childType } = childEl,
 						{ displayName } = childType as FunctionComponent
 
+					const props = {
+						disabled,
+						onValidation: handleValidation,
+					}
+
 					return displayName === 'Field'
-						? cloneElement(childEl, { onValidation: handleValidation })
+						? cloneElement(childEl, props)
 						: child
 				}) }
 

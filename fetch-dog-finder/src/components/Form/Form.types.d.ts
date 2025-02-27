@@ -9,6 +9,7 @@ type FormValues = {
 interface FormBase {
 	children?: ReactNode
 	className?: string
+	disabled?: boolean
 	error?: string
 	id: string
 }

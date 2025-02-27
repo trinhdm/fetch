@@ -78,7 +78,65 @@ const Field = ({
 		handleChange(event as React.ChangeEvent<HTMLInputElement>)
 	}
 
-	const BiIcon = value ? BiX : BiSearch
+	const renderField = () => {
+		const BiIcon = value ? BiX : BiSearch
+
+		switch (type) {
+			case 'email':
+			case 'number':
+			case 'search':
+			case 'text':
+				return (
+					<>
+						<InputField
+							{ ...sharedProps }
+							disabled={ disabled }
+							handleChange={ handleChange }
+							name={ name }
+							onValidation={ onValidation }
+							placeholder={ placeholder ?? capitalize(name) }
+							type={ type }
+						/>
+						{ type === 'search' && (
+							<>
+								{ !!selected?.length && (
+									<Button
+										className="field__button"
+										disabled={ disabled }
+										onClick={ onReset }
+										variant="text"
+									>
+										Clear Tags
+									</Button>
+								) }
+								<BiIcon className="field__icon field__icon--search" />
+							</>
+						) }
+					</>
+				)
+			case 'checkbox':
+			case 'radio':
+				return (
+					<ChoiceField
+						{ ...sharedProps }
+						handleChange={ handleChange }
+						options={ options as ChoiceFieldProps['options'] }
+						selected={ selected }
+					/>
+				)
+			case 'select':
+				return (
+					<SelectField
+						{ ...sharedProps }
+						handleSelect={ handleSelect }
+						options={ options as SelectFieldProps['options'] }
+						value={ value }
+					/>
+				)
+			default:
+				return null
+		}
+	}
 
 	return (
 		<div className={ classes }>
@@ -89,52 +147,7 @@ const Field = ({
 			) }
 
 			<div className="field__container">
-				{ (type === 'email' || type === 'number' ||  type === 'search' || type === 'text') && (
-					<InputField
-						{ ...sharedProps }
-						disabled={ disabled }
-						handleChange={ handleChange }
-						name={ name }
-						onValidation={ onValidation }
-						placeholder={ placeholder ?? capitalize(name) }
-						type={ type }
-					/>
-				) }
-
-				{ (type === 'checkbox' || type === 'radio') && (
-					<ChoiceField
-						{ ...sharedProps }
-						handleChange={ handleChange }
-						options={ options as ChoiceFieldProps['options'] }
-						selected={ selected }
-					/>
-				) }
-
-				{ type === 'select' && (
-					<SelectField
-						{ ...sharedProps }
-						handleSelect={ handleSelect }
-						options={ options as SelectFieldProps['options'] }
-						value={ value }
-					/>
-				)}
-
-				{ type === 'search' && (
-					<>
-						{ !!selected?.length && (
-							<Button
-								className="field__button"
-								disabled={ disabled }
-								onClick={ onReset }
-								variant="text"
-							>
-								Clear Tags
-							</Button>
-						) }
-
-						<BiIcon className={ `field__icon field__icon--${type}` } />
-					</>
-				) }
+				{ renderField() }
 			</div>
 
 			{ type === 'search' && (

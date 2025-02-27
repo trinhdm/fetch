@@ -1,22 +1,28 @@
-import { useCallback, useState } from 'react'
-import { UserProvider } from '@providers/UserProvider'
+import { useState } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router'
 import { Directory } from '@layout/Directory'
+import { Favorites } from '@layout/Favorites'
 import { Login } from '@layout/Login'
+import { Page } from '@layout/Page'
+import { UserProvider } from '@providers/UserProvider'
 import type { User, UserSettings } from '@typings/shared'
-import './App.css'
 import '@assets/scss/global.scss'
+// import './App.css'
 
 function App() {
-	const [user, setUser] = useState<User>({
+	const defaultUser: User = {
 		name: '',
 		email: '',
 		isLoggedIn: false,
-	})
+		favorites: [],
+		match: {},
+	}
 
-	const handleUser = useCallback((data: User) => setUser(state => ({
-		...data,
-		isLoggedIn: !state.isLoggedIn,
-	})), [setUser])
+	const [user, setUser] = useState<User>(defaultUser)
+
+	const handleUser = (
+		data: Partial<User> = defaultUser
+	) => setUser(state => ({ ...state, ...data }))
 
 	const userValues: UserSettings = {
 		...user,
@@ -25,7 +31,18 @@ function App() {
 
 	return (
 		<UserProvider values={ userValues }>
-			{ user.isLoggedIn ? <Directory /> : <Login /> }
+			<BrowserRouter>
+				<Routes>
+					{ user.isLoggedIn ? (
+						<>
+							<Route path="/" element={ <Page><Directory /></Page> } />
+							<Route path="/favorites" element={ <Page><Favorites /></Page> } />
+						</>
+					) : (
+						<Route path="/" element={ <Login /> } />
+					) }
+				</Routes>
+			</BrowserRouter>
 		</UserProvider>
 	)
 }

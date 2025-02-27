@@ -1,5 +1,11 @@
 import axios from 'axios'
-import type { Auth, DogParams, Location, LocationParams } from '@typings/shared'
+import { haversineDistance } from './helpers'
+import type {
+	Auth,
+	DogParams,
+	Location,
+	LocationParams,
+} from '@typings/shared'
 
 
 const API_URL: string = 'https://frontend-take-home-service.fetch.com'
@@ -27,27 +33,6 @@ export const fetchBreeds = async () => {
 export const fetchDogs = async (params: DogParams) => {
 	const { data } = await api.get('/dogs/search', { params })
 	return data
-}
-
-// Haversine formula to calculate the distance between two lat/lng points
-const haversineDistance = (
-	lat1: number,
-	lon1: number,
-	lat2: number,
-	lon2: number
-) => {
-	const EARTH_RADIUS_MILES = 3958.8
-	const toRadians = (degrees: number) => (degrees * Math.PI) / 180
-
-	const dLat = toRadians(lat2 - lat1)
-	const dLon = toRadians(lon2 - lon1)
-
-	const a = Math.sin(dLat / 2) ** 2 +
-		Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) ** 2
-
-	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-
-	return EARTH_RADIUS_MILES * c // Distance in miles
 }
 
 export const getZipCodesWithin = async (

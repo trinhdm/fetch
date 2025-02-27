@@ -1,44 +1,36 @@
-import type { ReactNode } from 'react'
-import type { SortField, SortOrder } from '@typings/shared'
-// import type { NonNegative } from '@typings/helpers'
+import type { MouseEvent, ReactNode } from 'react'
+import type {
+	Dog,
+	FilterValues,
+	GeolocationValues,
+	SortValues,
+	ViewValues,
+} from '@typings/shared'
 
 
 interface PageProps {
 	children: ReactNode
 }
 
-interface FilterValues {
-	ages?: string[]
-	breeds?: string[]
-	// location
+interface PageSettings {
+	dogs: Dog[] | null
+	filter: FilterValues
+	geolocation: GeolocationValues
+	handleMatch: () => Promise<void>
+	isSidebarOpen: boolean
+	resetDirectory: (category?: string) => void
+	sort: SortValues
+	toggleModal: () => void
+	toggleSidebar: (event: MouseEvent<HTMLElement>) => void
+	total: {
+		items: number
+		pages: number
+	}
+	view: ViewValues
 }
 
-interface FilterParams extends Pick<FilterValues, 'breeds'> {
-	ageMax?: number
-	ageMin?: number
-}
-
-interface GeolocationValues {
-	city: string
-	distance: string
-	state: string
-}
-
-interface SortValues {
-	category: SortField
-	order: SortOrder | 'Ascending' | 'Descending'
-}
-
-interface ViewValues {
-	layout: 'Grid' | 'List'
-	size: number
-}
 
 export type {
-	FilterParams,
-	FilterValues,
-	GeolocationValues,
 	PageProps,
-	SortValues,
-	ViewValues,
+	PageSettings,
 }

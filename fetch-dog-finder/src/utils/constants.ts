@@ -1,4 +1,71 @@
-export const usaLocations = {
+import type { SidebarValues, SortField, User } from '@typings/shared'
+
+
+export const USER_DEFAULTS: User = {
+	name: '',
+	email: '',
+	isLoggedIn: false,
+	favorites: [],
+	match: {},
+}
+
+export const SIDEBAR_DEFAULTS: SidebarValues = {
+	filter: {
+		ages: [],
+		breeds: [],
+	},
+	geolocation: {
+		city: '',
+		distance: '',
+		state: '',
+	},
+	sort: {
+		category: 'Breed',
+		order: 'Ascending',
+	},
+	total: {
+		items: 0,
+		pages: 1,
+	},
+	view: {
+		layout: 'Grid',
+		size: 24,
+	},
+}
+
+export const AGE_OPTIONS = [
+	'Puppy (0-1)',
+	'Adolescent (2-3)',
+	'Adult (4-7)',
+	'Senior (8+)',
+]
+
+export const SORT_OPTIONS: SortField[] = [
+	'Age',
+	'Breed',
+	'Name',
+]
+
+export const SORT_ORDER = [
+	'Ascending',
+	'Descending',
+]
+
+export const VIEW_OPTIONS = [
+	'Grid',
+	'List',
+]
+
+
+export const MILE_RADIUSES = {
+	'Anywhere': '\u00A0',
+	'5 miles': 5,
+	'10 miles': 10,
+	'25 miles': 25,
+	'50 miles': 50,
+}
+
+export const USA_STATES = {
 	'State': '\u00A0',
 	AK: 'Alaska' ,
 	AL: 'Alabama',
@@ -58,13 +125,3 @@ export const usaLocations = {
 	WV: 'West Virginia',
 	WY: 'Wyoming',
 }
-
-export const distances = {
-	'Anywhere': '\u00A0',
-	'5 miles': 5,
-	'10 miles': 10,
-	'25 miles': 25,
-	'50 miles': 50,
-}
-
-// export const states = Object.keys(usaLocations)

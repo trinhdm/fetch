@@ -1,88 +1,55 @@
-import axios from 'axios'
-import clsx from 'clsx'
-import { BiRefresh, BiSolidBone, BiUndo, BiX } from 'react-icons/bi'
+import { BiRefresh, BiUndo } from 'react-icons/bi'
 import { useEffect, useRef, useState } from 'react'
-import { useUserContext } from '@providers/UserProvider'
-import { generateTitle, getAgeRange, getSortOrder } from '../Directory/helpers'
-import { distances, usaLocations } from '@utils/locations'
 import {
-	fetchBreeds,
 	fetchDogs,
 	getZipCodesWithin,
 	retrieveDogs,
 	retrieveMatch,
 } from '@utils/services'
+import { getAgeRange, getSortOrder } from '@utils/helpers'
+import { SIDEBAR_DEFAULTS as defaults } from '@utils/constants'
+import { useUserContext } from '@providers/UserProvider'
 import { PageProvider } from '@providers/PageProvider'
 import { Button } from '@components/Button'
 import { Card } from '@components/Card'
 import { Footer } from '@components/Footer'
-import { Form } from '@components/Form'
 import { Header } from '@components/Header'
 import { Logo } from '@components/Logo'
 import { Modal } from '@components/Modal'
 import { Navbar } from '@components/Navbar'
 import { Pagination } from '@components/Pagination'
-import {
-	Field,
-	type FieldChangeHandler,
-	type FieldSelectHandler,
-} from '@components/Field'
-import type { Dog, DogParams, Location, LocationParams, Sort, SortField } from '@typings/shared'
+import { Sidebar } from '@components/Sidebar'
+import type { FieldChangeHandler, FieldSelectHandler } from '@components/Field'
+import type { PageProps, PageSettings } from './Page.types'
 import type {
+	Dog,
+	DogParams,
 	FilterParams,
 	FilterValues,
-	GeolocationValues,
-	PageProps,
-	SortValues,
+	Location,
+	LocationParams,
 	ViewValues,
-} from './Page.types'
+} from '@typings/shared'
 
 const Page = ({ children }: PageProps) => {
-	const defaults: {
-		filter: FilterValues
-		geolocation: GeolocationValues
-		sort: SortValues
-		view: ViewValues
-	} = {
-		filter: {
-			ages: [],
-			breeds: [],
-		},
-		geolocation: {
-			city: '',
-			distance: '',
-			state: '',
-		},
-		sort: {
-			category: 'Breed',
-			order: 'Ascending',
-		},
-		view: {
-			layout: 'Grid',
-			size: 24,
-		},
-	}
-
+	const {
+		favorites,
+		handleUser,
+		match,
+	} = useUserContext()!
 	const dialogRef = useRef<HTMLDialogElement>(null)
 
-	const { favorites, handleUser, match } = useUserContext()!
-
-	const [breeds, setBreeds] = useState<string[]>([])
 	const [dogs, setDogs] = useState<null | Dog[]>(null)
 	const [zipCodes, setZipCodes] = useState<null | Pick<Location, 'zip_code'>[]>(null)
 
-	const [filter, setFilter] = useState<FilterValues>(defaults.filter)
+	const [filter, setFilter] = useState(defaults.filter)
 	const [geolocation, setGeolocation] = useState(defaults.geolocation)
-	const [sort, setSort] = useState<SortValues>(defaults.sort)
+	const [sort, setSort] = useState(defaults.sort)
 	const [view, setView] = useState(defaults.view)
 
 	const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false)
-	const [page, setPage] = useState(1)
-	const [title, setTitle] = useState<string>('All Dogs')
-	const [total, setTotal] = useState({
-		items: 0,
-		pages: 1,
-	})
+	const [page, setPage] = useState<number>(1)
+	const [total, setTotal] = useState(defaults.total)
 
 	const changePageTo = (target: number) => {
 		window.scrollTo({ behavior: 'smooth', top: 0 })
@@ -94,15 +61,49 @@ const Page = ({ children }: PageProps) => {
 			setSidebarOpen(state => !state)
 	}
 
-	const resetBreeds = () => setFilter(state => ({ ...state, breeds: [] }))
 	const resetPagination = () => setPage(1)
 
-	const resetSidebar = () => {
+	const resetDirectory = (category = 'all') => {
 		resetPagination()
-		setFilter(defaults.filter)
-		setGeolocation(defaults.geolocation)
-		setSort(defaults.sort)
-		setView(defaults.view)
+
+		switch (category) {
+			case 'breeds':
+				setFilter(state => ({ ...state, breeds: [] }))
+				break
+			case 'all':
+			default:
+				setFilter(defaults.filter)
+				setGeolocation(defaults.geolocation)
+				setSort(defaults.sort)
+				setView(defaults.view)
+				break
+		}
+	}
+
+	const handleMatch = async () => {
+		try {
+			const matchedDog = await retrieveMatch(favorites)
+			handleUser({ match: matchedDog })
+		} catch (err) {
+			console.warn(err)
+		} finally {
+			const modal = dialogRef.current
+
+			if (modal && !modal.open)
+				modal.showModal()
+		}
+	}
+
+	const toggleModal = () => {
+		const modal = dialogRef.current
+
+		if (modal && modal.open)
+			modal.close()
+	}
+
+	const clearFavorites = () => {
+		toggleModal()
+		handleUser({ favorites: [], match: {} })
 	}
 
 	const updateFilter = ({ checked, key, value }: {
@@ -113,10 +114,9 @@ const Page = ({ children }: PageProps) => {
 		let entry = { [`${key}`]: [value] } as FilterValues
 
 		setFilter(state => {
-			const prevState = state
-
 			const { [`${key}` as keyof FilterValues]: prevValues } = state
 			const valuesSet = new Set(prevValues)
+			const prevState = state
 
 			if (checked)
 				valuesSet.add(value)
@@ -129,6 +129,11 @@ const Page = ({ children }: PageProps) => {
 		})
 
 		resetPagination()
+	}
+
+	const updateAge: FieldChangeHandler = (event) => {
+		const { target: { checked, value } } = event
+		updateFilter({ key: 'ages', checked, value })
 	}
 
 	const updateBreeds: FieldSelectHandler = (event) => {
@@ -153,11 +158,6 @@ const Page = ({ children }: PageProps) => {
 		updateFilter({ key: 'breeds', checked, value })
 	}
 
-	const updateAge: FieldChangeHandler = (event) => {
-		const { target: { checked, value } } = event
-		updateFilter({ key: 'ages', checked, value })
-	}
-
 	const updateLocation: FieldChangeHandler = (event) => {
 		const { target: { name, value } } = event
 		const entry = { [`${name}`]: value }
@@ -171,6 +171,7 @@ const Page = ({ children }: PageProps) => {
 
 			return tempState
 		})
+
 		resetPagination()
 	}
 
@@ -192,40 +193,21 @@ const Page = ({ children }: PageProps) => {
 	}
 
 	useEffect(() => {
-		const getBreedNames = async () => {
-			try {
-				const result = await fetchBreeds()
-				setBreeds(result)
-			} catch (err) {
-				if (axios.isAxiosError(err) && err.status === 401)
-					console.log('LOGGED OUT', err)
-			}
-		}
-
-		getBreedNames()
-	}, [])
-
-	useEffect(() => {
-		const heading = generateTitle({ ...filter, ...geolocation })
-		setTitle(heading)
-	}, [filter, geolocation])
-
-	useEffect(() => {
-		const {
-			city,
-			distance,
-			state,
-		} = geolocation
-
-		const hasUsAbbr = state && state.length === 2
-
-		const query: LocationParams = {
-			...(hasUsAbbr && { states: [state] }),
-			city,
-			size: 100,
-		}
-
 		const fetchZipCodes = async () => {
+			const {
+				city,
+				distance,
+				state,
+			} = geolocation
+
+			const hasUsAbbr = state && state.length === 2
+
+			const query: LocationParams = {
+				...(hasUsAbbr && { states: [state] }),
+				city,
+				size: 100,
+			}
+
 			let zipRadius = null
 
 			if (city || hasUsAbbr)
@@ -238,28 +220,28 @@ const Page = ({ children }: PageProps) => {
 	}, [geolocation])
 
 	useEffect(() => {
-		const { ages } = filter
-		const { size } = view
-
-		const ageRange = getAgeRange(ages),
-			filterOrder = { ...filter, ...ageRange } as FilterParams
-
-		const sortOrder = getSortOrder(sort).toLowerCase() as Sort
-
-		const query = {
-			...filterOrder,
-			...(zipCodes?.length && { zipCodes }),
-			from: (page - 1) * size,
-			size,
-			sort: sortOrder,
-		} as DogParams
-
 		const getDogs = async () => {
 			if (zipCodes && !zipCodes.length) {
 				setDogs([])
 				setTotal({ items: 0, pages: 1 })
 				return
 			}
+
+			const { ages } = filter
+			const { size } = view
+
+			const ageRange = getAgeRange(ages),
+				filterOrder = { ...filter, ...ageRange } as FilterParams
+
+			const sortOrder = getSortOrder(sort).toLowerCase()
+
+			const query = {
+				...filterOrder,
+				...(zipCodes?.length && { zipCodes }),
+				from: (page - 1) * size,
+				size,
+				sort: sortOrder,
+			} as DogParams
 
 			try {
 				const {
@@ -286,60 +268,17 @@ const Page = ({ children }: PageProps) => {
 		zipCodes,
 	])
 
-	const toggleModal = () => {
-		const modal = dialogRef.current
-
-		if (!modal)
-			return
-		else if (modal.open)
-			modal.close()
-		else
-			modal.showModal()
-	}
-
-	const handleMatch = async () => {
-		try {
-			const match = await retrieveMatch(favorites)
-			handleUser({ match })
-		} catch (err) {
-			console.log(err)
-		}
-	}
-
-	const clearFavorites = () => {
-		toggleModal()
-		handleUser({ favorites: [], match: {} })
-	}
-
-	const sidebarClasses = clsx({
-		overlay: isSidebarOpen,
-	})
-
-	const hasDefaultValues = getSortOrder(sort) !== 'Breed:Asc'
-		|| Object.values(filter).some(v => v.length)
-		|| Object.values(geolocation).some(v => v.length)
-		|| view.layout !== 'Grid'
-
-	const pageValues = {
-		clearFavorites,
+	const pageValues: PageSettings = {
 		dogs,
 		filter,
 		geolocation,
 		handleMatch,
 		isSidebarOpen,
-		page,
-		resetBreeds,
-		resetSidebar,
+		resetDirectory,
 		sort,
-		title,
 		toggleModal,
 		toggleSidebar,
 		total,
-		updateAge,
-		updateBreeds,
-		updateLocation,
-		updateSort,
-		updateView,
 		view,
 	}
 
@@ -347,13 +286,11 @@ const Page = ({ children }: PageProps) => {
 		<PageProvider values={ pageValues }>
 			<Header className="navigation__header">
 				<Logo />
-				<Navbar handleModal={ toggleModal } handleSidebar={ toggleSidebar } />
+				<Navbar />
 			</Header>
 
 			<Modal handleModal={ toggleModal } ref={ dialogRef }>
-				<Modal.Header>
-					Meet Your Paw-fect Match
-				</Modal.Header>
+				<Modal.Header>Meet Your Paw-fect Match</Modal.Header>
 				<Modal.Content>
 					<Card
 						{ ...match }
@@ -373,124 +310,20 @@ const Page = ({ children }: PageProps) => {
 				</Modal.Footer>
 			</Modal>
 
-			<aside className={ sidebarClasses } onClick={ toggleSidebar }>
-				<nav className="sidebar">
-					<Header className="sidebar__header">
-						<h2>Filter & Sort</h2>
-						{ hasDefaultValues && (
-							<Button onClick={ resetSidebar } variant="text">
-								Reset All
-							</Button>
-						) }
-						<Button onClick={ toggleSidebar } variant="icon">
-							<BiX />
-						</Button>
-					</Header>
-
-					<section className="sidebar__content">
-						<h3>Sort By</h3>
-						<Form
-							className="sidebar__form"
-							id="sort"
-							role="search"
-						>
-							<Field
-								name="category"
-								onChange={ updateSort }
-								options={ ['Age', 'Breed', 'Name'] as SortField[] }
-								selected={ [sort.category!] }
-								type="radio"
-							/>
-							<Field
-								name="order"
-								onChange={ updateSort }
-								options={ ['Ascending', 'Descending'] }
-								selected={ [sort.order!] }
-								type="radio"
-							/>
-						</Form>
-
-						<h3>Filter By</h3>
-						<Form
-							className="sidebar__form"
-							id="filter"
-							role="search"
-						>
-							<Field
-								name="city"
-								onChange={ updateLocation }
-								type="text"
-							/>
-							<Field
-								name="state"
-								onChange={ updateLocation }
-								options={ usaLocations }
-								placeholder="State"
-								type="select"
-							/>
-							{ !!(geolocation.city && geolocation.state.length === 2) && (
-								<Field
-									name="distance"
-									onChange={ updateLocation }
-									options={ distances }
-									type="select"
-								/>
-							) }
-							<Field
-								name="ages"
-								onChange={ updateAge }
-								options={ ['Puppy (0-3)', 'Adult (4-7)', 'Senior (8+)'] }
-								selected={ filter.ages }
-								type="checkbox"
-							/>
-							<Field
-								name="breeds"
-								onChange={ updateBreeds }
-								onReset={ resetBreeds }
-								options={ breeds }
-								placeholder="Search Breeds"
-								selected={ filter.breeds }
-								type="search"
-							/>
-						</Form>
-
-						<h3>View As</h3>
-						<Form className="sidebar__form" id="view">
-							<Field
-								name="layout"
-								onChange={ updateView }
-								options={ ['Grid', 'List'] }
-								selected={ [view.layout] }
-								type="radio"
-							/>
-							<Field
-								min={ 1 }
-								name="size"
-								onChange={ updateView }
-								placeholder="24"
-								type="number"
-							/>
-						</Form>
-					</section>
-
-					<Footer className="sidebar__footer">
-						<Button className="sidebar__button" onClick={ toggleSidebar }>
-							View Dogs ({ total.items }) <BiSolidBone />
-						</Button>
-					</Footer>
-				</nav>
-			</aside>
+			<Sidebar
+				updateAge={ updateAge }
+				updateBreeds={ updateBreeds }
+				updateLocation={ updateLocation }
+				updateSort={ updateSort }
+				updateView={ updateView }
+			/>
 
 			<main className="container">
 				{ children }
 			</main>
 
 			<Footer className="paginate">
-				<Pagination
-					current={ page }
-					handleChangePage={ changePageTo }
-					total={ total.pages }
-				/>
+				<Pagination current={ page } handleChangePage={ changePageTo } />
 			</Footer>
 		</PageProvider>
 	)

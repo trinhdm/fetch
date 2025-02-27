@@ -1,7 +1,3 @@
-
-interface NavbarProps {
-	handleModal: () => void
-	handleSidebar: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
-}
+type NavbarProps = object
 
 export type { NavbarProps }

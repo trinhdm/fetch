@@ -1,15 +1,76 @@
+import { useEffect, useState } from 'react'
 import { BiSlider, BiSolidDog } from 'react-icons/bi'
+import { capitalize, getAgeRange } from '@utils/helpers'
 import { usePageContext } from '@providers/PageProvider'
 import { Card } from '@components/Card'
-
+import type {
+	FilterParams,
+	FilterValues,
+	GeolocationValues,
+} from '@typings/shared'
 
 const Directory = () => {
 	const {
 		dogs,
-		title,
+		filter,
+		geolocation,
 		total,
 		view,
 	} = usePageContext()!
+
+	const [title, setTitle] = useState<string>('All Dogs')
+
+	const generateTitle = (filter: FilterValues & GeolocationValues) => {
+		if (Object.values(filter).every(v => !v.length || (typeof v === 'string' && v.toLowerCase().includes('state'))))
+			return 'All Dogs'
+
+		const { ages, breeds, city, state } = filter
+		const ageRange = getAgeRange(ages)
+		const heading = []
+
+		if (breeds?.length) {
+			const filteredBreeds = breeds.map(breed => `${breed}s`).join(' + ')
+			heading.push(filteredBreeds)
+		}
+
+		if (Object.hasOwn(ageRange, 'ageMin') || Object.hasOwn(ageRange, 'ageMax')) {
+			const { ageMax, ageMin } = ageRange as FilterParams
+			const ages = []
+
+			if (typeof ageMin === 'number')
+				ages.push(ageMin)
+
+			if (typeof ageMax === 'number')
+				ages.push(ageMax)
+
+			if (ages.length) {
+				const filteredAges = ages.length === 1
+					? `${ages}+ years old`
+					: `${ages.join(' - ')} years old`
+				heading.push(filteredAges)
+			}
+		}
+
+		if (city || (state && state.length === 2)) {
+			const geolocation = []
+
+			if (city)
+				geolocation.push(capitalize(city))
+
+			if (state.length === 2)
+				geolocation.push(state)
+
+			const filteredLocation = geolocation.join(', ')
+			heading.push(`Located in ${filteredLocation}`)
+		}
+
+		return heading.join(' · ')
+	}
+
+	useEffect(() => {
+		const heading = generateTitle({ ...filter, ...geolocation })
+		setTitle(heading)
+	}, [filter, geolocation])
 
 	return (
 		<>
@@ -26,10 +87,10 @@ const Directory = () => {
 			<section className="directory">
 				{ !dogs?.length && (
 					<p>
-						<i>{ dogs === null
-							? `Fetching the best pups for you... Hang tight while we round up some furry friends!`
-							: `Looks like we couldn’t find a match! Try widening your search criteria — your perfect pup might be just a few clicks away.`
-						}</i>
+						{ dogs === null
+							? <i>Fetching the best pups for you... Hang tight while we round up some furry friends!</i>
+							: <i>Looks like we couldn’t find a match! Try widening your search criteria — your perfect pup might be just a few clicks away.</i>
+						}
 					</p>
 				) }
 				{ dogs?.map(dog => (

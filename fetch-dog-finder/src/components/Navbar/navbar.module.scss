@@ -16,6 +16,7 @@
 
 	&__username {
 		color: $color-field;
+		transition: color .3s $transition-slide;
 	}
 
 	&__welcome {
@@ -23,6 +24,12 @@
 
 		@include breakpoint($width-md) {
 			display: inline;
+		}
+	}
+
+	.menu__toggle:is(:focus-within, :hover) #{$base} {
+		&__username {
+			color: $color-tertiary;
 		}
 	}
 }

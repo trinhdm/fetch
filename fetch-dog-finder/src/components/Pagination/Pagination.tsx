@@ -1,4 +1,6 @@
 import { BiArrowBack, BiExpandVertical } from 'react-icons/bi'
+import { matchPath, useLocation } from 'react-router'
+import { usePageContext } from '@providers/PageProvider'
 import { Button } from '@components/Button'
 import { Menu } from '@components/Menu'
 import type { PaginationProps } from './Pagination.types'
@@ -7,9 +9,29 @@ import './pagination.module.scss'
 const Pagination = ({
 	current,
 	handleChangePage,
-	total,
 }: PaginationProps) => {
-	if (total === 0) return <></>
+	const { pathname } = useLocation()
+	const { total: { pages } } = usePageContext()!
+
+	const isFavoritesPath = matchPath('/favorites', pathname)
+	const total = pages > 0 ? pages : 1
+
+	if (isFavoritesPath) {
+		return (
+			<nav className="pagination">
+				<Button
+					hideTextMobile
+					className="pagination__back"
+					href="/"
+					type="link"
+					variant="outline"
+				>
+					<BiArrowBack />
+					Back to Directory
+				</Button>
+			</nav>
+		)
+	}
 
 	return (
 		<nav className="pagination">
@@ -33,11 +55,19 @@ const Pagination = ({
 					<Menu.Toggle>
 						{ current } <BiExpandVertical />
 					</Menu.Toggle>
-					{ Array.from(Array(total).keys()).map(pgNum => (
-						<Menu.Item key={ `page-${pgNum}` } onClick={ () => handleChangePage(pgNum + 1) }>
-							{ pgNum + 1 }
-						</Menu.Item>
-					)) }
+					{ Array.from(Array(total).keys()).map(page => {
+						const pgNum = page + 1
+
+						return (
+							<Menu.Item
+								isActive={ current === pgNum }
+								key={ `page-${pgNum}` }
+								onClick={ () => handleChangePage(pgNum) }
+							>
+								{ pgNum }
+							</Menu.Item>
+						)
+					}) }
 				</Menu>
 
 				<span>/</span>

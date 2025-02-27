@@ -1,5 +1,8 @@
 // import type { NonNegative } from './helpers'
 
+
+// user authorization
+
 interface Auth {
 	name: string
 	email: string
@@ -18,6 +21,7 @@ interface UserSettings extends User {
 }
 
 
+// dog
 
 interface Dog {
 	age: number
@@ -28,25 +32,6 @@ interface Dog {
 	zip_code: string
 }
 
-interface Location {
-    city: string
-    county: string
-    latitude: number
-    longitude: number
-    state: string
-    zip_code: string
-}
-
-interface Coordinates {
-    lat: number
-    lon: number
-}
-
-
-type SortField = 'Age' | 'Breed' | 'Name'
-type SortOrder = 'Asc' | 'Desc'
-type Sort = `${SortField}:${SortOrder}`
-
 interface DogParams {
 	ageMax?: Dog['Age']
 	ageMin?: Dog['Age']
@@ -55,6 +40,23 @@ interface DogParams {
 	size?: number
 	sort?: Sort
 	zipCodes?: Array<Location['zip_code']>
+}
+
+
+// location
+
+interface Coordinates {
+    lat: number
+    lon: number
+}
+
+interface Location {
+    city: string
+    county: string
+    latitude: number
+    longitude: number
+    state: string
+    zip_code: string
 }
 
 interface LocationParams {
@@ -72,15 +74,68 @@ interface LocationParams {
     size?: number
 }
 
+
+// filter + sort + view
+
+type SortField = 'Age' | 'Breed' | 'Name'
+type SortOrder = 'Asc' | 'Desc'
+type SortParams = `${SortField}:${SortOrder}`
+
+interface FilterValues {
+	ages?: string[]
+	breeds?: string[]
+}
+
+interface FilterParams extends Pick<FilterValues, 'breeds'> {
+	ageMax?: number
+	ageMin?: number
+}
+
+interface GeolocationValues {
+	city: string
+	distance: string
+	state: string
+}
+
+interface SortValues {
+	category: SortField
+	order: SortOrder | 'Ascending' | 'Descending'
+}
+
+interface TotalValues {
+	items: number
+	pages: number
+}
+
+interface ViewValues {
+	layout: 'Grid' | 'List'
+	size: number
+}
+
+interface SidebarValues {
+	filter: FilterValues
+	geolocation: GeolocationValues
+	sort: SortValues
+	total: TotalValues
+	view: ViewValues
+}
+
+
 export type {
 	Auth,
 	Dog,
 	DogParams,
+	FilterParams,
+	FilterValues,
+	GeolocationValues,
 	Location,
 	LocationParams,
-	Sort,
+	SidebarValues,
+	SortParams,
 	SortField,
 	SortOrder,
+	SortValues,
 	User,
 	UserSettings,
+	ViewValues,
 }

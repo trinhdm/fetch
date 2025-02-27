@@ -6,40 +6,50 @@ $-pagination-gap: calc(#{$button-gap} * .5);
 
 	display: flex;
 	justify-content: space-between;
+	line-height: 1;
 	width: 100%;
 
-	&__label,
-	&__menu .menu__toggle svg {
-		color: $color-field;
+	&:has(> *:only-child) {
+		justify-content: center;
 	}
 
 	&__indicator {
 		align-items: center;
+		color: $color-field;
 		column-gap: $-pagination-gap;
 		display: flex;
 	}
 
 	&__menu {
 		padding-left: $-pagination-gap;
-	}
 
-	&__menu .menu {
-		&__dropdown {
-			height: 3rem;
+		.menu__dropdown {
 			inset-block: 0;
 			margin-block: auto;
-			padding-right: $button-gap;
-			row-gap: 0;
+			min-width: 3.5rem;
+
+			.button {
+				line-height: 1.125;
+			}
 		}
 
-		&__list {
-			height: calc(3rem - (.625rem * 2));
-			overflow-y: auto;
-		}
-
-		&__toggle {
-			column-gap: $-pagination-gap;
+		.menu__toggle {
+			color: $color-tertiary;
 			font-size: unset;
+			min-width: 3.125rem;
+
+			&:focus-within,
+			&:hover {
+				color: $color-quaternary;
+			}
+
+			.button__inner {
+				justify-content: center;
+			}
+		}
+
+		&:has(.menu__item:nth-of-type(4)) .menu__item {
+			padding-right: $-pagination-gap;
 		}
 	}
 

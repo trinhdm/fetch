@@ -4,32 +4,26 @@ import { retrieveDogs } from '@utils/services'
 import { usePageContext } from '@providers/PageProvider'
 import { useUserContext } from '@providers/UserProvider'
 import { Card } from '@components/Card'
-
+import type { Dog } from '@typings/shared'
 
 const Favorites = () => {
 	const { favorites } = useUserContext()!
 	const { view } = usePageContext()!
 
-	const [dogs, setDogs] = useState([])
+	const [faves, setFaves] = useState<Dog[]>([])
 
 	useEffect(() => {
 		const getFavorites = async () => {
-			// const { size } = view
-			// const items = favorites.length
-
 			try {
 				const list = await retrieveDogs(favorites)
-				// const pages = Math.ceil(items/size) - 1
-
-				setDogs(list)
-				// setTotal({ items, pages })
-			} catch (error) {
-				console.log(error)
+				setFaves(list)
+			} catch (err) {
+				console.log(err)
 			}
 		}
 
 		getFavorites()
-	}, [favorites, view])
+	}, [favorites])
 
 	return (
 		<>
@@ -43,10 +37,10 @@ const Favorites = () => {
 			</section>
 
 			<section className="directory">
-				{ !dogs?.length && (
+				{ !faves?.length && (
 					<p><i>You haven’t favorited any dogs yet! Browse our network of over thousands of pups and tap the heart to save your favorites.</i></p>
 				) }
-				{ dogs?.map(fave => (
+				{ faves?.map(fave => (
 					<Card
 						{ ...fave }
 						key={ fave.id }

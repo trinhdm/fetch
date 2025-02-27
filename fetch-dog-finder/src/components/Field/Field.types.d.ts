@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, MouseEvent } from 'react'
 
 
 type FieldTypes =
@@ -21,13 +21,13 @@ type FieldValidations = Exclude<FieldTypes,
 type FieldChangeEvent = ChangeEvent<HTMLInputElement>
 
 type FieldChangeHandler = (event: FieldChangeEvent) => void
-type FieldSelectHandler = (event: FieldChangeEvent | React.MouseEvent<HTMLElement, MouseEvent>) => void
+type FieldSelectHandler = (event: FieldChangeEvent | MouseEvent<HTMLElement>, index?: number) => void
 
 type FieldBase = {
+	disabled?: boolean
 	name: string
 	onChange?: FieldChangeHandler | FieldSelectHandler
 	placeholder?: string
-	// type: FieldTypes
 }
 
 type InputValues = {
@@ -88,7 +88,6 @@ type FieldValues = FieldBase & (
 	| SelectValues
 )
 
-
 type ValidationPattern = {
 	message: string
 	value: RegExp
@@ -102,6 +101,8 @@ type FieldProps = FieldValues & {
 	showLabel?: boolean
 }
 
+type SelectFieldProps = FieldBase & SelectValues
+
 
 export type {
 	CheckboxRadioValues,
@@ -109,5 +110,7 @@ export type {
 	FieldProps,
 	FieldSelectHandler,
 	FieldValidations,
+	SearchValues,
+	SelectFieldProps,
 	SelectValues,
 }

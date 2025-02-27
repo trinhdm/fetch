@@ -1,0 +1,38 @@
+
+
+.field:has(.field-tags) {
+	display: flex;
+	flex-direction: column;
+	flex: 1 100%;
+}
+
+.field-tags {
+	$base: &;
+
+	border: .1px solid $color-secondary;
+	margin: $section-gap-lg -.1px 0 0;
+	padding: $row-gap-lg $button-gap $row-gap-lg $row-gap-lg;
+
+	&--empty {
+		padding: $row-gap-lg;
+	}
+
+	.field__choices {
+		height: max-content;
+		max-height: 7.25rem;
+		overflow-y: auto;
+		padding-right: $row-gap-lg;
+		scrollbar-width: thin;
+
+		@include breakpoint($width-md) {
+			max-height: 13.5rem;
+		}
+	}
+
+	&__list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $button-gap;
+		margin-top: $section-gap-lg;
+	}
+}

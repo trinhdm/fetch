@@ -1,0 +1,9 @@
+.field-label {
+	$base: &;
+
+	color: $color-secondary;
+	display: inline-block;
+	font-size: 1rem;
+	font-weight: 700;
+	line-height: 1.1;
+}

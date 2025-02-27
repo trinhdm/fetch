@@ -1,7 +1,3 @@
-$-selection-size: .625rem;
-$-transition-field: .2s $transition-cta;
-
-
 .field {
 	$base: &;
 
@@ -9,12 +5,6 @@ $-transition-field: .2s $transition-cta;
 	font-size: $field-font-size;
 	line-height: 1;
 	position: relative;
-
-	&:has(#{$base}__list) {
-		display: flex;
-		flex-direction: column;
-		flex: 1 100%;
-	}
 
 	&--error #{$base}__container {
 		&::before {
@@ -64,13 +54,12 @@ $-transition-field: .2s $transition-cta;
 		}
 	}
 
-	&__label,
-	&__message {
-		font-size: .625rem;
-
-		@include breakpoint($width-md) {
-			font-size: $label-font-size;
-		}
+	&__honeypot {
+		font-size: 0;
+		height: 0;
+		line-height: 0;
+		opacity: 0;
+		position: absolute;
 	}
 
 	&__button,
@@ -115,211 +104,6 @@ $-transition-field: .2s $transition-cta;
 			height: $icon-size-xs;
 			width: $icon-size-xs;
 		}
-	}
-
-	&__label {
-		color: $color-secondary;
-		display: inline-block;
-		font-size: 1rem;
-		font-weight: 700;
-		line-height: 1.1;
-	}
-
-	&__message {
-		color: $color-danger;
-		inset: auto 0 0 auto;
-		line-height: $field-font-size;
-		position: absolute;
-		z-index: 0;
-	}
-
-	&__honeypot {
-		font-size: 0;
-		height: 0;
-		line-height: 0;
-		opacity: 0;
-		position: absolute;
-	}
-
-	&__input {
-		background-color: transparent;
-		color: $color-field;
-		outline: 0;
-		width: 100%;
-	}
-
-	&__select {
-		padding-bottom: $row-gap-lg;
-
-		&:is(select) {
-			display: none;
-		}
-
-		.menu {
-			&__dropdown {
-				height: 6.875rem;
-				width: 100%;
-			}
-
-			&__item:first-of-type .button {
-				border-bottom: .1px solid $color-divider;
-				color: $color-placeholder;
-				margin-bottom: .25rem;
-				padding-bottom: .375rem;
-
-				&:focus-within,
-				&:hover {
-					color: $color-primary;
-				}
-			}
-
-			&__toggle {
-				width: 100%;
-			}
-		}
-	}
-
-	&__selected {
-		align-items: center;
-		display: flex;
-		flex: 1;
-		height: 1.125rem;
-
-		&--default {
-			color: $color-placeholder;
-		}
-
-		&--value {
-			color: $color-field;
-		}
-	}
-
-	&__checkbox,
-	&__radio {
-		-webkit-appearance: none;
-		appearance: none;
-		background-color: $color-white;
-		background: none;
-		border: 0;
-		color: $color-tertiary;
-		flex-grow: 0;
-		height: $-selection-size;
-		outline: 0;
-		transition: background $-transition-field;
-		vertical-align: middle;
-		width: $-selection-size;
-
-		&::before {
-			background-color: transparent;
-			background-size: contain;
-			border-radius: inherit;
-			border: 0;
-			box-shadow: inset 0 0 0 .0625rem $color-checkbox;
-			color: transparent;
-			content: "";
-			display: block;
-			height: inherit;
-			transition: box-shadow $-transition-field;
-			width: inherit;
-		}
-
-		&:checked {
-			background-color: currentColor;
-
-			&::before {
-				box-shadow: none;
-			}
-		}
-
-		& + label {
-			padding-left: $button-gap;
-			transition: color $-transition-field;
-		}
-	}
-
-	&__checkbox {
-		border-radius: .125rem;
-
-		&:checked::before {
-			background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E %3Cpath d='M15.88 8.29L10 14.17l-1.88-1.88a.996.996 0 1 0-1.41 1.41l2.59 2.59c.39.39 1.02.39 1.41 0L17.3 9.7a.996.996 0 0 0 0-1.41c-.39-.39-1.03-.39-1.42 0z' fill='%23fff'/%3E %3C/svg%3E");
-		}
-	}
-
-	&__radio {
-		border-radius: 50%;
-	}
-
-	&__list {
-		border: .1px solid $color-secondary;
-		margin: $section-gap-lg -.1px 0 0;
-		padding: $row-gap-lg $button-gap $row-gap-lg $row-gap-lg;
-
-		#{$base}__choices {
-			height: max-content;
-			max-height: 7.25rem;
-			overflow-y: auto;
-			padding-right: $row-gap-lg;
-			scrollbar-width: thin;
-
-			@include breakpoint($width-md) {
-				max-height: 13.5rem;
-			}
-		}
-
-		&--empty {
-			padding: $row-gap-lg;
-		}
-	}
-
-	&__choices {
-		display: flex;
-		flex-direction: column;
-		row-gap: $button-gap;
-	}
-
-	&__choice {
-		align-items: center;
-		display: flex;
-		max-height: max-content;
-		max-width: max-content;
-		transition: color $-transition-field;
-
-		&,
-		label {
-			cursor: pointer;
-		}
-
-		span {
-			pointer-events: none;
-		}
-
-		&:focus-within,
-		&:hover {
-			color: $color-secondary;
-
-			:is(#{$base}__checkbox, #{$base}__radio)::before {
-				box-shadow: inset 0 0 0 .0625rem $color-tertiary;
-			}
-		}
-
-		&:has(:checked) {
-			color: $color-active;
-
-			&:not(:focus-within):hover {
-				color: $color-primary;
-			}
-
-			&:focus-within:hover {
-				color: $color-secondary;
-			}
-		}
-	}
-
-	&__tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: $button-gap;
-		margin-top: $section-gap-lg;
 	}
 
 	&:focus-within {

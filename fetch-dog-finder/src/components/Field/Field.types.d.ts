@@ -20,15 +20,9 @@ type FieldValidations = Exclude<FieldTypes,
 
 type FieldChangeEvent = ChangeEvent<HTMLInputElement>
 
-type FieldChangeHandler = (event: FieldChangeEvent) => void
+type FieldChangeHandler = (event: FieldChangeEvent, index?: number) => void
 type FieldSelectHandler = (event: FieldChangeEvent | MouseEvent<HTMLElement>, index?: number) => void
 
-type FieldBase = {
-	disabled?: boolean
-	name: string
-	onChange?: FieldChangeHandler | FieldSelectHandler
-	placeholder?: string
-}
 
 type InputValues = {
 	autoComplete?: 'on' | 'off'
@@ -70,7 +64,7 @@ type SelectValues = {
 	type: Extract<FieldTypes, 'select'>
 }
 
-type CheckboxRadioValues = {
+type ChoiceValues = {
 	autoComplete?: never
 	max?: never
 	min?: never
@@ -80,13 +74,30 @@ type CheckboxRadioValues = {
 	type: Extract<FieldTypes, 'checkbox' | 'radio'>
 }
 
-type FieldValues = FieldBase & (
-	| CheckboxRadioValues
+
+interface FieldBase {
+	disabled?: boolean
+	name: string
+}
+
+interface FieldBaseValues extends FieldBase {
+	onChange?: FieldChangeHandler | FieldSelectHandler
+	placeholder?: string
+}
+
+interface FieldBaseProps extends FieldBase {
+	handleChange: FieldChangeHandler
+	type: FieldTypes
+}
+
+type FieldValues = FieldBaseValues & (
+	| ChoiceValues
 	| InputValues
 	| NumberValues
 	| SearchValues
 	| SelectValues
 )
+
 
 type ValidationPattern = {
 	message: string
@@ -94,23 +105,40 @@ type ValidationPattern = {
 }
 
 type FieldProps = FieldValues & {
-	onValidation?: (field: FieldValidations) => {
-		required: string
-		pattern: ValidationPattern
-	}
+	onValidation?:
+		| ((field: FieldValidations) => {
+			required: string
+			pattern: ValidationPattern
+		})
+		| (() => void)
 	showLabel?: boolean
 }
 
-type SelectFieldProps = FieldBase & SelectValues
+type ChoiceFieldProps = FieldBaseProps & Pick<ChoiceValues, 'options' | 'selected'>
+type InputFieldProps = FieldBaseProps & Pick<FieldProps, 'onValidation' | 'placeholder'>
+type SelectFieldProps = Omit<FieldBaseProps, 'handleChange'> & Pick<SelectValues, 'options'> & {
+	handleSelect: FieldSelectHandler
+	value: string
+}
+
+
+interface FieldLabelProps extends Pick<FieldValues, 'name' | 'type'> {
+	children: string
+}
+
+interface FieldTagsProps extends FieldBaseProps, Pick<SearchValues, 'options' | 'selected'> {
+	value: string
+}
 
 
 export type {
-	CheckboxRadioValues,
+	ChoiceFieldProps,
 	FieldChangeHandler,
+	FieldLabelProps,
 	FieldProps,
 	FieldSelectHandler,
+	FieldTagsProps,
 	FieldValidations,
-	SearchValues,
+	InputFieldProps,
 	SelectFieldProps,
-	SelectValues,
 }

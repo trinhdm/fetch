@@ -1,0 +1,23 @@
+.field {
+	$base: &;
+
+	&__input {
+		background-color: transparent;
+		color: $color-field;
+		outline: 0;
+		width: 100%;
+	}
+
+	&__message {
+		color: $color-danger;
+		font-size: .625rem;
+		inset: auto 0 0 auto;
+		line-height: $field-font-size;
+		position: absolute;
+		z-index: 0;
+
+		@include breakpoint($width-md) {
+			font-size: $label-font-size;
+		}
+	}
+}

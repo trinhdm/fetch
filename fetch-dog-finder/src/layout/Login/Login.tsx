@@ -1,54 +1,65 @@
-import { login } from '@utils/services'
+import axios from 'axios'
+import dog from '/dog-login.webp'
+import { useCallback, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useUserContext } from '@providers/UserProvider'
+import { login } from '@utils/services'
 import { Form } from '@components/Form'
 import { Field } from '@components/Field'
+import { Logo } from '@components/Logo'
 import type { User } from '@typings/shared'
-import dog from '/dog-login.jpg'
-import logo from '/logo-icon-purple.svg'
 
 const Login = () => {
+	const navigate = useNavigate()
 	const { handleUser } = useUserContext()!
 
-	const handleLogin = async (data: User) => {
-		try {
-			await login(data)
-			handleUser(data)
-		} catch (error) {
-			console.log(error)
-		}
-	}
+	const [error, setError] = useState<string>('')
+	const [isLoading, setIsLoading] = useState<boolean>(false)
 
-	const loginFields: FieldGroup = [
-		{
-			name: 'name',
-			type: 'text',
-		},
-		{
-			name: 'email',
-			type: 'email',
-		},
-	]
+	const handleLogin = useCallback(
+		async (data: User) => {
+			let isMounted = true
+			setIsLoading(true)
+
+			try {
+				await login(data)
+			} catch (err) {
+				if (axios.isAxiosError(err))
+					setError(`${err.message}`)
+			} finally {
+				if (isMounted) {
+					setIsLoading(false)
+					handleUser({ ...data, isLoggedIn: true })
+					navigate('/directory')
+				}
+			}
+
+			return () => { isMounted = false }
+		}, [handleUser, navigate]
+	)
 
 	return (
 		<div className="intro">
 			<div className="column">
 				<div className="content">
-					<a href="https://fetch.com/" className="logo" target="_blank">
-						<img src={ logo } alt="Fetch logo" />
-					</a>
+					<Logo />
+
 					<h1>Ready to Fetch?</h1>
-					<p>Welcome to Fetch.<br />Let's find your new best friend, together.</p>
+					<p>Let's find your new best friend, together.<br />Sign in to continue your search for the perfect pup.</p>
 
 					<Form
-						buttonText="Explore Now"
+						buttonText={ isLoading ? 'Loading...' : 'Start Searching' }
+						error={ error }
 						id="login"
 						onSubmit={ handleLogin }
 					>
 						<Field
+							autoComplete="on"
 							name="name"
 							type="text"
 						/>
 						<Field
+							autoComplete="on"
 							name="email"
 							type="email"
 						/>
@@ -56,7 +67,7 @@ const Login = () => {
 				</div>
 			</div>
 			<div className="column">
-				<img src={ dog } />
+				<img alt="Login image" src={ dog } />
 			</div>
 		</div>
 	)

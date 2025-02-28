@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 
 interface ButtonBase {
 	className?: string
@@ -8,13 +8,19 @@ interface ButtonBase {
 		| 'tertiary'
 	disabled?: boolean
 	hideTextMobile?: boolean
-	onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
+	onClick?:
+		| ((event: MouseEvent<HTMLElement>) => void)
+		| ((...args) => void)
+	tabIndex?: number
 	variant?:
 		| 'icon'
 		| 'outline'
 		| 'solid'
 		| 'tag'
 		| 'text'
+	value?:
+		| number
+		| string
 }
 
 interface ButtonType {

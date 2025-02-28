@@ -1,9 +1,6 @@
-import {
-	BiCog,
-	BiSlider,
-	BiSolidDog,
-} from 'react-icons/bi'
+import { useCallback } from 'react'
 import { matchPath, useLocation } from 'react-router'
+import { BiCog, BiSlider, BiSolidDog } from 'react-icons/bi'
 import { logout } from '@utils/services'
 import { usePageContext } from '@providers/PageProvider'
 import { useUserContext } from '@providers/UserProvider'
@@ -22,14 +19,22 @@ const Navbar = () => {
 	const { pathname } = useLocation()
 	const isFavoritesPath = matchPath('/favorites', pathname)
 
-	const handleLogout = async () => {
-		try {
-			await logout()
-			handleUser({ isLoggedIn: false })
-		} catch (error) {
-			console.log(error)
-		}
-	}
+	const handleLogout = useCallback(
+		async () => {
+			let isMounted = true
+
+			try {
+				await logout()
+			} catch (err) {
+				console.error('Error logging out:', err)
+			} finally {
+				if (isMounted)
+					handleUser({ isLoggedIn: false })
+			}
+
+			return () => { isMounted = false }
+		}, [handleUser]
+	)
 
 	return (
 		<nav className="navbar">
@@ -48,6 +53,7 @@ const Navbar = () => {
 					Logout
 				</Menu.Item>
 			</Menu>
+
 			<Button
 				hideTextMobile
 				disabled={ !!isFavoritesPath }
@@ -57,6 +63,7 @@ const Navbar = () => {
 				Filter & Sort
 				<BiSlider />
 			</Button>
+
 			<Button
 				hideTextMobile
 				disabled={ !favorites.length }

@@ -1,10 +1,16 @@
 import clsx from 'clsx'
+import {
+	useCallback,
+	useEffect,
+	useState,
+	type KeyboardEvent,
+	type MouseEvent,
+} from 'react'
+import { retrieveLocations } from '@utils/services'
 import { BiHeart, BiSolidHeart } from 'react-icons/bi'
 import { useUserContext } from '@providers/UserProvider'
 import type { CardProps } from './Card.types'
 import './card.module.scss'
-import { useCallback, useEffect, useState } from 'react'
-import { retrieveLocations } from '@utils/services'
 
 const Card = ({
 	age,
@@ -16,17 +22,26 @@ const Card = ({
 	variant = 'vertical',
 	zip_code,
 }: CardProps) => {
-	const {
-		favorites,
-		handleUser,
-	} = useUserContext()!
-
+	const { favorites, handleUser } = useUserContext()!
 	const [location, setLocation] = useState('')
 
-	const handleFavorite = useCallback((event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+	const isFavorite = (id && !!favorites.length) && favorites.includes(id)
+
+	const classes = clsx('card', {
+		'card--liked': isFavorite,
+		[`card--${variant}`]: variant,
+	})
+
+	const Heart = isFavorite ? BiSolidHeart : BiHeart
+
+	const handleFavorite = useCallback((event: KeyboardEvent<HTMLElement> | MouseEvent<HTMLElement>) => {
 		event.stopPropagation()
 
-		if (disableLike || !id)
+		if (
+			disableLike
+			|| !id
+			|| event.type === 'keydown' && (event as KeyboardEvent<HTMLElement>).key !== 'Enter'
+		)
 			return
 
 		let faves = favorites
@@ -45,37 +60,40 @@ const Card = ({
 	])
 
 	useEffect(() => {
-		const findLoc = async () => {
-			if (!zip_code) return
+		const outputLocation = async () => {
+			if (!zip_code)
+				return
+
+			let isMounted = true,
+				location = `${zip_code}`
 
 			try {
-				const [result] = await retrieveLocations([`${zip_code}`])
-				const { city, state } = result
-				setLocation(`${city}, ${state} · ${zip_code}`)
+				const [result] = await retrieveLocations([location])
+
+				if (isMounted && result) {
+					const { city, state } = result
+					location = `${city}, ${state} · ${location}`
+				}
 			} catch (err) {
-				console.log(err)
+				console.warn('Error retrieving city, state from zip code:', err)
+			} finally {
+				if (isMounted)
+					setLocation(location)
 			}
+
+			return () => { isMounted = false }
 		}
 
-		findLoc()
+		outputLocation()
 	}, [zip_code])
-
-	const isFavorite = (id && !!favorites.length) && favorites.includes(id)
-
-	const classes = clsx({
-		card: true,
-		'card--liked': isFavorite,
-		[`card--${variant}`]: variant,
-	})
-
-	const Heart = isFavorite ? BiSolidHeart : BiHeart
 
 	return (
 		<article
 			className={ classes }
 			id={ id }
 			onClick={ handleFavorite }
-			tabIndex={ 0 }
+			onKeyDown={ handleFavorite }
+			tabIndex={ disableLike ? -1 : 0 }
 		>
 			<figure className="card__wrapper">
 				{ !disableLike && (

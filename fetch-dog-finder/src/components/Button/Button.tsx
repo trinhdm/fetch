@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { Link } from 'react-router'
 import type {
+	ButtonLink,
 	ButtonProps,
 	ButtonSubmit,
 	ButtonType,
@@ -10,7 +11,6 @@ import './button.module.scss'
 const Button = ({
 	children,
 	className,
-	color = 'secondary',
 	disabled,
 	hideTextMobile = false,
 	href,
@@ -19,18 +19,16 @@ const Button = ({
 	variant = 'solid',
 	...props
 }: ButtonProps) => {
-	const classes = clsx({
-		button: true,
+	const classes = clsx('button', {
 		[`button--${variant}`]: variant,
-		[`button--${color}`]: color !== 'secondary',
 		'button--mobile': hideTextMobile,
-		[`${className}`]: className,
-	})
+	}, className)
 
 	const sharedProps: Omit<ButtonProps, 'children'> = {
 		className: 'button__inner',
 		disabled,
 		onClick,
+		tabIndex: disabled ? -1 : 0,
 		...props
 	}
 
@@ -48,7 +46,7 @@ const Button = ({
 		case 'link':
 			return (
 				<div className={ classes }>
-					<Link { ...sharedProps as ButtonType } to={ href! }>
+					<Link { ...sharedProps as ButtonLink } to={ href! }>
 						{ children }
 					</Link>
 				</div>

@@ -1,9 +1,10 @@
+import { forwardRef } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { capitalize } from '@utils/helpers'
 import type { FieldValidations, InputFieldProps } from '../../Field.types'
 import './inputfield.module.scss'
 
-const InputField = ({
+const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({
 	disabled,
 	handleChange,
 	name,
@@ -11,38 +12,27 @@ const InputField = ({
 	placeholder,
 	type,
 	...props
- }: InputFieldProps) => {
-	const {
-		formState: { errors },
-		register,
-	} = useFormContext()
+}, ref) => {
+	const { register } = useFormContext()
 
-	const error = errors[name],
-		placehold = placeholder ?? capitalize(name)
+	const placehold = placeholder ?? capitalize(name)
 
 	return (
-		<>
-			<input
-				{ ...register(name, {
-					onChange: handleChange,
-					...onValidation(type as FieldValidations)
-				}) }
-				className="field__input"
-				disabled={ disabled }
-				id={ name }
-				placeholder={ placehold }
-				type={ type }
-				{ ...props }
-			/>
-
-			{ error && (
-				<span className="field__message">
-					{ error.message?.toString() }
-				</span>
-			) }
-		</>
+		<input
+			{ ...register(name, {
+				onChange: handleChange,
+				...onValidation(type as FieldValidations)
+			}) }
+			className="field__input"
+			disabled={ disabled }
+			id={ name }
+			placeholder={ placehold }
+			type={ type }
+			{ ...ref && Object.hasOwn(ref, 'current') && { ref } }
+			{ ...props }
+		/>
 	)
-}
+})
 
 InputField.displayName = 'InputField'
 export { InputField }

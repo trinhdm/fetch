@@ -1,8 +1,9 @@
 import clsx from 'clsx'
-import { useRef, useState } from 'react'
+import { forwardRef, useCallback, useRef, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { BiSearch, BiX } from 'react-icons/bi'
 import { capitalize } from '@utils/helpers'
+import { debounce } from '@utils/children'
 import { Button } from '@components/Button'
 import { ChoiceField, InputField, SelectField } from './FieldTypes'
 import { FieldLabel } from './FieldLabel'
@@ -11,13 +12,12 @@ import type {
 	ChoiceFieldProps,
 	FieldChangeHandler,
 	FieldProps,
-	FieldSelectHandler,
 	FieldTagsProps,
 	SelectFieldProps,
 } from './Field.types'
 import './field.module.scss'
 
-const Field = ({
+const Field = forwardRef<HTMLInputElement, FieldProps>(({
 	disabled = false,
 	name,
 	onChange = () => {},
@@ -25,61 +25,50 @@ const Field = ({
 	onValidation,
 	options,
 	placeholder,
-	selected,
 	showLabel = true,
 	type = 'text',
+	values,
 	...props
- }: FieldProps) => {
+}, ref) => {
 	const { formState: { errors } } = useFormContext()
-	const [value, setValue] = useState('')
+	const [search, setSearch] = useState('')
+
 	const debounceRef = useRef<NodeJS.Timeout>(null)
+	const error = errors[name]
 
 	const classes = clsx('field', {
-		'field--error': errors[name],
+		'field--error': error,
 	})
+
+	const handleChange: FieldChangeHandler = useCallback(event => {
+		switch (type) {
+			case 'checkbox':
+			case 'radio':
+			case 'select':
+				onChange(event)
+				break
+			case 'search':
+				if (event.target.type === 'search')
+					debounce(() => setSearch(event.target.value), debounceRef)
+				else
+					onChange(event)
+				break
+			default:
+				debounce(() => onChange(event), debounceRef)
+				break
+		}
+	}, [onChange, type])
 
 	const sharedProps = {
 		disabled,
+		handleChange,
 		name,
 		type,
 		...props
 	}
 
-	const debounce = (callback: () => void, delay = 250) => {
-		let debounceID = debounceRef.current
-
-		if (debounceID)
-			clearTimeout(debounceID)
-
-		debounceID = setTimeout(callback, delay)
-	}
-
-	const handleChange: FieldChangeHandler = event => {
-		switch (type) {
-			case 'checkbox':
-			case 'radio':
-				console.log(event.target)
-				onChange(event)
-				break
-			case 'search':
-				if (event.target.type === 'search')
-					debounce(() => setValue(event.target.value))
-				else
-					onChange(event)
-				break
-			default:
-				debounce(() => onChange(event))
-				break
-		}
-	}
-
-	const handleSelect: FieldSelectHandler = (event, index) => {
-		setValue(index === 0 ? '' : (event.target as HTMLElement).innerText)
-		handleChange(event as React.ChangeEvent<HTMLInputElement>)
-	}
-
 	const renderField = () => {
-		const BiIcon = value ? BiX : BiSearch
+		const BiIcon = search ? BiX : BiSearch
 
 		switch (type) {
 			case 'email':
@@ -90,16 +79,13 @@ const Field = ({
 					<>
 						<InputField
 							{ ...sharedProps }
-							disabled={ disabled }
-							handleChange={ handleChange }
-							name={ name }
 							onValidation={ onValidation }
 							placeholder={ placeholder ?? capitalize(name) }
-							type={ type }
+							ref={ ref }
 						/>
 						{ type === 'search' && (
 							<>
-								{ !!selected?.length && (
+								{ !!values?.length && (
 									<Button
 										className="field__button"
 										disabled={ disabled }
@@ -119,21 +105,19 @@ const Field = ({
 				return (
 					<ChoiceField
 						{ ...sharedProps }
-						handleChange={ handleChange }
 						options={ options as ChoiceFieldProps['options'] }
-						selected={ selected }
+						values={ values as ChoiceFieldProps['values'] }
 					/>
 				)
 			case 'select':
 				return (
 					<SelectField
 						{ ...sharedProps }
-						handleSelect={ handleSelect }
 						options={ options as SelectFieldProps['options'] }
-						value={ value }
 					/>
 				)
 			default:
+				console.warn(`Unsupported field type: ${type}`)
 				return null
 		}
 	}
@@ -141,27 +125,32 @@ const Field = ({
 	return (
 		<div className={ classes }>
 			{ showLabel && (
-				<FieldLabel name={ name } type={ type }>
+				<FieldLabel { ...sharedProps }>
 					{ name }
 				</FieldLabel>
 			) }
 
 			<div className="field__container">
 				{ renderField() }
+
+				{ error && (
+					<span className="field__message">
+						{ error.message?.toString() }
+					</span>
+				) }
 			</div>
 
 			{ type === 'search' && (
 				<FieldTags
 					{ ...sharedProps }
-					handleChange={ handleChange }
 					options={ options as FieldTagsProps['options'] }
-					selected={ selected }
-					value={ value.toLowerCase() }
+					search={ search.toLowerCase() }
+					values={ values as FieldTagsProps['values'] }
 				/>
 			) }
 		</div>
 	)
-}
+})
 
 Field.displayName = 'Field'
 export { Field }

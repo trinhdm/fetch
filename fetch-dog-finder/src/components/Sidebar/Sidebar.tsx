@@ -1,6 +1,6 @@
 import axios from 'axios'
 import clsx from 'clsx'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { BiSolidBone, BiX } from 'react-icons/bi'
 import {
 	AGE_OPTIONS,
@@ -45,6 +45,10 @@ const Sidebar = ({
 
 	const [breeds, setBreeds] = useState<string[]>([])
 
+	const cityRef = useRef<HTMLInputElement>(null)
+	const sizeRef = useRef<HTMLInputElement>(null)
+	const refs = [cityRef, sizeRef]
+
 	useEffect(() => {
 		const getBreedNames = async () => {
 			try {
@@ -53,7 +57,7 @@ const Sidebar = ({
 			} catch (err) {
 				if (axios.isAxiosError(err) && err.status === 401) {
 					handleUser({ isLoggedIn: false })
-					console.log('please login again', err)
+					console.error('please login again', err)
 				}
 			}
 		}
@@ -66,6 +70,7 @@ const Sidebar = ({
 		|| Object.values(filter).some(v => v.length)
 		|| Object.values(geolocation).some(v => v.length)
 		|| view.layout !== 'Grid'
+		|| view.size !== 24
 	), [filter, geolocation, sort, view])
 
 	const sidebarClasses = clsx('overlay', {
@@ -81,7 +86,7 @@ const Sidebar = ({
 						<Button
 							className="sidebar__button--reset"
 							disabled={ !isSidebarOpen }
-							onClick={ resetDirectory }
+							onClick={ () => resetDirectory('all', refs) }
 							variant="text"
 						>
 							Reset All
@@ -107,6 +112,7 @@ const Sidebar = ({
 						<Field
 							name="city"
 							onChange={ updateLocation }
+							ref={ cityRef }
 							type="text"
 						/>
 						<Field
@@ -115,13 +121,15 @@ const Sidebar = ({
 							options={ USA_STATES }
 							placeholder="State"
 							type="select"
+							value={ geolocation.state }
 						/>
-						{ !!(geolocation.city && geolocation.state.length === 2) && (
+						{ !!(geolocation.city && geolocation.state) && (
 							<Field
 								name="distance"
 								onChange={ updateLocation }
 								options={ MILE_RADIUSES }
 								type="select"
+								value={ geolocation.distance }
 							/>
 						) }
 						<Field
@@ -130,15 +138,15 @@ const Sidebar = ({
 							onReset={ () => resetDirectory('breeds') }
 							options={ breeds }
 							placeholder="Search Breeds"
-							selected={ filter.breeds }
 							type="search"
+							values={ filter.breeds }
 						/>
 						<Field
 							name="ages"
 							onChange={ updateAge }
 							options={ AGE_OPTIONS }
-							selected={ filter.ages }
 							type="checkbox"
+							values={ filter.ages }
 						/>
 					</Form>
 
@@ -152,15 +160,15 @@ const Sidebar = ({
 							name="category"
 							onChange={ updateSort }
 							options={ SORT_OPTIONS }
-							selected={ [sort.category] }
 							type="radio"
+							values={ [sort.category] }
 						/>
 						<Field
 							name="order"
 							onChange={ updateSort }
 							options={ SORT_ORDER }
-							selected={ [sort.order] }
 							type="radio"
+							values={ [sort.order] }
 						/>
 					</Form>
 
@@ -174,14 +182,15 @@ const Sidebar = ({
 							name="layout"
 							onChange={ updateView }
 							options={ VIEW_OPTIONS }
-							selected={ [view.layout] }
 							type="radio"
+							values={ [view.layout] }
 						/>
 						<Field
 							min={ 1 }
 							name="size"
 							onChange={ updateView }
 							placeholder={ `${SIDEBAR_DEFAULTS.view.size}` }
+							ref={ sizeRef }
 							type="number"
 						/>
 					</Form>

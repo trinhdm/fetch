@@ -2,19 +2,19 @@ import clsx from 'clsx'
 import { BiChevronDown } from 'react-icons/bi'
 import { slugify } from '@utils/helpers'
 import { Menu } from '@components/Menu'
-import type { SelectFieldProps } from '../../Field.types'
+import type { FieldSelectHandler, SelectFieldProps } from '../../Field.types'
 import './selectfield.module.scss'
 
 const SelectField = ({
 	disabled,
-	handleSelect,
+	handleChange,
 	name,
 	options,
 	value,
  }: SelectFieldProps) => {
 	const classes = clsx('field__toggle', {
-		'field__toggle--selected': value,
 		'field__toggle--default': !value,
+		'field__toggle--selected': value,
 	})
 
 	return (
@@ -26,12 +26,12 @@ const SelectField = ({
 					</span>
 				</Menu.Toggle>
 
-				{ Object.entries(options as SelectFieldProps['options']).map(([label], i) => (
+				{ Object.entries(options as SelectFieldProps['options']).map(([label]) => (
 					<Menu.Item
 						isActive={ value === label }
 						key={ slugify(`${label}`) }
 						name={ name }
-						onClick={ event => handleSelect(event, i) }
+						onClick={ handleChange as unknown as FieldSelectHandler }
 						value={ label }
 					>
 						{ label }

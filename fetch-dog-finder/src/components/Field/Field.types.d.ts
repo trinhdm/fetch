@@ -1,4 +1,4 @@
-import type { ChangeEvent, MouseEvent } from 'react'
+import type { ChangeEvent, KeyboardEvent, MouseEvent } from 'react'
 
 
 type FieldTypes =
@@ -21,6 +21,7 @@ export type FieldValidations = Exclude<FieldTypes,
 type FieldChangeEvent = ChangeEvent<HTMLInputElement>
 
 export type FieldChangeHandler = (event: FieldChangeEvent, index?: number) => void
+export type FieldKeyboardHandler = (event: KeyboardEvent<HTMLElement>, index?: number) => void
 export type FieldSelectHandler = (event: FieldChangeEvent | MouseEvent<HTMLElement>, index?: number) => void
 
 
@@ -30,8 +31,8 @@ type InputValues = {
 	min?: never
 	onReset?: never
 	options?: never
-	selected?: never
 	type: Extract<FieldTypes, 'email' | 'text'>
+	values?: never
 }
 
 type NumberValues = {
@@ -40,18 +41,18 @@ type NumberValues = {
 	min?: number
 	onReset?: never
 	options?: never
-	selected?: never
 	type: Extract<FieldTypes, 'number'>
+	values?: never
 }
 
 type SearchValues = {
 	autoComplete?: never
 	max?: never
 	min?: never
-	onReset?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
+	onReset?: (event: MouseEvent<HTMLElement>) => void
 	options: (number | string)[]
-	selected?: (number | string)[]
 	type: Extract<FieldTypes, 'search'>
+	values?: (number | string)[]
 }
 
 type SelectValues = {
@@ -60,8 +61,8 @@ type SelectValues = {
 	min?: never
 	onReset?: never
 	options: Record<string, number | string>
-	selected?: never
 	type: Extract<FieldTypes, 'select'>
+	values?: never
 }
 
 type ChoiceValues = {
@@ -70,14 +71,15 @@ type ChoiceValues = {
 	min?: never
 	onReset?: never
 	options: (number | string)[]
-	selected?: (number | string)[]
 	type: Extract<FieldTypes, 'checkbox' | 'radio'>
+	values?: (number | string)[]
 }
 
 
 interface FieldBase {
 	disabled?: boolean
 	name: string
+	value?: number | string
 }
 
 interface FieldBaseValues extends FieldBase {
@@ -86,7 +88,7 @@ interface FieldBaseValues extends FieldBase {
 }
 
 interface FieldBaseProps extends FieldBase {
-	handleChange: FieldChangeHandler
+	handleChange: FieldChangeHandler | ((event: KeyboardEvent<HTMLElement>) => void)
 	type: FieldTypes
 }
 
@@ -114,18 +116,24 @@ export type FieldProps = FieldValues & {
 	showLabel?: boolean
 }
 
-export interface FieldLabelProps extends Pick<FieldValues, 'name' | 'type'> {
+export interface FieldLabelProps extends Pick<FieldValues,
+	| 'name'
+	| 'type'
+> {
 	children: string
 }
 
-export interface FieldTagsProps extends FieldBaseProps, Pick<SearchValues, 'options' | 'selected'> {
-	value: string
+export interface FieldTagsProps extends FieldBaseProps, Pick<SearchValues,
+	| 'options'
+	| 'values'
+> {
+	search: string
 }
 
 
 export type ChoiceFieldProps = FieldBaseProps & Pick<ChoiceValues,
 	| 'options'
-	| 'selected'
+	| 'values'
 >
 
 export type InputFieldProps = FieldBaseProps & Pick<FieldProps,
@@ -133,7 +141,4 @@ export type InputFieldProps = FieldBaseProps & Pick<FieldProps,
 	| 'placeholder'
 >
 
-export type SelectFieldProps = Omit<FieldBaseProps, 'handleChange'> & Pick<SelectValues, 'options'> & {
-	handleSelect: FieldSelectHandler
-	value: string
-}
+export type SelectFieldProps = FieldBaseProps & Pick<SelectValues, 'options'>

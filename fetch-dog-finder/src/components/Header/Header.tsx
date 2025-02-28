@@ -1,5 +1,4 @@
 import clsx from 'clsx'
-
 import type { HeaderProps } from './Header.types'
 import './header.module.scss'
 
@@ -7,10 +6,7 @@ const Header = ({
 	children,
 	className,
 }: HeaderProps) => {
-	const classes = clsx({
-		header: true,
-		[`${className}`]: className,
-	})
+	const classes = clsx('header', className)
 
 	return (
 		<header className={ classes }>

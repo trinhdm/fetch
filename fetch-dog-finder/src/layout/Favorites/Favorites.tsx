@@ -18,7 +18,7 @@ const Favorites = () => {
 				const list = await retrieveDogs(favorites)
 				setFaves(list)
 			} catch (err) {
-				console.log(err)
+				console.error('Error retrieving favorited dogs:', err)
 			}
 		}
 

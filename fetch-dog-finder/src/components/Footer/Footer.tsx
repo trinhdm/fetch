@@ -6,10 +6,7 @@ const Footer = ({
 	children,
 	className,
 }: FooterProps) => {
-	const classes = clsx({
-		footer: true,
-		[`${className}`]: className,
-	})
+	const classes = clsx('footer', className)
 
 	return (
 		<footer className={ classes }>

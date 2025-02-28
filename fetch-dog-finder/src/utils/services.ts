@@ -38,7 +38,7 @@ export const fetchDogs = async (params: DogParams) => {
 export const getZipCodesWithin = async (
 	params: LocationParams,
 	radius: null | string = null
-): Promise<Pick<Location, 'zip_code'>[]> => {
+): Promise<Array<Location['zip_code']>> => {
 	try {
 		const { data: { results } } = await api.post('/locations/search', params)
 
@@ -66,10 +66,10 @@ export const getZipCodesWithin = async (
 
 			return zipCoords
 				.filter(({ latitude, longitude }) => haversineDistance(baseLat, baseLon, latitude, longitude) <= radiusMiles)
-				.map(({ zip_code }) => zip_code) as unknown as Pick<Location, 'zip_code'>[]
+				.map(({ zip_code }) => zip_code) as unknown as Array<Location['zip_code']>
 		}
 
-		return zipCoords.map(({ zip_code }) => zip_code) as unknown as Pick<Location, 'zip_code'>[]
+		return zipCoords.map(({ zip_code }) => zip_code) as unknown as Array<Location['zip_code']>
 	} catch (error) {
 		console.error('Error fetching locations:', error)
 		return []

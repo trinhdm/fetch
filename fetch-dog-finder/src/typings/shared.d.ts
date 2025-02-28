@@ -1,6 +1,3 @@
-// import type { NonNegative } from './helpers'
-
-
 // user authorization
 
 interface Auth {
@@ -18,28 +15,6 @@ type UserHandler = (data: Partial<User>) => void
 
 interface UserSettings extends User {
 	handleUser: UserHandler
-}
-
-
-// dog
-
-interface Dog {
-	age: number
-	breed: string
-	id: string
-	img: `https://${string}.jpg`
-	name: string
-	zip_code: string
-}
-
-interface DogParams {
-	ageMax?: Dog['Age']
-	ageMin?: Dog['Age']
-	breeds?: Array<Dog['breed']>
-	from?: number
-	size?: number
-	sort?: Sort
-	zipCodes?: Array<Location['zip_code']>
 }
 
 
@@ -74,6 +49,27 @@ interface LocationParams {
     size?: number
 }
 
+
+// dog
+
+interface Dog {
+	age: number
+	breed: string
+	id: string
+	img: `https://${string}.jpg`
+	name: string
+	zip_code: string
+}
+
+interface DogParams {
+	ageMax?: Dog['Age']
+	ageMin?: Dog['Age']
+	breeds?: Array<Dog['breed']>
+	from?: number
+	size?: number
+	sort?: Sort
+	zipCodes?: Array<Location['zip_code']>
+}
 
 // filter + sort + view
 

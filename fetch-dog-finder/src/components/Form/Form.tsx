@@ -1,14 +1,8 @@
-import {
-	Children,
-	cloneElement,
-	isValidElement,
-	type FunctionComponent,
-	type ReactElement,
-} from 'react'
 import clsx from 'clsx'
+import { getChildrenByDisplayName } from '@utils/children'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Button } from '@components/Button'
-import type { FieldProps, FieldValidations } from '@components/Field'
+import type { FieldValidations } from '@components/Field'
 import type { FormProps, FormValues } from './Form.types'
 import './form.module.scss'
 
@@ -26,6 +20,17 @@ const Form = ({
 	const { handleSubmit } = methods
 
 	const classes = clsx('form', className)
+
+	const getSubComponent = (
+		targetName: string
+	) => getChildrenByDisplayName({
+		children,
+		props: {
+			disabled,
+			onValidation: handleValidation,
+		},
+		targetName,
+	})
 
 	const handleValidation = (fieldType: FieldValidations) => {
 		const pattern = {
@@ -65,23 +70,7 @@ const Form = ({
 				onSubmit={ handleSubmit(onSubmit) }
 				role={ role }
 			>
-				{ Children.map(children, child => {
-					if (!isValidElement(child))
-						return null
-
-					const childEl = child as ReactElement<FieldProps>
-					const { type: childType } = childEl,
-						{ displayName } = childType as FunctionComponent
-
-					const props = {
-						disabled,
-						onValidation: handleValidation,
-					}
-
-					return displayName === 'Field'
-						? cloneElement(childEl, props)
-						: child
-				}) }
+				{ getSubComponent('Field') }
 
 				<input
 					hidden

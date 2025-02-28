@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BiSlider, BiSolidDog } from 'react-icons/bi'
 import { capitalize, getAgeRange } from '@utils/helpers'
+import { debounce } from '@utils/children'
 import { usePageContext } from '@providers/PageProvider'
 import { Card } from '@components/Card'
 import type {
@@ -19,6 +20,7 @@ const Directory = () => {
 	} = usePageContext()!
 
 	const [title, setTitle] = useState<string>('All Dogs')
+	const debounceRef = useRef<NodeJS.Timeout>(null)
 
 	const generateTitle = (filter: FilterValues & GeolocationValues) => {
 		if (Object.values(filter).every(v => !v.length || (typeof v === 'string' && v.toLowerCase().includes('state'))))
@@ -68,8 +70,10 @@ const Directory = () => {
 	}
 
 	useEffect(() => {
-		const heading = generateTitle({ ...filter, ...geolocation })
-		setTitle(heading)
+		debounce(() => {
+			const heading = generateTitle({ ...filter, ...geolocation })
+			setTitle(heading)
+		}, debounceRef)
 	}, [filter, geolocation])
 
 	return (

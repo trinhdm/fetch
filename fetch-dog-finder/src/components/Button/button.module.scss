@@ -6,10 +6,9 @@ $-transition-button: .3s $transition-slide;
 .button {
 	$base: &;
 
-	font-size: $button-font-size;
+	font-size: $details-font-size;
 	line-height: 1;
 	min-height: fit-content;
-	overflow: hidden;
 	position: relative;
 
 	&__inner {
@@ -30,6 +29,11 @@ $-transition-button: .3s $transition-slide;
 		}
 	}
 
+	&:focus-visible {
+		border-radius: 0;
+		outline: 0;
+	}
+
 	&--outline,
 	&--solid {
 		a,
@@ -45,10 +49,7 @@ $-transition-button: .3s $transition-slide;
 	&--solid {
 		background-color: $color-secondary;
 		color: $color-white;
-
-		&#{$base}--tertiary {
-			background-color: $color-tertiary;
-		}
+		overflow: hidden;
 
 		&::before,
 		&::after {
@@ -72,7 +73,7 @@ $-transition-button: .3s $transition-slide;
 			background-color: $color-tertiary;
 		}
 
-		&:not(:has([disabled])):hover::after {
+		&:not(:has([disabled])):is(:focus-within, :hover)::after {
 			translate: 0;
 		}
 
@@ -89,7 +90,7 @@ $-transition-button: .3s $transition-slide;
 		transition: color $-transition-button,
 			outline-color $-transition-button;
 
-		&:not(:has([disabled])):hover {
+		&:not(:has([disabled])):is(:focus-within, :hover) {
 			color: $color-tertiary;
 			outline-color: $color-tertiary;
 		}
@@ -102,6 +103,11 @@ $-transition-button: .3s $transition-slide;
 
 	&--icon {
 		color: $color-primary;
+
+		&:focus-within,
+		&:hover {
+			color: $color-secondary;
+		}
 	}
 
 	&--tag {
@@ -110,9 +116,13 @@ $-transition-button: .3s $transition-slide;
 		border-radius: 1rem;
 		color: $color-tag;
 		display: inline-flex;
-		font-size: $label-font-size;
+		font-size: $message-font-size;
 		transition: background-color $-transition-button,
 			color $-transition-button;
+
+		@include breakpoint($width-md) {
+			font-size: $caption-font-size;
+		}
 
 		#{$base}__inner {
 			column-gap: .125rem;
@@ -124,21 +134,21 @@ $-transition-button: .3s $transition-slide;
 		}
 
 		svg {
-			font-size: $icon-size-sm;
-			height: $icon-size-sm;
-			width: $icon-size-sm;
+			font-size: $icon-size-xs;
+			height: $icon-size-xs;
+			width: $icon-size-xs;
 		}
 
 		&:focus-within,
 		&:hover {
-			background-color: #{$color-tag}E6;
+			background-color: $color-active;
 			color: $color-white;
 		}
 	}
 
 	&--text {
 		align-items: center;
-		color: $color-tertiary;
+		color: $color-field;
 		display: flex;
 		transition: color $-transition-button;
 
@@ -147,8 +157,17 @@ $-transition-button: .3s $transition-slide;
 			justify-content: flex-start;
 		}
 
-		&:focus-within {
+		&:focus-within,
+		&:hover {
 			color: $color-tertiary;
+		}
+
+		&:has([disabled]) {
+			&,
+			&:focus-within,
+			&:hover {
+				color: $color-disabled;
+			}
 		}
 	}
 

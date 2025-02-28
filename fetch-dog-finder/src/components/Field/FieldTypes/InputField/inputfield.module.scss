@@ -10,14 +10,14 @@
 
 	&__message {
 		color: $color-danger;
-		font-size: .625rem;
+		display: block;
+		font-size: $caption-font-size;
 		inset: auto 0 0 auto;
-		line-height: $field-font-size;
+		line-height: 1rem;
+		padding: $section-gap-sm 0;
+		pointer-events: none;
 		position: absolute;
+		user-select: none;
 		z-index: 0;
-
-		@include breakpoint($width-md) {
-			font-size: $label-font-size;
-		}
 	}
 }

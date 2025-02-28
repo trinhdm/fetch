@@ -1,13 +1,14 @@
-.logo img {
-	height: 2.5rem;
-	will-change: filter;
-	transition: filter 300ms;
-
-	@include breakpoint($width-md) {
-		height: 3rem;
+.logo {
+	&:focus {
+		outline: .1px solid $color-secondary;
+		outline-offset: 1px;
 	}
-}
 
-.logo img:hover {
-	filter: drop-shadow(0 0 2em #646cffaa);
+	img {
+		height: 2.5rem;
+
+		@include breakpoint($width-md) {
+			height: 3rem;
+		}
+	}
 }

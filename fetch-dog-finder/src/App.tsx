@@ -7,7 +7,7 @@ import { Page } from '@layout/Page'
 import { UserProvider } from '@providers/UserProvider'
 import type { User, UserSettings } from '@typings/shared'
 import '@assets/scss/global.scss'
-// import './App.css'
+import './App.scss'
 
 function App() {
 	const defaultUser: User = {

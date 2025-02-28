@@ -2,7 +2,7 @@
 	$base: &;
 
 	flex: 1;
-	font-size: $field-font-size;
+	font-size: $details-font-size;
 	line-height: 1;
 	position: relative;
 
@@ -69,21 +69,9 @@
 		position: absolute;
 	}
 
-	&__button,
-	&__message {
-		padding: $row-gap-lg 0;
-	}
-
-	&__icon,
-	&__message {
-		display: block;
-		pointer-events: none;
-		user-select: none;
-	}
-
 	&__button {
 		color: $color-tertiary;
-		font-size: .75rem;
+		font-size: $caption-font-size;
 		margin-right: calc(#{$icon-size-sm} + #{$button-gap});
 
 		@include breakpoint($width-md) {
@@ -94,10 +82,16 @@
 		&:hover {
 			color: $color-quaternary;
 		}
+
+		.button__inner {
+			padding: $row-gap-lg 0;
+		}
 	}
 
 	&__icon {
 		color: $color-placeholder;
+		display: block;
+		pointer-events: none;
 
 		&--search {
 			font-size: $icon-size-xs;

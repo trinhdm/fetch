@@ -11,22 +11,25 @@
 
 	border: .1px solid $color-secondary;
 	margin: $section-gap-lg -.1px 0 0;
-	padding: $row-gap-lg $button-gap $row-gap-lg $row-gap-lg;
+	padding: $row-gap-lg $button-gap $button-gap 0;
 
 	&--empty {
 		padding: $row-gap-lg;
 	}
 
-	.field__choices {
-		height: max-content;
+	&__wrapper {
 		max-height: 7.25rem;
 		overflow-y: auto;
-		padding-right: $row-gap-lg;
+		padding: 0 $button-gap $button-gap $row-gap-lg;
 		scrollbar-width: thin;
 
 		@include breakpoint($width-md) {
-			max-height: 13.5rem;
+			max-height: 13.75rem;
 		}
+	}
+
+	.field__choices {
+		height: max-content;
 	}
 
 	&__list {

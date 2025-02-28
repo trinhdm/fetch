@@ -10,12 +10,15 @@ $-font-lexend: Lexend, serif;
 
 $font-primary: $-font-lexend;
 
-$button-font-size: .875rem;
-$field-font-size: .875rem;
-$label-font-size: .75rem;
+$message-font-size: .625rem;
+$caption-font-size: .75rem;
+$details-font-size: .875rem;
+$label-font-size: 1rem;
 
+$icon-size-xs: .875rem;
 $icon-size-sm: 1rem;
-$icon-size-lg: 1.125rem;
+$icon-size-md: 1.125rem;
+$icon-size-lg: 1.25rem;
 
 // ----------------------------------------------
 //	colors: internal
@@ -27,14 +30,14 @@ $-color-gray-light: #F1ECE9;
 $-color-gray-purple: #C7C1E0;
 $-color-silver: #9CA3AF;
 
-$-color-pink: #ED6A7C;
+$-color-blue-purple: #6D62DD;
 $-color-hot-pink: #F90075;
 $-color-orange: #FFA900;
+$-color-pink: #ED6A7C;
 $-color-purple-dark: #300D38;
 $-color-purple-light: #890A74;
 $-color-red: #DC3545;
-$-color-teal-light: #0CA3B7;
-$-color-teal-dark: #138A75;
+$-color-teal: #0CA3B7;
 $-color-yellow: #FFDF02;
 
 // ----------------------------------------------
@@ -49,25 +52,25 @@ $color-secondary: $-color-purple-light;
 $color-tertiary: $-color-orange;
 $color-quaternary: $-color-yellow;
 
+$color-active: #{$-color-teal}E6;
 $color-danger: $-color-red;
 $color-focus-danger: $-color-hot-pink;
 $color-disabled: $-color-gray-purple;
 
+$color-background: #242424;
 $color-text: #090325;
 $color-header: $color-primary;
-$color-divider: $-color-gray-light;
 
-$color-tag: $-color-teal-light;
+$color-divider: $-color-gray-light;
+$color-heart: $-color-pink;
+$color-tag: $-color-teal;
 
 $color-field: #{$-color-gray-dark}E6;
 $color-checkbox: $-color-gray-purple;
 $color-placeholder: $-color-silver;
 
-$color-heart-light: $-color-pink;
-$color-heart-dark: $-color-hot-pink;
-
-$color-scrollbar-light: $-color-silver transparent;
-$color-scrollbar-dark: $color-primary transparent;
+$color-scrollbar-light: $-color-silver $color-white;
+$color-scrollbar-dark: $-color-silver $color-background;
 
 // ----------------------------------------------
 //	screen sizes
@@ -83,24 +86,24 @@ $width-xl: 80rem;
 //	layout
 // ----------------------------------------------
 
-$container-max-width: 80rem;
+$container-max-width: $width-xl;
 
-$gutter-lg: 1.25rem;
-
+$section-gap-sm: .875rem;
 $section-gap-lg: 1.125rem;
 
-$column-gap-lg: 1.25rem;
 $column-gap-sm: .625rem;
+$column-gap-lg: 1.25rem;
 
 $row-gap-lg: .75rem;
 
+$form-gap: 1.375rem;
 $button-gap: .375rem;
+$icon-gap: calc(#{$button-gap} * .5);
 
 // ----------------------------------------------
 //	animations/transitions
 // ----------------------------------------------
 
-$transition-button: cubic-bezier(0, 1, 0, 1);
+$transition-button: cubic-bezier(.77, 0, .18, 1);
 $transition-cta: cubic-bezier(.46, .03, .52, .96);
 $transition-slide: cubic-bezier(.3, 0, 0, 1);
-

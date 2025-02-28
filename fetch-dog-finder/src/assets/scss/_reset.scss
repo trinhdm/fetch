@@ -74,12 +74,12 @@ hr {
 dialog,
 section {
 	height: 100%;
-	margin: auto;
 	width: 100%;
 }
 
 dialog {
 	background-color: transparent;
+	margin: auto;
 	max-height: unset;
 	max-width: unset;
 	padding: 0;
@@ -346,12 +346,7 @@ legend {
 :disabled,
 [data-disabled],
 [disabled] {
-	cursor: pointer;
-	pointer-events: none;
-}
-
-:target {
-	scroll-margin-block: 5ex;
+	cursor: not-allowed;
 }
 
 [hidden] {

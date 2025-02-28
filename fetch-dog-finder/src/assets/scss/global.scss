@@ -1,10 +1,8 @@
 @use 'reset';
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap');
 
 
 :root {
-	--highlight-color: null;
-	scrollbar-color: $color-scrollbar-light;
+	scrollbar-color: $color-scrollbar-dark;
 	scrollbar-width: thin;
 }
 
@@ -20,20 +18,148 @@
 	text-shadow: none;
 }
 
+::-webkit-search-cancel-button {
+	cursor: pointer;
+	font-size: $icon-size-sm;
+	margin-inline: 0 .125rem;
+	opacity: 0;
+
+	@include breakpoint($width-md) {
+		font-size: $icon-size-md;
+	}
+}
+
+#root {
+    align-items: center;
+    display: flex;
+	margin: 0 auto;
+	max-width: $container-max-width;
+	min-height: 100vh;
+	padding: 0;
+
+	@include breakpoint($width-md) {
+		padding-inline: 3rem;
+	}
+
+	&:not(:has(main)) {
+		justify-content: center;
+
+		@include breakpoint($width-md) {
+			padding-block: 3rem;
+		}
+	}
+
+	&:has(main) {
+		flex-direction: column;
+	}
+}
+
+html {
+	scrollbar-gutter: stable both-edges;
+
+	&:has(aside.overlay--visible, dialog[open]) {
+		overflow-y: hidden;
+		// scrollbar-gutter: stable;
+	}
+}
+
 body {
+	background-color: $color-background;
 	color: $color-text;
 	font-family: $font-primary;
 }
 
 h1,
 h2,
-h3,
-h4 {
+h3 {
 	color: $color-header;
+	line-height: 1.1;
+	margin: 0;
 }
 
 h1 {
-	margin: 0;
+	font-size: 2rem;
+
+	@include breakpoint($width-lg) {
+		font-size: 2.625rem;
+	}
+}
+
+h2 {
+	font-size: 1.375rem;
+}
+
+h3 {
+	font-size: 1.125rem;
+	margin-bottom: $row-gap-lg;
+}
+
+
+hgroup {
+	margin-bottom: $section-gap-sm;
+
+	@include breakpoint($width-md) {
+		margin-bottom: $section-gap-lg;
+	}
+
+	h1 {
+		display: inline;
+		font-size: 1.75rem;
+
+		@include breakpoint($width-lg) {
+			font-size: 2rem;
+		}
+	}
+
+	span {
+		color: $color-placeholder;
+		display: inline-block;
+		margin-left: $column-gap-sm;
+	}
+}
+
+b,
+i {
+	color: $color-field;
+}
+
+a {
+	color: $color-primary;
+}
+
+p {
+	margin-block: .75rem;
+
+	@include breakpoint($width-md) {
+		margin-block: .875rem;
+	}
+
+	svg {
+		color: $color-secondary;
+		display: inline;
+		font-size: inherit;
+		height: auto;
+		width: auto;
+	}
+}
+
+svg {
+	font-size: $icon-size-xs;
+	height: $icon-size-xs;
+	width: $icon-size-xs;
+
+	@include breakpoint($width-md) {
+		font-size: $icon-size-sm;
+		height: $icon-size-sm;
+		width: $icon-size-sm;
+	}
+}
+
+button,
+input {
+	svg {
+		pointer-events: none;
+	}
 }
 
 input {
@@ -52,7 +178,6 @@ input {
 
 	&::placeholder {
 		color: $color-placeholder;
-		// line-height: 0;
 	}
 
 	&::-moz-placeholder {
@@ -61,5 +186,60 @@ input {
 
 	&::-webkit-input-placeholder {
 		color: $color-placeholder;
+	}
+}
+
+main {
+	background-color: $color-white;
+	flex: 1;
+	margin-inline: $column-gap-lg;
+	padding: $section-gap-lg $column-gap-lg;
+	width: 100%;
+
+	@include breakpoint($width-md) {
+		margin-inline: unset;
+	}
+}
+
+.directory {
+	border-top: .1px solid $color-divider;
+	display: grid;
+	padding-top: $section-gap-lg;
+
+	&:not(:has(.card--vertical)) .card {
+		margin-bottom: calc($row-gap-lg * 2);
+
+		&::after {
+			background-color: $color-divider;
+			content: '';
+			display: block;
+			height: .1px;
+			margin-block: $row-gap-lg;
+			position: absolute;
+			width: 100%;
+		}
+
+		&:last-of-type {
+			&,
+			&::after {
+				margin-block-end: 0;
+			}
+
+			&::after {
+				display: none;
+			}
+		}
+	}
+
+	&:has(.card--vertical) {
+		gap: $row-gap-lg;
+
+		@include breakpoint($width-sm) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		@include breakpoint($width-lg) {
+			grid-template-columns: repeat(3, 1fr);
+		}
 	}
 }

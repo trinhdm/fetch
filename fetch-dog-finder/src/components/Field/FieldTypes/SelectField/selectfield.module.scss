@@ -17,8 +17,8 @@
 			&__item:first-of-type .button {
 				border-bottom: .1px solid $color-divider;
 				color: $color-placeholder;
-				margin-bottom: .25rem;
-				padding-bottom: .375rem;
+				margin-bottom: $icon-gap;
+				padding-bottom: $button-gap;
 
 				&:focus-within,
 				&:hover {

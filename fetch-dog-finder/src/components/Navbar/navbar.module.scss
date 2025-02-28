@@ -11,12 +11,12 @@
 	}
 
 	&__settings {
-		font-size: $button-font-size;
+		font-size: $details-font-size;
 	}
 
 	&__username {
 		color: $color-field;
-		transition: color .3s $transition-slide;
+		transition: color .25s $transition-slide;
 	}
 
 	&__welcome {

@@ -1,10 +1,13 @@
+$-transition-card: .25s $transition-button;
+
+
 .card {
 	$base: &;
 
 	outline: .1px solid transparent;
 	outline-offset: -1px;
 	position: relative;
-	transition: outline-color .2s $transition-cta;
+	transition: outline-color $-transition-card;
 	z-index: 2;
 
 	&__wrapper {
@@ -23,7 +26,10 @@
 
 	&__heart {
 		color: $color-white;
-		transition: color .2s $transition-cta;
+		font-size: $icon-size-lg;
+		height: $icon-size-lg;
+		transition: color $-transition-card;
+		width: $icon-size-lg;
 	}
 
 	&__caption {
@@ -32,19 +38,19 @@
 		h3 {
 			color: $color-secondary;
 			margin: 0;
-			transition: color .2s $transition-cta;
+			transition: color $-transition-card;
 		}
 
 		b {
 			color: $color-primary;
-			font-size: $button-font-size;
+			font-size: $details-font-size;
 		}
 	}
 
 	&__details {
 		color: $color-field;
 		display: flex;
-		font-size: $button-font-size;
+		font-size: $details-font-size;
 
 		& > * {
 			color: inherit;
@@ -147,7 +153,7 @@
 			display: block;
 			inset: 0;
 			position: absolute;
-			transition: opacity .25s $transition-button;
+			transition: opacity $-transition-card;
 			z-index: 2;
 		}
 
@@ -157,7 +163,7 @@
 			#{$base}--liked
 		) #{$base} {
 			&__heart {
-				color: $color-heart-light;
+				color: $color-heart;
 			}
 
 			&__image::before {

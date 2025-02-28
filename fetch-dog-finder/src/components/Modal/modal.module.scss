@@ -1,4 +1,6 @@
 .modal {
+	$base: &;
+
 	background-color: $color-white;
 	height: fit-content;
 
@@ -14,7 +16,7 @@
 
 	&::backdrop {
 		background-color: rgba(0, 0, 0, .2);
-		transition: opacity .2s $transition-slide;
+		transition: opacity .25s $transition-slide;
 	}
 
 	&__close {

@@ -18,7 +18,7 @@ interface PageSettings {
 	geolocation: GeolocationValues
 	handleMatch: () => Promise<void>
 	isSidebarOpen: boolean
-	resetDirectory: (category?: string) => void
+	resetDirectory: (category?: string, refs?: RefObject<HTMLInputElement>[] | []) => void
 	sort: SortValues
 	toggleModal: () => void
 	toggleSidebar: (event: MouseEvent<HTMLElement>) => void
